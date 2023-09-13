@@ -15,7 +15,8 @@ public class FoodController {
     }
 
     @PostMapping(value = "/create")
-    boolean createFood(@Valid @RequestBody FoodDto foodDTO) {
+    boolean createFood(@Valid @RequestBody FoodDto foodDto) {
+        System.out.println(foodDto);
         return true;
     }
 

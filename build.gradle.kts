@@ -33,6 +33,9 @@ dependencies {
     // OpenAPI (Swagger)
     implementation(group = "org.springdoc", name = "springdoc-openapi-starter-webmvc-ui", version = "2.0.2")
 
+    // Validation
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.1.3")
+
     // Lombok
     compileOnly("org.projectlombok:lombok:1.18.28")
     annotationProcessor("org.projectlombok:lombok:1.18.28")
