@@ -6,13 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api")
-public class ApiGateway {
+public class TestController {
 
     @PostMapping(value = "/test")
     boolean test() {
         return true;
     }
-
-
 
 }

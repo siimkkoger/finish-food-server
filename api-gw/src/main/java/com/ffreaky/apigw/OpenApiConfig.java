@@ -15,7 +15,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI finishFoodOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title(applicationName)
+                .info(new Info().title("Finish Food Server (%s)".formatted(applicationName))
                         .description("API for Finish Food Application")
                         .version("1.0"));
     }
