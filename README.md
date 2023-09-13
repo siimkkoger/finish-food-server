@@ -17,9 +17,22 @@ Build a functioning website to buy food that restaurants waste.
 ### Backend should include (but not limited to):
 - [ ] Logging
 - [ ] Push messages
-- [ ] Containerization (not that a small project like this needs it, but I want to go over the process)
+- [ ] Containerization
+- [ ] Load balancer
 - [ ] Integration tests
 
+(not that a small project like this needs several of them, but I want to go over the process)
+
+____________________
+## Technologies
+- Spring Boot
+- Spring Security
+- Spring Data
+- Postgresql
+- Flyway
+- Docker
+- OpenAPI (Swagger)
+- Lombok (ONLY @Getter, @Setter, @NoArgsConstructor)
 ____________________
 ## Architecture
 ...

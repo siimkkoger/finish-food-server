@@ -1,28 +1,34 @@
 package com.example.finishfoodserver.controller;
 
-import com.example.finishfoodserver.model.FoodDTO;
+import com.example.finishfoodserver.entity.FoodEntity;
+import com.example.finishfoodserver.model.FoodDto;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 
 @RestController
 @RequestMapping(value = "/food")
 public class FoodController {
 
     @PostMapping(value = "/get")
-    FoodDTO getFood(long id) {
-        return FoodDTO.builder()
-                .id(id)
-                .name("Food name")
-                .price(BigDecimal.valueOf(100))
-                .build();
+    FoodDto getFood(long id) {
+        return new FoodDto(id, "name", null);
     }
 
     @PostMapping(value = "/create")
-    boolean createFood(@RequestBody FoodDTO foodDTO) {
-        System.out.println(foodDTO);
+    boolean createFood(@Valid @RequestBody FoodDto foodDTO) {
         return true;
     }
 
+    public FoodDto foodEntityToDto(FoodEntity food) {
+        return new FoodDto(food.getId(), food.getName(), food.getPrice());
+    }
+
+    public FoodEntity foodDtoToEntity(FoodDto foodDto) {
+        FoodEntity foodEntity = new FoodEntity();
+        foodEntity.setId(foodDto.id());
+        foodEntity.setName(foodDto.name());
+        foodEntity.setPrice(foodDto.price());
+        return foodEntity;
+    }
 
 }
