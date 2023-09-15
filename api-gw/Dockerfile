@@ -8,7 +8,7 @@ WORKDIR /app
 COPY ./build/libs/api-gw-0.0.1-SNAPSHOT.jar /app/api-gw.jar
 
 # Environment variables for PostgreSQL connection
-ENV SPRING_DATASOURCE_URL=jdbc:postgresql://db_pg_1:5432/testdb
+ENV SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/testdb
 ENV SPRING_DATASOURCE_USERNAME=testuser
 ENV SPRING_DATASOURCE_PASSWORD=testpass
 
