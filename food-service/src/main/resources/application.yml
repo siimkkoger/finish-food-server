@@ -4,17 +4,15 @@ spring:
   application:
     name: food-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://postgres:5432/db_postgres_1
     username:
-    password:
+    password: 123
   jpa:
     hibernate:
       ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

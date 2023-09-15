@@ -1,0 +1,23 @@
+services:
+  web:
+    build: .
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_postgres_1
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    restart: always
+    container_name: db_postgres_1
+    image: postgres:10.4
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=db_postgres_1

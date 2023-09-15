@@ -20,7 +20,7 @@ dependencies {
 
     // Database
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.flywaydb:flyway-core")
+    //implementation("org.flywaydb:flyway-core")
     runtimeOnly("org.postgresql:postgresql")
 
     // Security
@@ -45,4 +45,13 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.withType<Jar> {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes["Main-Class"] = "com.ffreaky.apigw.ApiGwApplication"
+    }
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
 }
