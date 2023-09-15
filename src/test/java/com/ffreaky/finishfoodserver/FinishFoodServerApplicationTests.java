@@ -1,4 +1,4 @@
-package com.ffreaky.apigw;
+package com.ffreaky.finishfoodserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

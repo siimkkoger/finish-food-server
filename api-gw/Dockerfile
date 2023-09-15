@@ -5,7 +5,7 @@ FROM openjdk:17-alpine
 WORKDIR /app
 
 # Copy the JAR file into the container
-COPY target/food-service.jar /app/food-service.jar
+COPY target/api-gw.jar /app/api-gw.jar
 
 # Environment variables for PostgreSQL connection
 ENV SPRING_DATASOURCE_URL=jdbc:postgresql://db_pg_1:5432/testdb
@@ -16,4 +16,4 @@ ENV SPRING_DATASOURCE_PASSWORD=testpass
 EXPOSE 8080
 
 # Command to run your application
-CMD ["java", "-jar", "food-service.jar"]
+CMD ["java", "-jar", "api-gw.jar"]

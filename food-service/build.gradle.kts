@@ -1,3 +1,9 @@
+val requiredJavaVersion = JavaVersion.VERSION_17
+
+if (JavaVersion.current() != requiredJavaVersion) {
+    throw GradleException("This project requires Java ${requiredJavaVersion.majorVersion}, but it's running on ${JavaVersion.current()}")
+}
+
 plugins {
     java
     id("org.springframework.boot") version "3.1.3"
@@ -8,7 +14,8 @@ group = "com.ffreaky"
 version = "0.0.1-SNAPSHOT"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = requiredJavaVersion
+    targetCompatibility = requiredJavaVersion
 }
 
 repositories {
@@ -18,10 +25,14 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
-    // Database
+    // Database connectivity
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    //implementation("org.flywaydb:flyway-core")
+
+    // Postgresql
     runtimeOnly("org.postgresql:postgresql")
+
+    // Flyway
+    //implementation("org.flywaydb:flyway-core")
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
