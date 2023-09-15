@@ -5,7 +5,7 @@ FROM openjdk:17-alpine
 WORKDIR /app
 
 # Copy the JAR file into the container
-COPY target/food-service.jar /app/food-service.jar
+COPY ./build/libs/food-service-0.0.1-SNAPSHOT.jar /app/food-service.jar
 
 # Environment variables for PostgreSQL connection
 ENV SPRING_DATASOURCE_URL=jdbc:postgresql://db_pg_1:5432/testdb

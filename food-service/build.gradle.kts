@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 val requiredJavaVersion = JavaVersion.VERSION_17
 
 if (JavaVersion.current() != requiredJavaVersion) {
@@ -55,9 +57,13 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.withType<Jar> {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+tasks.withType <Jar> {
+    enabled = false
+}
 
+tasks.withType<BootJar> {
+    enabled = true
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes["Main-Class"] = "com.ffreaky.foodservice.FoodServiceApplication"
     }

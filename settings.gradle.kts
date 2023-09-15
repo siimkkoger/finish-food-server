@@ -1,5 +1,4 @@
-rootProject.name = "finish-food-server"
+rootProject.name = "ffs"
 
 include("api-gw")
 include("food-service")
-//include("user-service")
