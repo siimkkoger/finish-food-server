@@ -39,7 +39,10 @@ ____________________
 - Kubernetes
 - Kafka
 - Load Balancer (HAProxy)
-- MAYBE: Spring WebFlux + R2DBC (Reactive Relational Database Connectivity)
+- MAYBE (*probably for another project*):
+  - Spring WebFlux + R2DBC (Reactive Relational Database Connectivity)
+  - Virtual Threads (Project Loom)
+  - Graphql
 
 ____________________
 ## Architecture
