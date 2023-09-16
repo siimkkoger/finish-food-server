@@ -28,11 +28,17 @@ ____________________
 - Spring Boot
 - Spring Security
 - Spring Data
+- Spring WebFlux (Practicing reactive programming and testing performance against Spring MVC)
+- OpenAPI (Swagger)
+- Lombok (@Getter, @Setter, @NoArgsConstructor)
+- Testing (Gatling, JUnit, Mockito)
 - Postgresql
+- Redis
 - Flyway
 - Docker
-- OpenAPI (Swagger)
-- Lombok (ONLY @Getter, @Setter, @NoArgsConstructor)
+- Kubernetes
+- Kafka
+- Load Balancer (HAProxy)
 ____________________
 ## Architecture
 ...
