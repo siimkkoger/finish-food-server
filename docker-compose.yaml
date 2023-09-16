@@ -2,8 +2,9 @@ version: '3.8'
 
 services:
 
-  api-gw-1:
+  api-gw:
     container_name: api-gw-1
+    image: api-gw
     build:
       context: ./api-gw
       dockerfile: Dockerfile
@@ -15,6 +16,7 @@ services:
 
   food-service-1:
     container_name: food-service-1
+    image: food-service
     build:
       context: ./food-service
       dockerfile: Dockerfile
@@ -26,9 +28,7 @@ services:
 
   food-service-2:
     container_name: food-service-2
-    build:
-      context: ./food-service
-      dockerfile: Dockerfile
+    image: food-service
     ports:
       - "8082:8080"
     environment:
