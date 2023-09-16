@@ -64,8 +64,4 @@ tasks.withType <Jar> {
 tasks.withType<BootJar> {
     enabled = true
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes["Main-Class"] = "com.ffreaky.foodservice.FoodServiceApplication"
-    }
-    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
 }
