@@ -1,0 +1,8 @@
+###
+GET http://{{host}}:8080/api-gw/test
+
+###
+GET http://{{host}}:8081/food/test
+
+###
+GET http://{{host}}:8082/food/test
