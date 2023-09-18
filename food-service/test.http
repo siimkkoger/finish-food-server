@@ -1,6 +1,10 @@
 ### RUN api-gw test
 GET http://{{host}}:8080/api-gw/test
 
+
+### TEST EXCEPTION
+GET http://{{host}}:8080/api-gw/testexception
+
 ###
 GET http://{{host}}:8081/food/test
 
@@ -9,8 +13,7 @@ POST http://{{host}}:8081/food/test
 Content-Type: application/json
 
 {
-    "id": "{{$random.integer(1, 1000)}}",
-    "name": "testname"
+    "id": "{{$random.integer(1, 1000)}}"
 }
 
 > {%

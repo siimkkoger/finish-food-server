@@ -1,4 +1,5 @@
 rootProject.name = "ffs"
 
-include("api-gw")
-include("food-service")
+include(":utilities")
+include(":api-gw")
+include(":food-service")

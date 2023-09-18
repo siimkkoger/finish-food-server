@@ -51,6 +51,9 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.28")
     testCompileOnly("org.projectlombok:lombok:1.18.28")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.28")
+
+    // Utilities module
+    implementation(project(":utilities"))
 }
 
 tasks.withType<Test> {
