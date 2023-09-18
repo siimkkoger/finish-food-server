@@ -1,8 +1,24 @@
-###
+### RUN api-gw test
 GET http://{{host}}:8080/api-gw/test
 
 ###
 GET http://{{host}}:8081/food/test
 
+### RUN food test
+POST http://{{host}}:8081/food/test
+Content-Type: application/json
+
+{
+    "id": "{{$random.integer(1, 1000)}}",
+    "name": "testname"
+}
+
+> {%
+client.test("Check the status", function () {
+    client.assert(response.status === 200, "Response status is not 200");
+})
+  %}
+
 ###
 GET http://{{host}}:8082/food/test
+
