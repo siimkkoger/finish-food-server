@@ -2,7 +2,7 @@ package com.ffreaky.foodservice.controller;
 
 import com.ffreaky.foodservice.entity.FoodEntity;
 import com.ffreaky.foodservice.model.FoodDto;
-import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +18,7 @@ public class FoodController {
     }
 
     @PostMapping(value = "/create")
-    boolean createFood(@Valid @RequestBody FoodDto foodDto) {
+    boolean createFood(@Validated @RequestBody FoodDto foodDto) {
         System.out.println(foodDto);
         return true;
     }
