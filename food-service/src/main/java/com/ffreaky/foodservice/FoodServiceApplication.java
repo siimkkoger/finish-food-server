@@ -17,7 +17,7 @@ public class FoodServiceApplication {
         SpringApplication.run(FoodServiceApplication.class, args);
     }
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 10000)
     private void healthCheck() {
         logger.info("food-service is running...");
     }

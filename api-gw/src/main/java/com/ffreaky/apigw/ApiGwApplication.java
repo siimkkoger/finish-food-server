@@ -17,7 +17,7 @@ public class ApiGwApplication {
         SpringApplication.run(ApiGwApplication.class, args);
     }
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 10000)
     private void healthCheck() {
         logger.info("api-gw is running...");
     }
