@@ -33,9 +33,6 @@ dependencies {
     // Postgresql
     runtimeOnly("org.postgresql:postgresql")
 
-    // Flyway
-    //implementation("org.flywaydb:flyway-core")
-
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")

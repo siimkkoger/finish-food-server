@@ -14,6 +14,18 @@ services:
       DB_HOST: host.docker.internal
       SERVER_ADDRESS: 0.0.0.0
 
+  payment-service:
+    container_name: payment-service-1
+    image: payment-service
+    build:
+      context: payment-service
+      dockerfile: Dockerfile
+    ports:
+      - "8011:8080"
+    environment:
+      DB_HOST: host.docker.internal
+      SERVER_ADDRESS: 0.0.0.0
+
   shopping-service-1:
     container_name: shopping-service-1
     image: shopping-service
@@ -21,16 +33,7 @@ services:
       context: shopping-service
       dockerfile: Dockerfile
     ports:
-      - "8081:8080"
-    environment:
-      DB_HOST: host.docker.internal
-      SERVER_ADDRESS: 0.0.0.0
-
-  shopping-service-2:
-    container_name: shopping-service-2
-    image: shopping-service
-    ports:
-      - "8082:8080"
+      - "8021:8080"
     environment:
       DB_HOST: host.docker.internal
       SERVER_ADDRESS: 0.0.0.0
