@@ -6,7 +6,7 @@ CREATE TABLE public.user
     username     VARCHAR(255) NOT NULL UNIQUE,
     password     VARCHAR(255) NOT NULL,
     email        VARCHAR(255) NOT NULL UNIQUE,
-    phone_number VARCHAR(255) NOT NULL UNIQUE,
+    phone_number VARCHAR(255) NOT NULL,
 
     created_at   timestamp    NOT NULL DEFAULT current_timestamp,
     updated_at   timestamp    NOT NULL DEFAULT current_timestamp,

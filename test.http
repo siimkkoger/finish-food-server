@@ -4,3 +4,6 @@ GET http://{{host}}:8080/api-gw/test
 ### TEST EXCEPTION
 GET http://{{host}}:8080/api-gw/testexception
 
+### TEST GET ALL USERS
+GET http://{{host}}:8080/api-gw/user/getall
+
