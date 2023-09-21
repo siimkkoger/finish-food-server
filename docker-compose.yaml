@@ -26,7 +26,7 @@ services:
       DB_HOST: host.docker.internal
       SERVER_ADDRESS: 0.0.0.0
 
-  shopping-service-1:
+  shopping-service:
     container_name: shopping-service-1
     image: shopping-service
     build:
