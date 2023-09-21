@@ -1,4 +1,4 @@
-package com.ffreaky.foodservice.model;
+package com.ffreaky.shoppingservice.food.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

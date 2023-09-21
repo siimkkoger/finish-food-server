@@ -1,7 +1,7 @@
-package com.ffreaky.foodservice.controller;
+package com.ffreaky.shoppingservice.food.controller;
 
-import com.ffreaky.foodservice.entity.FoodEntity;
-import com.ffreaky.foodservice.model.FoodDto;
+import com.ffreaky.shoppingservice.food.entity.FoodEntity;
+import com.ffreaky.shoppingservice.food.model.FoodDto;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

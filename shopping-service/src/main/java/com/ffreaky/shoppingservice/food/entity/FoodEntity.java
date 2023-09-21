@@ -1,4 +1,4 @@
-package com.ffreaky.foodservice.entity;
+package com.ffreaky.shoppingservice.food.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

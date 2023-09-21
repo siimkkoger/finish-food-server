@@ -1,4 +1,4 @@
-package com.ffreaky.foodservice;
+package com.ffreaky.shoppingservice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,12 +9,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 @SpringBootApplication
 @EnableScheduling
-public class FoodServiceApplication {
+public class ShoppingServiceApplication {
 
-    static Logger logger = LoggerFactory.getLogger(FoodServiceApplication.class);
+    static Logger logger = LoggerFactory.getLogger(ShoppingServiceApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(FoodServiceApplication.class, args);
+        SpringApplication.run(ShoppingServiceApplication.class, args);
     }
 
     @Scheduled(fixedRate = 20000)
