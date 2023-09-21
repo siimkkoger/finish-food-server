@@ -1,11 +1,10 @@
-package com.ffreaky.apigw.model;
+package com.ffreaky.apigw.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
-public record UserAddressDTO(
+public record UserAddressDTORecord(
         @Positive Long id,
-        @Positive Long userId,
         @NotBlank String streetAddress,
         @NotBlank String city,
         @NotBlank String state,

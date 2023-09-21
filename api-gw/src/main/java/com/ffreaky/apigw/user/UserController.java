@@ -1,13 +1,11 @@
-package com.ffreaky.apigw.controller;
+package com.ffreaky.apigw.user;
 
-import com.ffreaky.apigw.entities.UserEntity;
-import com.ffreaky.apigw.model.UserDTORecord;
-import com.ffreaky.apigw.repository.UserRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api-gw/user")
@@ -31,7 +29,20 @@ public class UserController {
                 userEntity.getLastName(),
                 userEntity.getUsername(),
                 userEntity.getEmail(),
-                userEntity.getPhoneNumber()
+                userEntity.getPhoneNumber(),
+                userEntity.getAddress().stream().map(this::convertToUserAddressDTORecord).collect(Collectors.toSet()));
+    }
+
+    UserAddressDTORecord convertToUserAddressDTORecord(UserAddressEntity userAddressEntity) {
+        return new UserAddressDTORecord(
+                userAddressEntity.getId(),
+                userAddressEntity.getStreetAddress(),
+                userAddressEntity.getCity(),
+                userAddressEntity.getState(),
+                userAddressEntity.getPostalIndex(),
+                userAddressEntity.getCountry(),
+                userAddressEntity.getPhoneNumber(),
+                userAddressEntity.getMobile()
         );
     }
 }

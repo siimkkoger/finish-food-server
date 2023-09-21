@@ -1,6 +1,5 @@
-package com.ffreaky.apigw.repository;
+package com.ffreaky.apigw.user;
 
-import com.ffreaky.apigw.entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
