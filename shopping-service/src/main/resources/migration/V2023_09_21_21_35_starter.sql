@@ -86,7 +86,6 @@ CREATE TABLE public.product_category
 (
     id          SERIAL PRIMARY KEY,
     name        VARCHAR(255) NOT NULL,
-    description VARCHAR(255) NOT NULL,
 
     created_at  timestamp    NOT NULL DEFAULT current_timestamp,
     updated_at  timestamp    NOT NULL DEFAULT current_timestamp,

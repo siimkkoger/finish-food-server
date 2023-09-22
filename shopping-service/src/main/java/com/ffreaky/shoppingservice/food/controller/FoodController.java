@@ -12,16 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/food")
 public class FoodController {
 
-    @PostMapping(value = "/get")
-    FoodDto getFood(long id) {
-        return new FoodDto(id, "name", null);
-    }
 
-    @PostMapping(value = "/create")
-    boolean createFood(@Validated @RequestBody FoodDto foodDto) {
-        System.out.println(foodDto);
-        return true;
-    }
 
     public FoodDto foodEntityToDto(FoodEntity food) {
         return new FoodDto(food.getId(), food.getName(), food.getPrice());

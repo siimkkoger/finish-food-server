@@ -22,10 +22,10 @@ VALUES
     (2, 2, 'Debit Card', '9876-5432-1098-7654', '2024-06-30'),
     (3, 3, 'PayPal', 'johndoe@example.com', NULL);
 
-INSERT INTO public.product_category (name, description)
+INSERT INTO public.product_category (name)
 VALUES
-    ('FOOD', 'Food products'),
-    ('CLOTHES', 'Clothing products');
+    ('FOOD'),
+    ('CLOTHES');
 
 INSERT INTO public.food_category (name)
 VALUES
