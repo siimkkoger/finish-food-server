@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
-public record FoodDto(
-        @NotNull Long id,
+public record CreateFoodDto(
         @NotBlank String name,
+        @NotNull BigDecimal price,
         @NotBlank String description,
         @NotBlank String image,
         @NotBlank String dietaryRestrictions

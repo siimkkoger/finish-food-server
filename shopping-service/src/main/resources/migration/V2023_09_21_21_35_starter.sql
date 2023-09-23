@@ -70,12 +70,12 @@ CREATE TABLE public.product_provider
     id               SERIAL PRIMARY KEY,
     name             VARCHAR(255) NOT NULL,
     provider_type_id INT          NOT NULL REFERENCES public.product_provider_type (id),
-    description      VARCHAR(255) NOT NULL,
+    description      VARCHAR(255),
     address          VARCHAR(255) NOT NULL,
     phone            VARCHAR(255) NOT NULL,
     email            VARCHAR(255) NOT NULL,
-    website          VARCHAR(255) NOT NULL,
-    image            VARCHAR(255) NOT NULL,
+    website          VARCHAR(255),
+    image            VARCHAR(255),
 
     created_at       timestamp    NOT NULL DEFAULT current_timestamp,
     updated_at       timestamp    NOT NULL DEFAULT current_timestamp,
@@ -84,24 +84,25 @@ CREATE TABLE public.product_provider
 
 CREATE TABLE public.product_category
 (
-    id          SERIAL PRIMARY KEY,
-    name        VARCHAR(255) NOT NULL,
+    id         SERIAL PRIMARY KEY,
+    name       VARCHAR(255) NOT NULL,
 
-    created_at  timestamp    NOT NULL DEFAULT current_timestamp,
-    updated_at  timestamp    NOT NULL DEFAULT current_timestamp,
-    deleted_at  timestamp    NULL
+    created_at timestamp    NOT NULL DEFAULT current_timestamp,
+    updated_at timestamp    NOT NULL DEFAULT current_timestamp,
+    deleted_at timestamp    NULL
 );
 
 CREATE TABLE public.product
 (
     id                  SERIAL PRIMARY KEY,
-    product_category_id INT       NOT NULL REFERENCES public.product_category (id),
-    product_provider_id INT       NOT NULL REFERENCES public.product_provider (id),
-    pickup_time         DATE      NOT NULL,
+    product_category_id INT            NOT NULL REFERENCES public.product_category (id),
+    product_provider_id INT            NOT NULL REFERENCES public.product_provider (id),
+    price               DECIMAL(19, 4) NOT NULL,
+    pickup_time         DATE           NOT NULL,
 
-    created_at          timestamp NOT NULL DEFAULT current_timestamp,
-    updated_at          timestamp NOT NULL DEFAULT current_timestamp,
-    deleted_at          timestamp NULL
+    created_at          timestamp      NOT NULL DEFAULT current_timestamp,
+    updated_at          timestamp      NOT NULL DEFAULT current_timestamp,
+    deleted_at          timestamp      NULL
 );
 
 CREATE TABLE public.discount
@@ -202,17 +203,26 @@ CREATE TABLE public.food_category
 CREATE TABLE public.food
 (
     id                   SERIAL PRIMARY KEY,
-    product_id           INT            NOT NULL REFERENCES public.product (id),
-    food_category_id     INT            NOT NULL REFERENCES public.food_category (id),
-    name                 VARCHAR(255)   NOT NULL,
-    description          VARCHAR(1000)  NOT NULL,
-    price                DECIMAL(19, 4) NOT NULL,
-    image                VARCHAR(255)   NOT NULL,
-    dietary_restrictions VARCHAR(1000)  NOT NULL,
+    product_id           INT           NOT NULL REFERENCES public.product (id),
+    name                 VARCHAR(255)  NOT NULL,
+    description          VARCHAR(1000) NOT NULL,
+    image                VARCHAR(255)  NOT NULL,
+    dietary_restrictions VARCHAR(1000) NOT NULL,
 
-    created_at           timestamp      NOT NULL DEFAULT current_timestamp,
-    updated_at           timestamp      NOT NULL DEFAULT current_timestamp,
-    deleted_at           timestamp      NULL
+    created_at           timestamp     NOT NULL DEFAULT current_timestamp,
+    updated_at           timestamp     NOT NULL DEFAULT current_timestamp,
+    deleted_at           timestamp     NULL
+);
+
+CREATE TABLE public.food_foods_category
+(
+    id               SERIAL PRIMARY KEY,
+    food_id          INT       NOT NULL REFERENCES public.food (id),
+    food_category_id INT       NOT NULL REFERENCES public.food_category (id),
+
+    created_at       timestamp NOT NULL DEFAULT current_timestamp,
+    updated_at       timestamp NOT NULL DEFAULT current_timestamp,
+    deleted_at       timestamp NULL
 );
 
 CREATE TABLE public.clothes_category
@@ -227,17 +237,26 @@ CREATE TABLE public.clothes_category
 
 CREATE TABLE public.clothes
 (
-    id                  SERIAL PRIMARY KEY,
-    product_id          INT            NOT NULL REFERENCES public.product (id),
-    clothes_category_id INT            NOT NULL REFERENCES public.clothes_category (id),
-    name                VARCHAR(255)   NOT NULL,
-    description         VARCHAR(1000)  NOT NULL,
-    price               DECIMAL(19, 4) NOT NULL,
-    image               VARCHAR(255)   NOT NULL,
-    size                VARCHAR(255)   NOT NULL,
-    color               VARCHAR(255)   NOT NULL,
+    id          SERIAL PRIMARY KEY,
+    product_id  INT           NOT NULL REFERENCES public.product (id),
+    name        VARCHAR(255)  NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    image       VARCHAR(255)  NOT NULL,
+    size        VARCHAR(255)  NOT NULL,
+    color       VARCHAR(255)  NOT NULL,
 
-    created_at          timestamp      NOT NULL DEFAULT current_timestamp,
-    updated_at          timestamp      NOT NULL DEFAULT current_timestamp,
-    deleted_at          timestamp      NULL
+    created_at  timestamp     NOT NULL DEFAULT current_timestamp,
+    updated_at  timestamp     NOT NULL DEFAULT current_timestamp,
+    deleted_at  timestamp     NULL
+);
+
+CREATE TABLE public.clothes_clothes_category
+(
+    id                  SERIAL PRIMARY KEY,
+    clothes_id          INT       NOT NULL REFERENCES public.clothes (id),
+    clothes_category_id INT       NOT NULL REFERENCES public.clothes_category (id),
+
+    created_at          timestamp NOT NULL DEFAULT current_timestamp,
+    updated_at          timestamp NOT NULL DEFAULT current_timestamp,
+    deleted_at          timestamp NULL
 );

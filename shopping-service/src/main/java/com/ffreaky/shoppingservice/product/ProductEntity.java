@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
@@ -24,6 +25,9 @@ public class ProductEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "product_provider_id")
     private ProductProviderEntity productProvider;
+
+    @Column(name = "price", nullable = false, precision = 19, scale = 4)
+    private BigDecimal price;
 
     @Column(name = "pickup_time", nullable = false)
     private Date pickupTime;

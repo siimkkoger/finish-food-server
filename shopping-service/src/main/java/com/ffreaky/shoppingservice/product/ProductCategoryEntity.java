@@ -3,10 +3,13 @@ package com.ffreaky.shoppingservice.product;
 import com.ffreaky.utilities.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "product_category", schema = "public")
 public class ProductCategoryEntity extends BaseEntity {
@@ -23,5 +26,4 @@ public class ProductCategoryEntity extends BaseEntity {
         FOOD,
         CLOTHES,
     }
-
 }

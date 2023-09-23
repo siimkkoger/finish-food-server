@@ -3,10 +3,12 @@ package com.ffreaky.shoppingservice.product;
 import com.ffreaky.utilities.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "product_provider", schema = "public")
 public class ProductProviderEntity extends BaseEntity {
@@ -18,11 +20,11 @@ public class ProductProviderEntity extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "provider_type_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(targetEntity = ProductProviderTypeEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "provider_type_id", nullable = false)
     private ProductProviderTypeEntity providerType;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
     @Column(name = "address", nullable = false)
@@ -34,9 +36,9 @@ public class ProductProviderEntity extends BaseEntity {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "website", nullable = false)
+    @Column(name = "website")
     private String website;
 
-    @Column(name = "image", nullable = false)
+    @Column(name = "image")
     private String image;
 }

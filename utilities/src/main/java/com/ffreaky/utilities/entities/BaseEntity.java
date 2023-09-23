@@ -3,6 +3,7 @@ package com.ffreaky.utilities.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
     @Column(name = "created_at", updatable = false, insertable = false, nullable = false)

@@ -3,11 +3,13 @@ package com.ffreaky.shoppingservice.product;
 import com.ffreaky.utilities.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "product_provider_type", schema = "public")
 public class ProductProviderTypeEntity extends BaseEntity {
@@ -16,6 +18,12 @@ public class ProductProviderTypeEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
-    private String name;
+    private ProductProviderType productProviderType;
+
+    enum ProductProviderType {
+        RESTAURANT,
+        SHOP,
+    }
 }
