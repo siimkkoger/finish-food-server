@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -21,6 +20,6 @@ public class FoodCategoryEntity extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(targetEntity = FoodEntity.class, mappedBy = "food_category", fetch = FetchType.LAZY)
+    @ManyToMany(targetEntity = FoodEntity.class, mappedBy = "food_foods_category", fetch = FetchType.LAZY)
     private Set<FoodEntity> foodCategories;
 }

@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -21,12 +20,14 @@ public class FoodEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = ProductEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @OneToOne(targetEntity = ProductEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name="id", unique=true, nullable=false, updatable=false)
     private ProductEntity product;
 
     @ManyToMany(targetEntity = FoodCategoryEntity.class, fetch = FetchType.LAZY)
-    @JoinTable(name = "food_food_category")
+    @JoinTable(name = "food_foods_category",
+            joinColumns = @JoinColumn(name = "food_id"),
+            inverseJoinColumns = @JoinColumn(name = "food_category_id"))
     private Set<FoodCategoryEntity> foodCategories;
 
     @Column(name = "name", nullable = false)
