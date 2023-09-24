@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @MappedSuperclass
-public abstract class BaseEntity implements Serializable {
+public abstract class BaseEntity {
     @Column(name = "created_at", updatable = false, insertable = false, nullable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at", updatable = false, insertable = false, nullable = false)

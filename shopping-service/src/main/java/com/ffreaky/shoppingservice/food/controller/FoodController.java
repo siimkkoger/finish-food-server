@@ -1,7 +1,7 @@
 package com.ffreaky.shoppingservice.food.controller;
 
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
-import com.ffreaky.shoppingservice.food.model.FoodDto;
+import com.ffreaky.shoppingservice.food.model.GetFoodResponseDto;
 import com.ffreaky.shoppingservice.food.service.FoodService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +24,12 @@ public class FoodController {
     }
 
     @GetMapping("/{id}")
-    public FoodEntity getFoodById(@PathVariable Long id) {
+    public GetFoodResponseDto getFoodById(@PathVariable Long id) {
         return foodService.getFoodById(id);
     }
 
     @GetMapping
-    public List<FoodEntity> getAllFoods() {
+    public List<GetFoodResponseDto> getAllFoods() {
         return foodService.getAllFoods();
     }
 
@@ -43,26 +43,6 @@ public class FoodController {
     @DeleteMapping("/{id}")
     public void deleteFood(@PathVariable Long id) {
         foodService.deleteFood(id);
-    }
-
-    public FoodDto foodEntityToDto(FoodEntity food) {
-        return new FoodDto(
-                food.getId(),
-                food.getName(),
-                food.getDescription(),
-                food.getImage(),
-                food.getDietaryRestrictions()
-        );
-    }
-
-    public FoodEntity foodDtoToEntity(FoodDto foodDto) {
-        FoodEntity foodEntity = new FoodEntity();
-        foodEntity.setId(foodDto.id());
-        foodEntity.setName(foodDto.name());
-        foodEntity.setDescription(foodDto.description());
-        foodEntity.setImage(foodDto.image());
-        foodEntity.setDietaryRestrictions(foodDto.dietaryRestrictions());
-        return foodEntity;
     }
 
 }

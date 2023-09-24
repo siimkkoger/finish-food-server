@@ -20,6 +20,11 @@ public class FoodCategoryEntity extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(targetEntity = FoodEntity.class, mappedBy = "food_foods_category", fetch = FetchType.LAZY)
+    @ManyToMany
+    @JoinTable(
+            name = "food_food_category",
+            joinColumns = @JoinColumn(name = "food_category_id"),
+            inverseJoinColumns = @JoinColumn(name = "food_id")
+    )
     private Set<FoodEntity> foodCategories;
 }

@@ -25,7 +25,7 @@ public class FoodEntity extends BaseEntity {
     private ProductEntity product;
 
     @ManyToMany(targetEntity = FoodCategoryEntity.class, fetch = FetchType.LAZY)
-    @JoinTable(name = "food_foods_category",
+    @JoinTable(name = "food_food_category",
             joinColumns = @JoinColumn(name = "food_id"),
             inverseJoinColumns = @JoinColumn(name = "food_category_id"))
     private Set<FoodCategoryEntity> foodCategories;

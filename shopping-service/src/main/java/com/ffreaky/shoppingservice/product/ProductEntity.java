@@ -19,11 +19,11 @@ public class ProductEntity extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id", unique = true, nullable = false, updatable = false)
+    @JoinColumn(name = "product_category_id", unique = true, nullable = false, updatable = false)
     private ProductCategoryEntity productCategory;
 
     @ManyToOne
-    @JoinColumn(name = "id", unique = true, nullable = false, updatable = false)
+    @JoinColumn(name = "product_provider_id", unique = true, nullable = false, updatable = false)
     private ProductProviderEntity productProvider;
 
     @Column(name = "price", nullable = false, precision = 19, scale = 4)

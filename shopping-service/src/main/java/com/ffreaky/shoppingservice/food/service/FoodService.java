@@ -1,6 +1,7 @@
 package com.ffreaky.shoppingservice.food.service;
 
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
+import com.ffreaky.shoppingservice.food.model.GetFoodResponseDto;
 import com.ffreaky.shoppingservice.food.repository.FoodRepository;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
 import org.springframework.stereotype.Service;
@@ -21,17 +22,17 @@ public class FoodService {
         return foodRepository.save(food);
     }
 
-    public FoodEntity getFoodById(Long id) {
-        Optional<FoodEntity> foodOptional = foodRepository.findById(id);
-        if (foodOptional.isPresent()) {
-            return foodOptional.get();
+    public GetFoodResponseDto getFoodById(Long id) {
+        GetFoodResponseDto food = foodRepository.findByIdCustom(id);
+        if (food != null) {
+            return food;
         } else {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id);
         }
     }
 
-    public List<FoodEntity> getAllFoods() {
-        return foodRepository.findAll();
+    public List<GetFoodResponseDto> getAllFoods() {
+        return foodRepository.findAllCustom();
     }
 
     public FoodEntity updateFood(Long id, FoodEntity updatedFood) {

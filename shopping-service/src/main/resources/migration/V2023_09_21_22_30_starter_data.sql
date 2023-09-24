@@ -48,7 +48,7 @@ VALUES
     ('RESTAURANT'),
     ('STORE');
 
-INSERT INTO product_provider (name, provider_type_id, description, address, phone, email, website, image)
+INSERT INTO product_provider (name, product_provider_type_id, description, address, phone, email, website, image)
 VALUES
     ('Chipotle', 1, 'Fast food restaurant chain', '123 Main Street, Anytown, CA 91234', '+15555555555', 'info@chipotle.com', 'https://www.chipotle.com/', 'https://example.com/chipotle.jpg'),
     ('McDonalds', 1, 'Fast food restaurant chain', '456 Elm Street, Anytown, CA 91234', '+15555555556', 'info@mcdonalds.com', 'https://www.mcdonalds.com/', 'https://example.com/mcdonalds.jpg'),
@@ -90,7 +90,7 @@ VALUES
     (5, 'Tiramisu', 'A classic Italian dessert made with coffee-dipped ladyfingers and a creamy mascarpone filling.', 'https://example.com/tiramisu.jpg', 'Eggs, Dairy'),
     (6, 'Fried rice', 'A dish of rice fried with vegetables and your choice of protein.', 'https://example.com/friedrice.jpg', 'None');
 
-INSERT INTO food_foods_category (food_id, food_category_id)
+INSERT INTO food_food_category (food_id, food_category_id)
 VALUES (1, 1), (2, 1), (3, 1), (4, 2), (5, 2), (6, 3);
 
 -- clothes_category table

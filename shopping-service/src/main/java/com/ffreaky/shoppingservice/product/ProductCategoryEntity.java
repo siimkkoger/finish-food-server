@@ -22,7 +22,7 @@ public class ProductCategoryEntity extends BaseEntity {
     @Column(name = "name", nullable = false)
     private ProductCategory productCategory;
 
-    enum ProductCategory {
+    public enum ProductCategory {
         FOOD,
         CLOTHES,
     }
