@@ -1,6 +1,6 @@
 package com.ffreaky.shoppingservice.food.entity;
 
-import com.ffreaky.shoppingservice.product.ProductEntity;
+import com.ffreaky.shoppingservice.product.entity.ProductEntity;
 import com.ffreaky.utilities.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -33,10 +33,10 @@ public class FoodEntity extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = false, length = 1000)
+    @Column(name = "description", length = 1000)
     private String description;
 
-    @Column(name = "image", nullable = false)
+    @Column(name = "image")
     private String image;
 
     @Column(name = "dietary_restrictions", nullable = false, length = 1000)

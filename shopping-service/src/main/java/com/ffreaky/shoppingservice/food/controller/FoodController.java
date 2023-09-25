@@ -1,6 +1,7 @@
 package com.ffreaky.shoppingservice.food.controller;
 
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
+import com.ffreaky.shoppingservice.food.model.CreateFoodRequestDto;
 import com.ffreaky.shoppingservice.food.model.GetFoodResponseDto;
 import com.ffreaky.shoppingservice.food.service.FoodService;
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +20,7 @@ public class FoodController {
     }
 
     @PostMapping
-    public FoodEntity createFood(@Validated @RequestBody FoodEntity food) {
+    public GetFoodResponseDto createFood(@Validated @RequestBody CreateFoodRequestDto food) {
         return foodService.createFood(food);
     }
 

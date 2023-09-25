@@ -1,4 +1,4 @@
-package com.ffreaky.shoppingservice.product;
+package com.ffreaky.shoppingservice.product.entity;
 
 import com.ffreaky.utilities.entities.BaseEntity;
 import jakarta.persistence.*;

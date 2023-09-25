@@ -1,4 +1,4 @@
-package com.ffreaky.shoppingservice.product;
+package com.ffreaky.shoppingservice.product.entity;
 
 import com.ffreaky.utilities.entities.BaseEntity;
 import jakarta.persistence.*;
@@ -20,9 +20,9 @@ public class ProductCategoryEntity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
-    private ProductCategory productCategory;
+    private ProductCategoryName productCategoryName;
 
-    public enum ProductCategory {
+    public enum ProductCategoryName {
         FOOD,
         CLOTHES,
     }

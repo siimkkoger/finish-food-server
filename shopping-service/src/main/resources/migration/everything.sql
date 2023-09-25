@@ -95,7 +95,7 @@ CREATE TABLE public.product_provider
 CREATE TABLE public.product_category
 (
     id         SERIAL PRIMARY KEY,
-    name       VARCHAR(255) NOT NULL,
+    name       VARCHAR(255) NOT NULL UNIQUE,
 
     created_at timestamp    NOT NULL DEFAULT current_timestamp,
     updated_at timestamp    NOT NULL DEFAULT current_timestamp,
@@ -215,8 +215,8 @@ CREATE TABLE public.food
     id                   SERIAL PRIMARY KEY,
     product_id           INT           NOT NULL REFERENCES public.product (id) UNIQUE,
     name                 VARCHAR(255)  NOT NULL,
-    description          VARCHAR(1000) NOT NULL,
-    image                VARCHAR(255)  NOT NULL,
+    description          VARCHAR(1000),
+    image                VARCHAR(255),
     dietary_restrictions VARCHAR(1000) NOT NULL,
 
     created_at           timestamp     NOT NULL DEFAULT current_timestamp,
@@ -250,8 +250,8 @@ CREATE TABLE public.clothes
     id          SERIAL PRIMARY KEY,
     product_id  INT           NOT NULL REFERENCES public.product (id) UNIQUE,
     name        VARCHAR(255)  NOT NULL,
-    description VARCHAR(1000) NOT NULL,
-    image       VARCHAR(255)  NOT NULL,
+    description VARCHAR(1000),
+    image       VARCHAR(255),
     size        VARCHAR(255)  NOT NULL,
     color       VARCHAR(255)  NOT NULL,
 

@@ -4,9 +4,11 @@ import com.ffreaky.shoppingservice.food.entity.FoodEntity;
 import com.ffreaky.shoppingservice.food.model.GetFoodResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
 
     @Query("""
@@ -40,4 +42,6 @@ public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
             FROM FoodEntity f
             """)
     List<GetFoodResponseDto> findAllCustom();
+
+
 }
