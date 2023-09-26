@@ -20,7 +20,7 @@ public class FoodEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(targetEntity = ProductEntity.class, fetch = FetchType.LAZY)
+    @OneToOne(optional = false)
     @JoinColumn(name="id", unique=true, nullable=false, updatable=false)
     private ProductEntity product;
 

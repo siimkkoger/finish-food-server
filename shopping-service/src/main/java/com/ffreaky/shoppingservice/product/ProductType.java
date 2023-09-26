@@ -1,4 +1,4 @@
-package com.ffreaky.shoppingservice;
+package com.ffreaky.shoppingservice.product;
 
 public enum ProductType {
     FOOD,

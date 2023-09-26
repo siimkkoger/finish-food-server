@@ -8,4 +8,4 @@ GET http://{{host}}:8080/api-gw/testexception
 GET http://{{host}}:8080/api-gw/user/getall
 
 ### TEST GET ALL FOODS
-GET http://{{host}}:8020/food
+GET http://{{host}}:8020/food/1
