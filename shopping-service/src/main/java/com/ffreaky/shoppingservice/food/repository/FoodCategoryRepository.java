@@ -11,7 +11,7 @@ import java.util.Set;
 @Repository
 public interface FoodCategoryRepository extends JpaRepository<FoodCategoryEntity, Long> {
 
-    @Query("SELECT f FROM FoodCategoryEntity f WHERE f.id in :ids")
+    @Query("SELECT fc FROM FoodCategoryEntity fc WHERE fc.id in :ids")
     Set<FoodCategoryEntity> findAllByIds(Set<Long> ids);
 
     @Query("""

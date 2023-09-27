@@ -13,7 +13,8 @@ public class FinishFoodException extends RuntimeException {
         ENTITY_NOT_FOUND,
         ACCOUNT_EXISTS,
         NOT_FOUND,
-        SERVER_ERROR
+        SERVER_ERROR,
+        INVALID_PRODUCT_TYPE
     }
 
     private final Type type;
@@ -38,7 +39,7 @@ public class FinishFoodException extends RuntimeException {
         return switch (this.type) {
             case AUTHENTICATION -> HttpStatus.UNAUTHORIZED;
             case AUTHORIZATION -> HttpStatus.FORBIDDEN;
-            case BAD_REQUEST -> HttpStatus.BAD_REQUEST;
+            case BAD_REQUEST, INVALID_PRODUCT_TYPE -> HttpStatus.BAD_REQUEST;
             case ENTITY_NOT_FOUND -> HttpStatus.UNPROCESSABLE_ENTITY;
             case ACCOUNT_EXISTS -> HttpStatus.NOT_ACCEPTABLE;
             case NOT_FOUND -> HttpStatus.NOT_FOUND;

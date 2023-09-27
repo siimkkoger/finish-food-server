@@ -25,6 +25,15 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "price", nullable = false, precision = 19, scale = 4)
     private BigDecimal price;
 
+    @Column(name = "name", length = 50, nullable = false)
+    private String name;
+
+    @Column(name = "description", length = 1000)
+    private String description;
+
+    @Column(name = "image", length = 300)
+    private String image;
+
     @Column(name = "pickup_time", nullable = false)
     private Date pickupTime;
 

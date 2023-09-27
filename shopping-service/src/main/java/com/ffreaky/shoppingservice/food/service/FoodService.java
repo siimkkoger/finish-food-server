@@ -1,16 +1,20 @@
 package com.ffreaky.shoppingservice.food.service;
 
+import com.ffreaky.shoppingservice.food.entity.FoodEntity;
+import com.ffreaky.shoppingservice.food.entity.FoodFoodCategoryEntity;
 import com.ffreaky.shoppingservice.food.model.*;
 import com.ffreaky.shoppingservice.food.repository.FoodCategoryRepository;
+import com.ffreaky.shoppingservice.food.repository.FoodFoodCategoryRepository;
 import com.ffreaky.shoppingservice.food.repository.FoodRepository;
-import com.ffreaky.shoppingservice.product.repository.ProductProviderRepository;
+import com.ffreaky.shoppingservice.product.ProductType;
+import com.ffreaky.shoppingservice.product.entity.ProductEntity;
+import com.ffreaky.shoppingservice.product.entity.ProductId;
 import com.ffreaky.shoppingservice.product.repository.ProductRepository;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,41 +25,36 @@ public class FoodService {
     private final FoodRepository foodRepository;
     private final ProductRepository productRepository;
     private final FoodCategoryRepository foodCategoryRepository;
-    private final ProductProviderRepository productProviderRepository;
+    private final FoodFoodCategoryRepository foodFoodCategoryRepository;
 
     public FoodService(
             FoodRepository foodRepository,
             ProductRepository productRepository,
             FoodCategoryRepository foodCategoryRepository,
-            ProductProviderRepository productProviderRepository) {
+            FoodFoodCategoryRepository foodFoodCategoryRepository) {
         this.foodRepository = foodRepository;
         this.productRepository = productRepository;
         this.foodCategoryRepository = foodCategoryRepository;
-        this.productProviderRepository = productProviderRepository;
+        this.foodFoodCategoryRepository = foodFoodCategoryRepository;
     }
 
 
     @Transactional
-    public FoodDto createFood(CreateFoodRequestDto requestDto) {
-        /*
-        // Check that product category exists and retrieve it
-        final ProductTypeEntity productTypeEntity =
-                productCategoryRepository.findByProductType(requestDto.product().productType())
-                        .orElseThrow(() -> new FinishFoodException(
-                                FinishFoodException.Type.ENTITY_NOT_FOUND,
-                                "Product category not found with categoryName: " + requestDto.product().productType()));
-
-        // Check that product provider exists and retrieve it
-        final ProductProviderEntity productProviderEntity =
-                productProviderRepository.findById(requestDto.product().productProviderId())
-                        .orElseThrow(() -> new FinishFoodException(
-                                FinishFoodException.Type.ENTITY_NOT_FOUND,
-                                "Product provider not found with foodCategoryId: " + requestDto.product().productProviderId()));
+    public GetFoodOut createFood(CreateFoodRequestDto requestDto) {
+        // Check that product category is FOOD
+        if (!requestDto.product().productType().equals(ProductType.FOOD)) {
+            throw new FinishFoodException(FinishFoodException.Type.INVALID_PRODUCT_TYPE, "Product type must be FOOD");
+        }
 
         // Create product
         final ProductEntity productEntity = new ProductEntity();
-        productEntity.setProductType(productTypeEntity);
-        productEntity.setProductProvider(productProviderEntity);
+        final ProductId productId = new ProductId();
+        productId.setProductType(ProductType.FOOD);
+        productEntity.setProductId(productId);
+        productEntity.setProductProviderId(requestDto.product().productProviderId());
+        productEntity.setName(requestDto.name());
+        productEntity.setDescription(requestDto.description());
+        productEntity.setImage(requestDto.image());
         productEntity.setPrice(requestDto.product().price());
         productEntity.setPickupTime(requestDto.product().pickupTime());
 
@@ -68,16 +67,15 @@ public class FoodService {
         }
 
         // Check that food categories exist and retrieve them
+        if (requestDto.foodCategoryIds().size() != foodCategoryRepository.findAllByIds(requestDto.foodCategoryIds()).size()) {
+            throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food category not found");
+        }
 
         // Create food
         final FoodEntity foodEntity = new FoodEntity();
-        foodEntity.setProduct(savedProductEntity);
-        foodEntity.setFoodCategories(foodCategoryEntities);
-        foodEntity.setName(requestDto.categoryName());
-        foodEntity.setDescription(requestDto.description());
-        foodEntity.setImage(requestDto.image());
+        foodEntity.setProductId(savedProductEntity.getProductId().getId());
+        foodEntity.setProductTypeName(ProductType.FOOD);
         foodEntity.setDietaryRestrictions(requestDto.dietaryRestrictions());
-        foodEntity.setFoodCategories(foodCategoryEntities);
 
         // Save food
         final FoodEntity savedFoodEntity;
@@ -86,18 +84,18 @@ public class FoodService {
         } catch (Exception e) {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving food: " + e.getMessage());
         }
-        return new FoodDto(
-                savedFoodEntity.getId(),
-                savedFoodEntity.getName(),
-                savedFoodEntity.getDescription(),
-                savedFoodEntity.getImage(),
-                savedFoodEntity.getDietaryRestrictions(),
-                savedFoodEntity.getProduct().getPrice(),
-                savedFoodEntity.getProduct().getPickupTime(),
-                savedFoodEntity.getProduct().getProductType().getProductType(),
-                savedFoodEntity.getProduct().getProductProvider().getName());
-         */
-        return null;
+
+        // Create food categories
+        foodFoodCategoryRepository.saveAll(requestDto.foodCategoryIds().stream()
+                .map(foodCategoryId -> {
+                    final FoodFoodCategoryEntity foodFoodCategoryEntity = new FoodFoodCategoryEntity();
+                    foodFoodCategoryEntity.getId().setFoodId(savedFoodEntity.getId());
+                    foodFoodCategoryEntity.getId().setFoodCategoryId(foodCategoryId);
+                    return foodFoodCategoryEntity;
+                }).collect(Collectors.toList()));
+
+        // Return GetFoodOut
+        return getFoodById(savedFoodEntity.getId());
     }
 
     public GetFoodOut getFoodById(Long id) {
@@ -116,7 +114,23 @@ public class FoodService {
                 )).orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
     }
 
-    public List<GetFoodOut> getAllFoods() {
+    public List<GetFoodOut> getAllByFoodCategoryIds(Set<Long> foodCategoryIds) {
+        return foodRepository.findAllByFoodCategoryIds(foodCategoryIds).stream()
+                .map(foodDto -> new GetFoodOut(
+                        foodDto.id(),
+                        foodDto.name(),
+                        foodDto.description(),
+                        foodDto.image(),
+                        foodDto.dietaryRestrictions(),
+                        foodDto.price(),
+                        foodDto.pickupTime(),
+                        foodDto.productType(),
+                        foodDto.productProviderName(),
+                        foodCategoryRepository.findCategoriesForFoodById(foodDto.id())
+                )).collect(Collectors.toList());
+    }
+
+    public List<GetFoodOut> getAll() {
         final HashMap<Long, Set<FoodCategoryDto>> map = new HashMap<>();
         for (FoodCategoryDto dto : foodCategoryRepository.findCategoriesForAllFoods()) {
             if (map.containsKey(dto.foodId())) {

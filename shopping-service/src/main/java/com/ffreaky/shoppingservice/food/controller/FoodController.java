@@ -1,9 +1,6 @@
 package com.ffreaky.shoppingservice.food.controller;
 
-import com.ffreaky.shoppingservice.food.model.CreateFoodRequestDto;
-import com.ffreaky.shoppingservice.food.model.FoodDto;
-import com.ffreaky.shoppingservice.food.model.GetFoodOut;
-import com.ffreaky.shoppingservice.food.model.UpdateFoodRequestDto;
+import com.ffreaky.shoppingservice.food.model.*;
 import com.ffreaky.shoppingservice.food.service.FoodService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,19 +17,22 @@ public class FoodController {
         this.foodService = foodService;
     }
 
-    @PostMapping
-    public FoodDto createFood(@Validated @RequestBody CreateFoodRequestDto food) {
-        return foodService.createFood(food);
-    }
-
     @GetMapping("/{id}")
-    public GetFoodOut getFoodById(@PathVariable Long id) {
+    public GetFoodOut getById(@PathVariable Long id) {
         return foodService.getFoodById(id);
     }
 
-    @GetMapping
-    public List<GetFoodOut> getAllFoods() {
-        return foodService.getAllFoods();
+    @PostMapping("/get-all")
+    public List<GetFoodOut> getAllByFoodCategoryIds(@Validated @RequestBody ReqGetAllByFoodCategoryIds body) {
+        if (body.foodCategoryIds() == null || body.foodCategoryIds().isEmpty()) {
+            return foodService.getAll();
+        }
+        return foodService.getAllByFoodCategoryIds(body.foodCategoryIds());
+    }
+
+    @PostMapping("/create")
+    public GetFoodOut createFood(@Validated @RequestBody CreateFoodRequestDto food) {
+        return foodService.createFood(food);
     }
 
     @PutMapping("/{id}")

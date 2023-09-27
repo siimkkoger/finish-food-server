@@ -25,15 +25,6 @@ public class FoodEntity extends BaseEntity {
     @Column(name = "product_type_name", nullable = false, updatable = false)
     private ProductType productTypeName;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @Column(name = "description", length = 1000)
-    private String description;
-
-    @Column(name = "image")
-    private String image;
-
     @Column(name = "dietary_restrictions", nullable = false, length = 1000)
     private String dietaryRestrictions;
 

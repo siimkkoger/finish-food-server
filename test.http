@@ -15,3 +15,11 @@ GET http://{{host}}:8080/food/4
 
 ### TEST GET ALL FOODS (intellij)
 GET http://{{host}}:8080/food
+
+### TEST GET ALL FOODS BY foodCategoryIds (intellij)
+POST http://{{host}}:8080/food/get-all
+Content-Type: application/json
+
+{
+    "foodCategoryIds": [2]
+}

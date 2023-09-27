@@ -53,19 +53,30 @@ VALUES ('Chipotle', 'RESTAURANT', 'Fast food restaurant chain', '123 Main Street
        ('Target', 'STORE', 'Discount store chain', '789 Oak Street, Anytown, CA 91234', '+15555555557',
         'info@target.com', 'https://www.target.com/', 'https://example.com/target.jpg');
 
--- product table
-INSERT INTO product (product_type_name, product_provider_id, price, pickup_time)
-VALUES ('FOOD', 1, 9.99, '2023-09-22 12:00:00'),
-       ('FOOD', 1, 12.99, '2023-09-22 12:30:00'),
-       ('FOOD', 2, 14.99, '2023-09-22 13:00:00'),
-       ('FOOD', 2, 4.99, '2023-09-22 13:30:00'),
-       ('FOOD', 2, 6.99, '2023-09-22 14:00:00'),
-       ('FOOD', 3, 11.99, '2023-09-22 14:30:00'),
-       ('CLOTHES', 3, 19.99, '2023-09-22 15:00:00'),
-       ('CLOTHES', 3, 29.99, '2023-09-22 15:30:00'),
-       ('CLOTHES', 4, 39.99, '2023-09-22 16:00:00'),
-       ('CLOTHES', 4, 49.99, '2023-09-22 16:30:00'),
-       ('CLOTHES', 4, 59.99, '2023-09-22 17:00:00');
+INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time)
+VALUES ('FOOD', 1, 'Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
+        'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:00:00'),
+       ('FOOD', 1, 'Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
+        'https://example.com/pizza.jpg', 12.99, '2023-09-22 12:30:00'),
+       ('FOOD', 2, 'Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.', 'https://example.com/pasta.jpg',
+        14.99, '2023-09-22 13:00:00'),
+       ('FOOD', 2, 'Ice cream', 'A bowl of cold, delicious ice cream.', 'https://example.com/icecream.jpg', 4.99,
+        '2023-09-22 13:30:00'),
+       ('FOOD', 2, 'Tiramisu',
+        'A classic Italian dessert made with coffee-dipped ladyfingers and a creamy mascarpone filling.',
+        'https://example.com/tiramisu.jpg', 6.99, '2023-09-22 14:00:00'),
+       ('FOOD', 3, 'Fried rice', 'A dish of rice fried with vegetables and your choice of protein.',
+        'https://example.com/friedrice.jpg', 11.99, '2023-09-22 14:30:00'),
+       ('CLOTHES', 3, 'T-shirt', 'A classic black cotton t-shirt.', 'https://example.com/tshirt.jpg', 19.99,
+        '2023-09-22 15:00:00'),
+       ('CLOTHES', 3, 'Jeans', 'A pair of blue denim jeans.', 'https://example.com/jeans.jpg', 29.99,
+        '2023-09-22 15:30:00'),
+       ('CLOTHES', 4, 'Dress', 'A black and white striped dress with a belted waist.', 'https://example.com/dress.jpg',
+        39.99, '2023-09-22 16:00:00'),
+       ('CLOTHES', 4, 'Jacket', 'A denim jacket with a button-front closure and two pockets.',
+        'https://example.com/jacket.jpg', 49.99, '2023-09-22 16:30:00'),
+       ('CLOTHES', 4, 'Sneakers', 'A pair of white sneakers with a rubber sole.', 'https://example.com/sneakers.jpg',
+        59.99, '2023-09-22 17:00:00');
 
 
 -- food_category table
@@ -77,18 +88,13 @@ VALUES ('American'),
        ('Indian');
 
 -- food table
-INSERT INTO food (product_id, name, description, image, dietary_restrictions)
-VALUES (1, 'Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
-        'https://example.com/hamburger.jpg', 'None'),
-       (2, 'Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
-        'https://example.com/pizza.jpg', 'Pork'),
-       (3, 'Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.', 'https://example.com/pasta.jpg',
-        'None'),
-       (4, 'Ice cream', 'A bowl of cold, delicious ice cream.', 'https://example.com/icecream.jpg', 'Dairy'),
-       (5, 'Tiramisu', 'A classic Italian dessert made with coffee-dipped ladyfingers and a creamy mascarpone filling.',
-        'https://example.com/tiramisu.jpg', 'Eggs, Dairy'),
-       (6, 'Fried rice', 'A dish of rice fried with vegetables and your choice of protein.',
-        'https://example.com/friedrice.jpg', 'None');
+INSERT INTO food (product_id, dietary_restrictions)
+VALUES (1, 'None'),
+       (2, 'Pork'),
+       (3, 'None'),
+       (4, 'Dairy'),
+       (5, 'Eggs, Dairy'),
+       (6, 'None');
 
 INSERT INTO food_food_category (food_id, food_category_id)
 VALUES (1, 1),
@@ -98,7 +104,6 @@ VALUES (1, 1),
        (5, 2),
        (6, 3);
 
--- clothes_category table
 INSERT INTO clothes_category (name)
 VALUES ('Tops'),
        ('Bottoms'),
@@ -106,16 +111,12 @@ VALUES ('Tops'),
        ('Outerwear'),
        ('Shoes');
 
--- clothes table
-INSERT INTO clothes (product_id, name, description, image, size, color)
-VALUES (7, 'T-shirt', 'A classic black cotton t-shirt.', 'https://example.com/tshirt.jpg', 'Medium', 'Black'),
-       (8, 'Jeans', 'A pair of blue denim jeans.', 'https://example.com/jeans.jpg', '32W32L', 'Blue'),
-       (9, 'Dress', 'A black and white striped dress with a belted waist.', 'https://example.com/dress.jpg', 'Small',
-        'Black and white'),
-       (10, 'Jacket', 'A denim jacket with a button-front closure and two pockets.', 'https://example.com/jacket.jpg',
-        'Medium', 'Denim'),
-       (11, 'Sneakers', 'A pair of white sneakers with a rubber sole.', 'https://example.com/sneakers.jpg', '8',
-        'White');
+INSERT INTO clothes (product_id, size, color)
+VALUES (7, 'Medium', 'Black'),
+       (8, '32W32L', 'Blue'),
+       (9, 'Small', 'Black and white'),
+       (10, 'Medium', 'Denim'),
+       (11, '8', 'White');
 
 INSERT INTO clothes_clothes_category (clothes_id, clothes_category_id)
 VALUES (1, 1),
@@ -124,7 +125,6 @@ VALUES (1, 1),
        (4, 4),
        (5, 5);
 
--- discount table
 INSERT INTO discount (product_id, name, discount_percent, description, active)
 VALUES (1, 'Labor Day Sale', 10, 'Get 10% off your purchase of hamburgers on Labor Day.', true),
        (3, 'Pasta Night', 20, 'Get 20% off your purchase of pasta on Wednesday nights.', true),
