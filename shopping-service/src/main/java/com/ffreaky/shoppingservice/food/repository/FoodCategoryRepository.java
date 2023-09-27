@@ -13,7 +13,6 @@ public interface FoodCategoryRepository extends JpaRepository<FoodCategoryEntity
     @Query("SELECT f FROM FoodCategoryEntity f WHERE f.id in :ids")
     Set<FoodCategoryEntity> findAllByIds(Set<Long> ids);
 
-    @Query("SELECT f FROM FFoodCategoryEntity f WHERE f.")
-    Set<FoodCategoryEntity> findAllByFood(Long id);
+    Set<FoodCategoryEntity> findAllByFoodsId(Long id);
 
 }

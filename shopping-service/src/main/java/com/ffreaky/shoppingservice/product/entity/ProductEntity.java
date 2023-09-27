@@ -21,8 +21,8 @@ public class ProductEntity extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "product_category_id", unique = true, nullable = false, updatable = false)
-    private ProductCategoryEntity productCategory;
+    @JoinColumn(name = "product_type_name", unique = true, nullable = false, updatable = false)
+    private ProductTypeEntity productType;
 
     @ManyToOne
     @JoinColumn(name = "product_provider_id", unique = true, nullable = false, updatable = false)

@@ -20,11 +20,11 @@ public class FoodEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name="id", unique=true, nullable=false, updatable=false)
     private ProductEntity product;
 
-    @ManyToMany(targetEntity = FoodCategoryEntity.class, fetch = FetchType.LAZY)
+    @ManyToMany(targetEntity = FoodCategoryEntity.class, fetch = FetchType.EAGER)
     @JoinTable(name = "food_food_category",
             joinColumns = @JoinColumn(name = "food_id"),
             inverseJoinColumns = @JoinColumn(name = "food_category_id"))

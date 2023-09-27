@@ -21,7 +21,7 @@ public class ProductProviderEntity extends BaseEntity {
     private String name;
 
     @ManyToOne(targetEntity = ProductProviderTypeEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_provider_type_id", unique = true, nullable = false, updatable = false)
+    @JoinColumn(name = "product_provider_type", unique = true, nullable = false, updatable = false)
     private ProductProviderTypeEntity providerType;
 
     @Column(name = "description")

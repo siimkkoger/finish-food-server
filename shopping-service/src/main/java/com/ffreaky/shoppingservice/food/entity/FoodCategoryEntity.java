@@ -10,7 +10,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "product", schema = "public")
+@Table(name = "food_category", schema = "public")
 public class FoodCategoryEntity extends BaseEntity {
 
     @Id
@@ -26,5 +26,5 @@ public class FoodCategoryEntity extends BaseEntity {
             joinColumns = @JoinColumn(name = "food_category_id"),
             inverseJoinColumns = @JoinColumn(name = "food_id")
     )
-    private Set<FoodEntity> foodCategories;
+    private Set<FoodEntity> foods;
 }

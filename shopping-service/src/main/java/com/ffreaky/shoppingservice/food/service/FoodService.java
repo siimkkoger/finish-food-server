@@ -2,16 +2,13 @@ package com.ffreaky.shoppingservice.food.service;
 
 import com.ffreaky.shoppingservice.food.entity.FoodCategoryEntity;
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
-import com.ffreaky.shoppingservice.food.model.CreateFoodRequestDto;
-import com.ffreaky.shoppingservice.food.model.FoodCategoryDto;
-import com.ffreaky.shoppingservice.food.model.GetFoodDto;
-import com.ffreaky.shoppingservice.food.model.UpdateFoodRequestDto;
+import com.ffreaky.shoppingservice.food.model.*;
 import com.ffreaky.shoppingservice.food.repository.FoodCategoryRepository;
 import com.ffreaky.shoppingservice.food.repository.FoodRepository;
-import com.ffreaky.shoppingservice.product.entity.ProductCategoryEntity;
+import com.ffreaky.shoppingservice.product.entity.ProductTypeEntity;
 import com.ffreaky.shoppingservice.product.entity.ProductEntity;
 import com.ffreaky.shoppingservice.product.entity.ProductProviderEntity;
-import com.ffreaky.shoppingservice.product.repository.ProductCategoryRepository;
+import com.ffreaky.shoppingservice.product.repository.ProductTypeRepository;
 import com.ffreaky.shoppingservice.product.repository.ProductProviderRepository;
 import com.ffreaky.shoppingservice.product.repository.ProductRepository;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
@@ -19,6 +16,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,14 +25,14 @@ public class FoodService {
 
     private final FoodRepository foodRepository;
     private final ProductRepository productRepository;
-    private final ProductCategoryRepository productCategoryRepository;
+    private final ProductTypeRepository productCategoryRepository;
     private final FoodCategoryRepository foodCategoryRepository;
     private final ProductProviderRepository productProviderRepository;
 
     public FoodService(
             FoodRepository foodRepository,
             ProductRepository productRepository,
-            ProductCategoryRepository productCategoryRepository,
+            ProductTypeRepository productCategoryRepository,
             FoodCategoryRepository foodCategoryRepository,
             ProductProviderRepository productProviderRepository) {
         this.foodRepository = foodRepository;
@@ -44,17 +42,15 @@ public class FoodService {
         this.productProviderRepository = productProviderRepository;
     }
 
-    /*
-    TODO : Right now FoodEntity and ClothesEntity might point to the same ProductEntity, which is not correct.
-     */
+
     @Transactional
-    public GetFoodDto createFood(CreateFoodRequestDto requestDto) {
+    public FoodDto createFood(CreateFoodRequestDto requestDto) {
         // Check that product category exists and retrieve it
-        final ProductCategoryEntity productCategoryEntity =
-                productCategoryRepository.findByProductCategory(requestDto.product().productCategory())
+        final ProductTypeEntity productTypeEntity =
+                productCategoryRepository.findByProductType(requestDto.product().productType())
                         .orElseThrow(() -> new FinishFoodException(
                                 FinishFoodException.Type.ENTITY_NOT_FOUND,
-                                "Product category not found with name: " + requestDto.product().productCategory()));
+                                "Product category not found with name: " + requestDto.product().productType()));
 
         // Check that product provider exists and retrieve it
         final ProductProviderEntity productProviderEntity =
@@ -65,7 +61,7 @@ public class FoodService {
 
         // Create product
         final ProductEntity productEntity = new ProductEntity();
-        productEntity.setProductCategory(productCategoryEntity);
+        productEntity.setProductType(productTypeEntity);
         productEntity.setProductProvider(productProviderEntity);
         productEntity.setPrice(requestDto.product().price());
         productEntity.setPickupTime(requestDto.product().pickupTime());
@@ -94,6 +90,7 @@ public class FoodService {
         foodEntity.setDescription(requestDto.description());
         foodEntity.setImage(requestDto.image());
         foodEntity.setDietaryRestrictions(requestDto.dietaryRestrictions());
+        foodEntity.setFoodCategories(foodCategoryEntities);
 
         // Save food
         final FoodEntity savedFoodEntity;
@@ -102,7 +99,7 @@ public class FoodService {
         } catch (Exception e) {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving food: " + e.getMessage());
         }
-        return new GetFoodDto(
+        return new FoodDto(
                 savedFoodEntity.getId(),
                 savedFoodEntity.getName(),
                 savedFoodEntity.getDescription(),
@@ -110,56 +107,54 @@ public class FoodService {
                 savedFoodEntity.getDietaryRestrictions(),
                 savedFoodEntity.getProduct().getPrice(),
                 savedFoodEntity.getProduct().getPickupTime(),
-                savedFoodEntity.getProduct().getProductCategory().getProductType(),
-                savedFoodEntity.getProduct().getProductProvider().getName(),
-                savedFoodEntity.getFoodCategories().stream().map(entity -> new FoodCategoryDto(entity.getId(), entity.getName())).collect(Collectors.toSet()));
+                savedFoodEntity.getProduct().getProductType().getProductType(),
+                savedFoodEntity.getProduct().getProductProvider().getName());
     }
 
-    public GetFoodDto getFoodById(Long id) {
-        System.out.println("1111111111111111111111111111111111111111");
-        System.out.println("1111111111111111111111111111111111111111");
-        System.out.println("1111111111111111111111111111111111111111");
+    public GetFoodOut getFoodById(Long id) {
+        // TODO : can i send two requests to the database at the same time
+        FoodDto foodDto = foodRepository.findDtoById(id)
+                .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with id: " + id));
 
-        final FoodEntity fe = foodRepository.findById(id)
-                .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
+        Set<FoodCategoryDto> foodCategories = foodCategoryRepository.findAllByFoodsId(id)
+                .stream()
+                .map(entity -> new FoodCategoryDto(entity.getId(), entity.getName()))
+                .collect(Collectors.toSet());
 
-        GetFoodDto dto = new GetFoodDto(
-                fe.getId(),
-                fe.getName(),
-                fe.getDescription(),
-                fe.getImage(),
-                fe.getDietaryRestrictions(),
-                fe.getProduct().getPrice(),
-                fe.getProduct().getPickupTime(),
-                fe.getProduct().getProductCategory().getProductType(),
-                fe.getProduct().getProductProvider().getName(),
-                fe.getFoodCategories().stream().map(entity -> new FoodCategoryDto(entity.getId(), entity.getName())).collect(Collectors.toSet()));
-        System.out.println(dto);
-
-        /*
-        System.out.println("22222222222222222222222222222222222222222");
-        System.out.println("22222222222222222222222222222222222222222");
-        System.out.println("22222222222222222222222222222222222222222");
-
-        final Optional<GetFoodResponseDto> foodEntity = foodRepository.findByIdCustom(id);
-        if (foodEntity.isEmpty()) {
-            throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id);
-        }
-        System.out.println(foodEntity.get());
-        return foodEntity.get();
-         */
-
-        return dto;
+        return new GetFoodOut(
+                foodDto.id(),
+                foodDto.name(),
+                foodDto.description(),
+                foodDto.image(),
+                foodDto.dietaryRestrictions(),
+                foodDto.price(),
+                foodDto.pickupTime(),
+                foodDto.productType(),
+                foodDto.productProviderName(),
+                foodCategories);
     }
 
-    public List<GetFoodDto> getAllFoods() {
-        //return foodRepository.findAllCustom();
-
-        return null;
+    // TODO : why does hibernate make different request for every entity even with eager fetching?
+    public List<GetFoodOut> getAllFoods() {
+        List<FoodEntity> foodEntities = foodRepository.findAll();
+        System.out.println("888888888888888888888888888");
+        return foodEntities.stream()
+                .map(e -> new GetFoodOut(
+                        e.getId(),
+                        e.getName(),
+                        e.getDescription(),
+                        e.getImage(),
+                        e.getDietaryRestrictions(),
+                        e.getProduct().getPrice(),
+                        e.getProduct().getPickupTime(),
+                        e.getProduct().getProductType().getProductType(),
+                        e.getProduct().getProductProvider().getName(),
+                        e.getFoodCategories().stream().map(fce -> new FoodCategoryDto(fce.getId(), fce.getName())).collect(Collectors.toSet())
+                )).collect(Collectors.toList());
     }
 
     @Transactional
-    public GetFoodDto updateFood(Long id, UpdateFoodRequestDto updatedFood) {
+    public FoodDto updateFood(Long id, UpdateFoodRequestDto updatedFood) {
         // Find the food to update
         FoodEntity foodEntity = foodRepository.findById(id)
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
@@ -189,7 +184,7 @@ public class FoodService {
         } catch (Exception e) {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving food: " + e.getMessage());
         }
-        return new GetFoodDto(
+        return new FoodDto(
                 savedFoodEntity.getId(),
                 savedFoodEntity.getName(),
                 savedFoodEntity.getDescription(),
@@ -197,9 +192,8 @@ public class FoodService {
                 savedFoodEntity.getDietaryRestrictions(),
                 savedFoodEntity.getProduct().getPrice(),
                 savedFoodEntity.getProduct().getPickupTime(),
-                savedFoodEntity.getProduct().getProductCategory().getProductType(),
-                savedFoodEntity.getProduct().getProductProvider().getName(),
-                savedFoodEntity.getFoodCategories().stream().map(entity -> new FoodCategoryDto(entity.getId(), entity.getName())).collect(Collectors.toSet()));
+                savedFoodEntity.getProduct().getProductType().getProductType(),
+                savedFoodEntity.getProduct().getProductProvider().getName());
     }
 
     public void deleteFood(Long id) {

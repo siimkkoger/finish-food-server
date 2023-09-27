@@ -1,16 +1,13 @@
 package com.ffreaky.shoppingservice.food.model;
 
-import com.ffreaky.shoppingservice.food.entity.FoodCategoryEntity;
-import com.ffreaky.shoppingservice.product.ProductType;
-import com.ffreaky.shoppingservice.product.entity.ProductCategoryEntity;
+import com.ffreaky.shoppingservice.product.entity.ProductTypeEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Set;
 
-public record GetFoodDto(
+public record FoodDto(
         @NotNull Long id,
         @NotBlank String name,
         @NotBlank String description,
@@ -18,12 +15,11 @@ public record GetFoodDto(
         @NotBlank String dietaryRestrictions,
         @NotNull BigDecimal price,
         @NotBlank Date pickupTime,
-        @NotBlank ProductType productType,
-        @NotBlank String productProviderName,
-        @NotNull Set<FoodCategoryDto> foodCategories
+        @NotBlank ProductTypeEntity.ProductType productType,
+        @NotBlank String productProviderName
 
         ) {
-    public GetFoodDto {
+    public FoodDto {
         assert id != null;
         assert name != null;
         assert description != null;
@@ -33,6 +29,5 @@ public record GetFoodDto(
         assert pickupTime != null;
         assert productType != null;
         assert productProviderName != null;
-        assert foodCategories != null;
     }
 }
