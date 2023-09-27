@@ -100,12 +100,11 @@ public class FoodService {
         FoodDto foodDto = foodRepository.findDtoById(id)
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
 
-        // Include categories to response if requested
-        if (filter != null && filter.includeFoodCategories()) {
-            return convertFoodDtoToGetFoodOut(foodDto, foodCategoryRepository.findCatByFoodId(foodDto.id()));
-        } else {
-            return convertFoodDtoToGetFoodOut(foodDto, null);
-        }
+        Set<FoodCategoryDto> foodCategories = filter != null && filter.includeFoodCategories()
+                ? foodCategoryRepository.findCatByFoodId(foodDto.id())
+                : null;
+
+        return convertFoodDtoToGetFoodOut(foodDto, foodCategories);
     }
 
     public List<GetFoodOut> getAll(GetFoodsFilter filter) {
@@ -142,7 +141,7 @@ public class FoodService {
                 .collect(Collectors.toList());
     }
 
-    private GetFoodOut convertFoodDtoToGetFoodOut(FoodDto foodDto, Set<FoodCategoryDto> foodCategoryDtos) {
+    private GetFoodOut convertFoodDtoToGetFoodOut(FoodDto foodDto, Set<FoodCategoryDto> foodCategories) {
         return new GetFoodOut(
                 foodDto.id(),
                 foodDto.name(),
@@ -153,7 +152,7 @@ public class FoodService {
                 foodDto.pickupTime(),
                 foodDto.productType(),
                 foodDto.productProviderName(),
-                foodCategoryDtos);
+                foodCategories);
     }
 
     @Transactional
