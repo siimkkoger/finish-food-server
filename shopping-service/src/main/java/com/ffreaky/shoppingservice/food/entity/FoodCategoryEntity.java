@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Set;
-
 @Getter
 @Setter
 @Entity
@@ -19,12 +17,4 @@ public class FoodCategoryEntity extends BaseEntity {
 
     @Column(name = "name", nullable = false)
     private String name;
-
-    @ManyToMany
-    @JoinTable(
-            name = "food_food_category",
-            joinColumns = @JoinColumn(name = "food_category_id"),
-            inverseJoinColumns = @JoinColumn(name = "food_id")
-    )
-    private Set<FoodEntity> foods;
 }

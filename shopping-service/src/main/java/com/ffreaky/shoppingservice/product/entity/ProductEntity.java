@@ -16,17 +16,11 @@ import java.util.Date;
 @Table(name = "product", schema = "public")
 public class ProductEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private ProductId productId;
 
-    @ManyToOne
-    @JoinColumn(name = "product_type_name", unique = true, nullable = false, updatable = false)
-    private ProductTypeEntity productType;
-
-    @ManyToOne
-    @JoinColumn(name = "product_provider_id", unique = true, nullable = false, updatable = false)
-    private ProductProviderEntity productProvider;
+    @Column(name = "product_provider_id", nullable = false, updatable = false)
+    private Long productProviderId;
 
     @Column(name = "price", nullable = false, precision = 19, scale = 4)
     private BigDecimal price;

@@ -1,23 +1,17 @@
 package com.ffreaky.shoppingservice.food.repository;
 
-import com.ffreaky.shoppingservice.food.entity.FoodCategoryEntity;
+import com.ffreaky.shoppingservice.food.entity.FoodFoodCategoryEntity;
 import com.ffreaky.shoppingservice.food.model.FoodCategoryDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
-@Repository
-public interface FoodCategoryRepository extends JpaRepository<FoodCategoryEntity, Long> {
-
-    @Query("SELECT f FROM FoodCategoryEntity f WHERE f.id in :ids")
-    Set<FoodCategoryEntity> findAllByIds(Set<Long> ids);
+public interface FoodFoodCategoryRepository extends JpaRepository<FoodFoodCategoryEntity, Long> {
 
     @Query("""
             SELECT new com.ffreaky.shoppingservice.food.model.FoodCategoryDto(
                 ffc.id.foodId,
-                fc.id,
                 fc.name
                 )
             FROM FoodFoodCategoryEntity ffc
@@ -25,18 +19,16 @@ public interface FoodCategoryRepository extends JpaRepository<FoodCategoryEntity
                 ON ffc.id.foodCategoryId = fc.id
             WHERE ffc.id.foodId = :foodId
             """)
-    Set<FoodCategoryDto> findCategoriesForFoodById(Long foodId);
+    Set<FoodCategoryDto> findAllFoodCategoryDtoByFoodId(Long foodId);
 
     @Query("""
             SELECT new com.ffreaky.shoppingservice.food.model.FoodCategoryDto(
                 ffc.id.foodId,
-                fc.id,
                 fc.name
                 )
             FROM FoodFoodCategoryEntity ffc
             JOIN FoodCategoryEntity fc
                 ON ffc.id.foodCategoryId = fc.id
             """)
-    Set<FoodCategoryDto> findCategoriesForAllFoods();
-
+    Set<FoodCategoryDto> findAllFoodCategoryDto();
 }

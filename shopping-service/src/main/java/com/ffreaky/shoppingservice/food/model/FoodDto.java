@@ -1,6 +1,6 @@
 package com.ffreaky.shoppingservice.food.model;
 
-import com.ffreaky.shoppingservice.product.entity.ProductTypeEntity;
+import com.ffreaky.shoppingservice.product.ProductType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,7 +15,7 @@ public record FoodDto(
         @NotBlank String dietaryRestrictions,
         @NotNull BigDecimal price,
         @NotBlank Date pickupTime,
-        @NotBlank ProductTypeEntity.ProductType productType,
+        @NotBlank ProductType productType,
         @NotBlank String productProviderName
 
         ) {

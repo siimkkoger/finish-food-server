@@ -1,13 +1,11 @@
 package com.ffreaky.shoppingservice.food.entity;
 
-import com.ffreaky.shoppingservice.product.entity.ProductEntity;
+import com.ffreaky.shoppingservice.product.ProductType;
 import com.ffreaky.utilities.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Set;
 
 @Getter
 @Setter
@@ -20,15 +18,12 @@ public class FoodEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name="id", unique=true, nullable=false, updatable=false)
-    private ProductEntity product;
+    @Column(name = "product_id", nullable = false, updatable = false)
+    private Long productId;
 
-    @ManyToMany(targetEntity = FoodCategoryEntity.class, fetch = FetchType.EAGER)
-    @JoinTable(name = "food_food_category",
-            joinColumns = @JoinColumn(name = "food_id"),
-            inverseJoinColumns = @JoinColumn(name = "food_category_id"))
-    private Set<FoodCategoryEntity> foodCategories;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "product_type_name", nullable = false, updatable = false)
+    private ProductType productTypeName;
 
     @Column(name = "name", nullable = false)
     private String name;

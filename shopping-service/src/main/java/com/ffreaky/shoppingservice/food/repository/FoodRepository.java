@@ -13,49 +13,46 @@ import java.util.Set;
 public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
 
     @Query("""
-            SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
-                f.id,
-                f.name,
-                f.description,
-                f.image,
-                f.dietaryRestrictions,
-                f.product.price,
-                f.product.pickupTime,
-                f.product.productType.productType,
-                f.product.productProvider.name)
-            FROM FoodEntity f WHERE f.id = :id
-            """)
+             SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
+                 f.id,
+                 f.name,
+                 f.description,
+                 f.image,
+                 f.dietaryRestrictions,
+                 p.price,
+                 p.pickupTime,
+                 p.productId.productType,
+                 pp.name
+                 )
+             FROM FoodEntity f
+             JOIN ProductEntity p
+                ON f.productId = p.productId.id
+                AND f.productTypeName = p.productId.productType
+             JOIN ProductProviderEntity pp
+                ON p.productProviderId = pp.id
+             WHERE f.id = :id
+             """)
     Optional<FoodDto> findDtoById(long id);
 
-
     @Query("""
-            SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
-                            f.id,
-                            f.name,
-                            f.description,
-                            f.image,
-                            f.dietaryRestrictions,
-                            f.product.price,
-                            f.product.pickupTime,
-                            f.product.productType.productType,
-                            f.product.productProvider.name)
-                        FROM FoodEntity f WHERE f.id in :ids
-            """)
-    Set<FoodDto> findAllDtoByIds(Set<Long> ids);
-
-    @Query("""
-            SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
-                            f.id,
-                            f.name,
-                            f.description,
-                            f.image,
-                            f.dietaryRestrictions,
-                            f.product.price,
-                            f.product.pickupTime,
-                            f.product.productType.productType,
-                            f.product.productProvider.name)
-                        FROM FoodEntity f
-            """)
+             SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
+                 f.id,
+                 f.name,
+                 f.description,
+                 f.image,
+                 f.dietaryRestrictions,
+                 p.price,
+                 p.pickupTime,
+                 p.productId.productType,
+                 pp.name
+                 )
+             FROM FoodEntity f
+             JOIN ProductEntity p
+                ON f.productId = p.productId.id
+                AND f.productTypeName = p.productId.productType
+             JOIN ProductProviderEntity pp
+                ON p.productProviderId = pp.id
+             """)
     Set<FoodDto> findAllDto();
 
 }
