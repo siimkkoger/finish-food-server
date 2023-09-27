@@ -18,7 +18,7 @@ public record GetFoodOut(
         @NotBlank Date pickupTime,
         @NotBlank ProductType productType,
         @NotBlank String productProviderName,
-        @NotNull Set<FoodCategoryDto> foodCategories
+        Set<FoodCategoryDto> foodCategories
 
 ) {
 }

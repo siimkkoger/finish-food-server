@@ -11,7 +11,12 @@ GET http://{{host}}:8080/api-gw/user/getall
 GET http://{{host}}:8020/food/1
 
 ### TEST GET FOOD BY ID (intellij)
-GET http://{{host}}:8080/food/4
+POST http://{{host}}:8080/food/3
+Content-Type: application/json
+
+{
+  "includeFoodCategories": true
+}
 
 ### TEST GET ALL FOODS (intellij)
 GET http://{{host}}:8080/food
@@ -22,4 +27,12 @@ Content-Type: application/json
 
 {
     "foodCategoryIds": [2]
+}
+
+### TEST GET ALL FOODS BY foodCategoryIds null (intellij)
+POST http://{{host}}:8080/food/get-all
+Content-Type: application/json
+
+{
+  "foodCategoryIds": null
 }

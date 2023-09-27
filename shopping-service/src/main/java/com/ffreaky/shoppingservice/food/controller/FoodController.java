@@ -17,17 +17,14 @@ public class FoodController {
         this.foodService = foodService;
     }
 
-    @GetMapping("/{id}")
-    public GetFoodOut getById(@PathVariable Long id) {
-        return foodService.getFoodById(id);
+    @PostMapping("/{id}")
+    public GetFoodOut getById(@PathVariable Long id, @Validated @RequestBody GetFoodsFilter filter) {
+        return foodService.getFoodById(id, filter);
     }
 
     @PostMapping("/get-all")
-    public List<GetFoodOut> getAllByFoodCategoryIds(@Validated @RequestBody ReqGetAllByFoodCategoryIds body) {
-        if (body.foodCategoryIds() == null || body.foodCategoryIds().isEmpty()) {
-            return foodService.getAll();
-        }
-        return foodService.getAllByFoodCategoryIds(body.foodCategoryIds());
+    public List<GetFoodOut> getAllByFoodCategoryIds(@Validated @RequestBody GetFoodsFilter filter) {
+        return foodService.getAll(filter);
     }
 
     @PostMapping("/create")

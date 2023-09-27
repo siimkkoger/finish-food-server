@@ -14,9 +14,7 @@ import com.ffreaky.utilities.exceptions.FinishFoodException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,7 +65,7 @@ public class FoodService {
         }
 
         // Check that food categories exist and retrieve them
-        if (requestDto.foodCategoryIds().size() != foodCategoryRepository.findAllByIds(requestDto.foodCategoryIds()).size()) {
+        if (requestDto.foodCategoryIds().size() != foodCategoryRepository.findAllCatsByIds(requestDto.foodCategoryIds()).size()) {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food category not found");
         }
 
@@ -95,64 +93,67 @@ public class FoodService {
                 }).collect(Collectors.toList()));
 
         // Return GetFoodOut
-        return getFoodById(savedFoodEntity.getId());
+        return getFoodById(savedFoodEntity.getId(), null);
     }
 
-    public GetFoodOut getFoodById(Long id) {
-        return foodRepository.findDtoById(id)
-                .map(foodDto -> new GetFoodOut(
-                        foodDto.id(),
-                        foodDto.name(),
-                        foodDto.description(),
-                        foodDto.image(),
-                        foodDto.dietaryRestrictions(),
-                        foodDto.price(),
-                        foodDto.pickupTime(),
-                        foodDto.productType(),
-                        foodDto.productProviderName(),
-                        foodCategoryRepository.findCategoriesForFoodById(foodDto.id())
-                )).orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
+    public GetFoodOut getFoodById(Long id, GetFoodsFilter filter) {
+        FoodDto foodDto = foodRepository.findDtoById(id)
+                .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
+
+        // Include categories to response if requested
+        if (filter != null && filter.includeFoodCategories()) {
+            return convertFoodDtoToGetFoodOut(foodDto, foodCategoryRepository.findCatByFoodId(foodDto.id()));
+        } else {
+            return convertFoodDtoToGetFoodOut(foodDto, null);
+        }
     }
 
-    public List<GetFoodOut> getAllByFoodCategoryIds(Set<Long> foodCategoryIds) {
-        return foodRepository.findAllByFoodCategoryIds(foodCategoryIds).stream()
-                .map(foodDto -> new GetFoodOut(
-                        foodDto.id(),
-                        foodDto.name(),
-                        foodDto.description(),
-                        foodDto.image(),
-                        foodDto.dietaryRestrictions(),
-                        foodDto.price(),
-                        foodDto.pickupTime(),
-                        foodDto.productType(),
-                        foodDto.productProviderName(),
-                        foodCategoryRepository.findCategoriesForFoodById(foodDto.id())
-                )).collect(Collectors.toList());
-    }
+    public List<GetFoodOut> getAll(GetFoodsFilter filter) {
+        Set<FoodDto> foods;
 
-    public List<GetFoodOut> getAll() {
-        final HashMap<Long, Set<FoodCategoryDto>> map = new HashMap<>();
-        for (FoodCategoryDto dto : foodCategoryRepository.findCategoriesForAllFoods()) {
-            if (map.containsKey(dto.foodId())) {
-                map.get(dto.foodId()).add(dto);
-            } else {
-                map.put(dto.foodId(), Set.of(dto));
-            }
+        // Get all foods if no categories requested
+        if (filter.foodCategoryIds() == null || filter.foodCategoryIds().isEmpty()) {
+            foods = foodRepository.findAllDto();
+        } else {
+            foods = foodRepository.findAllByFoodCategoryIds(filter.foodCategoryIds());
         }
 
-        return foodRepository.findAllDto().stream()
-                .map(foodDto -> new GetFoodOut(
-                        foodDto.id(),
-                        foodDto.name(),
-                        foodDto.description(),
-                        foodDto.image(),
-                        foodDto.dietaryRestrictions(),
-                        foodDto.price(),
-                        foodDto.pickupTime(),
-                        foodDto.productType(),
-                        foodDto.productProviderName(),
-                        map.get(foodDto.id())
-                )).collect(Collectors.toList());
+        // Include categories to response if requested
+        if (filter.includeFoodCategories()) {
+            return addCategoriesAndReturnResponse(foods);
+        } else {
+            return foods.stream()
+                    .map(foodDto -> convertFoodDtoToGetFoodOut(foodDto, null))
+                    .collect(Collectors.toList());
+        }
+    }
+
+    private List<GetFoodOut> addCategoriesAndReturnResponse(Set<FoodDto> foods) {
+        Map<Long, Set<FoodCategoryDto>> foodCategoryMap = new HashMap<>();
+        Set<Long> foodIds = foods.stream()
+                .map(FoodDto::id)
+                .collect(Collectors.toSet());
+
+        foodCategoryRepository.findCatsByFoodIds(foodIds)
+                .forEach(dto -> foodCategoryMap.computeIfAbsent(dto.foodId(), k -> new HashSet<>()).add(dto));
+
+        return foods.stream()
+                .map(foodDto -> convertFoodDtoToGetFoodOut(foodDto, foodCategoryMap.getOrDefault(foodDto.id(), Collections.emptySet())))
+                .collect(Collectors.toList());
+    }
+
+    private GetFoodOut convertFoodDtoToGetFoodOut(FoodDto foodDto, Set<FoodCategoryDto> foodCategoryDtos) {
+        return new GetFoodOut(
+                foodDto.id(),
+                foodDto.name(),
+                foodDto.description(),
+                foodDto.image(),
+                foodDto.dietaryRestrictions(),
+                foodDto.price(),
+                foodDto.pickupTime(),
+                foodDto.productType(),
+                foodDto.productProviderName(),
+                foodCategoryDtos);
     }
 
     @Transactional
