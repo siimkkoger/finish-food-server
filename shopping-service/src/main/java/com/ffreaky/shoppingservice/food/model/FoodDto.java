@@ -17,8 +17,7 @@ public record FoodDto(
         @NotBlank Date pickupTime,
         @NotBlank ProductType productType,
         @NotBlank String productProviderName
-
-        ) {
+) {
     public FoodDto {
         assert id != null;
         assert name != null;

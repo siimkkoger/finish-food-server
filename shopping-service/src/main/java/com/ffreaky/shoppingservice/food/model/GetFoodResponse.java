@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
-public record GetFoodOut(
+public record GetFoodResponse(
         @NotNull Long id,
         @NotBlank String name,
         @NotBlank String description,
@@ -19,6 +19,5 @@ public record GetFoodOut(
         @NotBlank ProductType productType,
         @NotBlank String productProviderName,
         Set<FoodCategoryDto> foodCategories
-
 ) {
 }

@@ -18,24 +18,24 @@ public class FoodController {
     }
 
     @PostMapping("/{id}")
-    public GetFoodOut getById(@PathVariable Long id, @Validated @RequestBody GetFoodsFilter filter) {
+    public GetFoodResponse getById(@PathVariable Long id, @Validated @RequestBody GetFoodRequestFilter filter) {
         return foodService.getFoodById(id, filter);
     }
 
     @PostMapping("/get-all")
-    public List<GetFoodOut> getAllByFoodCategoryIds(@Validated @RequestBody GetFoodsFilter filter) {
+    public List<GetFoodResponse> getAllByFoodCategoryIds(@Validated @RequestBody GetFoodRequestFilter filter) {
         return foodService.getAll(filter);
     }
 
     @PostMapping("/create")
-    public GetFoodOut createFood(@Validated @RequestBody CreateFoodRequestDto food) {
+    public GetFoodResponse createFood(@Validated @RequestBody CreateFoodRequest food) {
         return foodService.createFood(food);
     }
 
     @PutMapping("/{id}")
     public FoodDto updateFood(
             @PathVariable Long id,
-            @Validated @RequestBody UpdateFoodRequestDto updatedFood) {
+            @Validated @RequestBody UpdateFoodRequest updatedFood) {
         return foodService.updateFood(id, updatedFood);
     }
 

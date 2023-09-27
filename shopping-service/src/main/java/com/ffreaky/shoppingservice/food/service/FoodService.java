@@ -38,7 +38,7 @@ public class FoodService {
 
 
     @Transactional
-    public GetFoodOut createFood(CreateFoodRequestDto requestDto) {
+    public GetFoodResponse createFood(CreateFoodRequest requestDto) {
         // Check that product category is FOOD
         if (!requestDto.product().productType().equals(ProductType.FOOD)) {
             throw new FinishFoodException(FinishFoodException.Type.INVALID_PRODUCT_TYPE, "Product type must be FOOD");
@@ -96,7 +96,7 @@ public class FoodService {
         return getFoodById(savedFoodEntity.getId(), null);
     }
 
-    public GetFoodOut getFoodById(Long id, GetFoodsFilter filter) {
+    public GetFoodResponse getFoodById(Long id, GetFoodRequestFilter filter) {
         FoodDto foodDto = foodRepository.findDtoById(id)
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
 
@@ -104,10 +104,10 @@ public class FoodService {
                 ? foodCategoryRepository.findCatByFoodId(foodDto.id())
                 : null;
 
-        return convertFoodDtoToGetFoodOut(foodDto, foodCategories);
+        return convertFoodDtoToGetFoodResponse(foodDto, foodCategories);
     }
 
-    public List<GetFoodOut> getAll(GetFoodsFilter filter) {
+    public List<GetFoodResponse> getAll(GetFoodRequestFilter filter) {
         Set<FoodDto> foods;
 
         // Get all foods if no categories requested
@@ -119,15 +119,15 @@ public class FoodService {
 
         // Include categories to response if requested
         if (filter.includeFoodCategories()) {
-            return addCategoriesAndReturnResponse(foods);
+            return includeCatsToAllFoods(foods);
         } else {
             return foods.stream()
-                    .map(foodDto -> convertFoodDtoToGetFoodOut(foodDto, null))
+                    .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, null))
                     .collect(Collectors.toList());
         }
     }
 
-    private List<GetFoodOut> addCategoriesAndReturnResponse(Set<FoodDto> foods) {
+    private List<GetFoodResponse> includeCatsToAllFoods(Set<FoodDto> foods) {
         Map<Long, Set<FoodCategoryDto>> foodCategoryMap = new HashMap<>();
         Set<Long> foodIds = foods.stream()
                 .map(FoodDto::id)
@@ -137,12 +137,12 @@ public class FoodService {
                 .forEach(dto -> foodCategoryMap.computeIfAbsent(dto.foodId(), k -> new HashSet<>()).add(dto));
 
         return foods.stream()
-                .map(foodDto -> convertFoodDtoToGetFoodOut(foodDto, foodCategoryMap.getOrDefault(foodDto.id(), Collections.emptySet())))
+                .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, foodCategoryMap.getOrDefault(foodDto.id(), Collections.emptySet())))
                 .collect(Collectors.toList());
     }
 
-    private GetFoodOut convertFoodDtoToGetFoodOut(FoodDto foodDto, Set<FoodCategoryDto> foodCategories) {
-        return new GetFoodOut(
+    private GetFoodResponse convertFoodDtoToGetFoodResponse(FoodDto foodDto, Set<FoodCategoryDto> foodCategories) {
+        return new GetFoodResponse(
                 foodDto.id(),
                 foodDto.name(),
                 foodDto.description(),
@@ -156,7 +156,7 @@ public class FoodService {
     }
 
     @Transactional
-    public FoodDto updateFood(Long id, UpdateFoodRequestDto updatedFood) {
+    public FoodDto updateFood(Long id, UpdateFoodRequest updatedFood) {
         return null;
     }
 
