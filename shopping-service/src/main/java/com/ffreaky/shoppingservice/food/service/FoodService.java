@@ -44,6 +44,9 @@ public class FoodService {
         this.productProviderRepository = productProviderRepository;
     }
 
+    /*
+    TODO : Right now FoodEntity and ClothesEntity might point to the same ProductEntity, which is not correct.
+     */
     @Transactional
     public GetFoodDto createFood(CreateFoodRequestDto requestDto) {
         // Check that product category exists and retrieve it
