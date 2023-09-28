@@ -45,21 +45,21 @@ public class FoodService {
         }
 
         // Create product
-        final ProductEntity productEntity = new ProductEntity();
+        final ProductEntity pe = new ProductEntity();
         final ProductId productId = new ProductId();
         productId.setProductType(ProductType.FOOD);
-        productEntity.setProductId(productId);
-        productEntity.setProductProviderId(reqBody.product().productProviderId());
-        productEntity.setName(reqBody.name());
-        productEntity.setDescription(reqBody.description());
-        productEntity.setImage(reqBody.image());
-        productEntity.setPrice(reqBody.product().price());
-        productEntity.setPickupTime(reqBody.product().pickupTime());
+        pe.setProductId(productId);
+        pe.setProductProviderId(reqBody.product().productProviderId());
+        pe.setName(reqBody.name());
+        pe.setDescription(reqBody.description());
+        pe.setImage(reqBody.image());
+        pe.setPrice(reqBody.product().price());
+        pe.setPickupTime(reqBody.product().pickupTime());
 
         // Save product
         final ProductEntity savedProductEntity;
         try {
-            savedProductEntity = productRepository.save(productEntity);
+            savedProductEntity = productRepository.save(pe);
         } catch (Exception e) {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving product: " + e.getMessage());
         }
