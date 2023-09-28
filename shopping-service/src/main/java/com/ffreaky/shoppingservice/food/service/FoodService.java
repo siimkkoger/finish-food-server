@@ -108,26 +108,22 @@ public class FoodService {
     }
 
     public List<GetFoodResponse> getAll(GetFoodRequestFilter filter) {
-        Set<FoodDto> foods;
-
-        // Get all foods if no categories requested
-        if (filter.foodCategoryIds() == null || filter.foodCategoryIds().isEmpty()) {
-            foods = foodRepository.findAllDto();
-        } else {
-            foods = foodRepository.findAllByFoodCategoryIds(filter.foodCategoryIds());
-        }
+        // Get food and product information
+        Set<FoodDto> foods = filter.foodCategoryIds() == null || filter.foodCategoryIds().isEmpty()
+                ? foodRepository.findAllDto()
+                : foodRepository.findAllByFoodCategoryIds(filter.foodCategoryIds());
 
         // Include categories to response if requested
         if (filter.includeFoodCategories()) {
-            return includeCatsToAllFoods(foods);
-        } else {
-            return foods.stream()
-                    .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, null))
-                    .collect(Collectors.toList());
+            return addCatsToFoods(foods);
         }
+
+        return foods.stream()
+                .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, null))
+                .collect(Collectors.toList());
     }
 
-    private List<GetFoodResponse> includeCatsToAllFoods(Set<FoodDto> foods) {
+    private List<GetFoodResponse> addCatsToFoods(Set<FoodDto> foods) {
         Map<Long, Set<FoodCategoryDto>> foodCategoryMap = new HashMap<>();
         Set<Long> foodIds = foods.stream()
                 .map(FoodDto::id)
