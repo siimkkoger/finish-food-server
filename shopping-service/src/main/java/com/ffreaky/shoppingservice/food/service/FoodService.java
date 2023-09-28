@@ -37,6 +37,16 @@ public class FoodService {
     }
 
 
+    /**
+     * Add a new food row to the database.
+     * The method also adds everything else that is needed for the food to be complete.
+     * - FoodEntity
+     * - ProductEntity
+     * - FoodFoodCategoryEntity
+     *
+     * @param reqBody
+     * @return GetFoodResponse
+     */
     @Transactional
     public GetFoodResponse createFood(CreateFoodRequest reqBody) {
         // Check that product category is FOOD
@@ -83,7 +93,7 @@ public class FoodService {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving food: " + e.getMessage());
         }
 
-        // Create food categories
+        // Create and save food categories
         foodFoodCategoryRepository.saveAll(
                 reqBody.foodCategoryIds().stream()
                         .map(id -> {
