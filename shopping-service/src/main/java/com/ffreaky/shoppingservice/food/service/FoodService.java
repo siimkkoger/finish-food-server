@@ -10,6 +10,7 @@ import com.ffreaky.shoppingservice.product.ProductType;
 import com.ffreaky.shoppingservice.product.entity.ProductEntity;
 import com.ffreaky.shoppingservice.product.entity.ProductId;
 import com.ffreaky.shoppingservice.product.repository.ProductRepository;
+import com.ffreaky.shoppingservice.product.service.ProductService;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -21,19 +22,19 @@ import java.util.stream.Collectors;
 public class FoodService {
 
     private final FoodRepository foodRepository;
-    private final ProductRepository productRepository;
     private final FoodCategoryRepository foodCategoryRepository;
     private final FoodFoodCategoryRepository foodFoodCategoryRepository;
+    private final ProductService productService;
 
     public FoodService(
             FoodRepository foodRepository,
-            ProductRepository productRepository,
             FoodCategoryRepository foodCategoryRepository,
-            FoodFoodCategoryRepository foodFoodCategoryRepository) {
+            FoodFoodCategoryRepository foodFoodCategoryRepository,
+            ProductService productService) {
         this.foodRepository = foodRepository;
-        this.productRepository = productRepository;
         this.foodCategoryRepository = foodCategoryRepository;
         this.foodFoodCategoryRepository = foodFoodCategoryRepository;
+        this.productService = productService;
     }
 
 
@@ -54,25 +55,8 @@ public class FoodService {
             throw new FinishFoodException(FinishFoodException.Type.INVALID_PRODUCT_TYPE, "Product type must be FOOD");
         }
 
-        // Create product
-        final ProductEntity pe = new ProductEntity();
-        final ProductId productId = new ProductId();
-        productId.setProductType(ProductType.FOOD);
-        pe.setProductId(productId);
-        pe.setProductProviderId(reqBody.product().productProviderId());
-        pe.setName(reqBody.name());
-        pe.setDescription(reqBody.description());
-        pe.setImage(reqBody.image());
-        pe.setPrice(reqBody.product().price());
-        pe.setPickupTime(reqBody.product().pickupTime());
-
-        // Save product
-        final ProductEntity savedProductEntity;
-        try {
-            savedProductEntity = productRepository.save(pe);
-        } catch (Exception e) {
-            throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving product: " + e.getMessage());
-        }
+        // Create and save product
+        final ProductEntity savedProductEntity = productService.createProduct(reqBody.product());
 
         // Check that food categories exist
         if (reqBody.foodCategoryIds().size() != foodCategoryRepository.findAllCatsByIds(reqBody.foodCategoryIds()).size()) {
