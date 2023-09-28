@@ -39,10 +39,10 @@ public class FoodService {
 
     /**
      * Add a new food row to the database.
-     * The method also adds everything else that is needed for the food to be complete.
-     * - FoodEntity
-     * - ProductEntity
-     * - FoodFoodCategoryEntity
+     * The method also adds everything else that is needed for the food to be complete:
+     * 1. ProductEntity
+     * 2. FoodEntity
+     * 3. FoodFoodCategoryEntity
      *
      * @param reqBody
      * @return GetFoodResponse
