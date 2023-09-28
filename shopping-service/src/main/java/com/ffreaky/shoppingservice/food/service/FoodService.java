@@ -70,15 +70,15 @@ public class FoodService {
         }
 
         // Create food
-        final FoodEntity foodEntity = new FoodEntity();
-        foodEntity.setProductId(savedProductEntity.getProductId().getId());
-        foodEntity.setProductTypeName(ProductType.FOOD);
-        foodEntity.setDietaryRestrictions(reqBody.dietaryRestrictions());
+        final FoodEntity fe = new FoodEntity();
+        fe.setProductId(savedProductEntity.getProductId().getId());
+        fe.setProductTypeName(ProductType.FOOD);
+        fe.setDietaryRestrictions(reqBody.dietaryRestrictions());
 
         // Save food
         final FoodEntity savedFoodEntity;
         try {
-            savedFoodEntity = foodRepository.save(foodEntity);
+            savedFoodEntity = foodRepository.save(fe);
         } catch (Exception e) {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving food: " + e.getMessage());
         }
