@@ -38,9 +38,9 @@ public class FoodService {
 
 
     @Transactional
-    public GetFoodResponse createFood(CreateFoodRequest requestDto) {
+    public GetFoodResponse createFood(CreateFoodRequest reqBody) {
         // Check that product category is FOOD
-        if (!requestDto.product().productType().equals(ProductType.FOOD)) {
+        if (!reqBody.product().productType().equals(ProductType.FOOD)) {
             throw new FinishFoodException(FinishFoodException.Type.INVALID_PRODUCT_TYPE, "Product type must be FOOD");
         }
 
@@ -49,12 +49,12 @@ public class FoodService {
         final ProductId productId = new ProductId();
         productId.setProductType(ProductType.FOOD);
         productEntity.setProductId(productId);
-        productEntity.setProductProviderId(requestDto.product().productProviderId());
-        productEntity.setName(requestDto.name());
-        productEntity.setDescription(requestDto.description());
-        productEntity.setImage(requestDto.image());
-        productEntity.setPrice(requestDto.product().price());
-        productEntity.setPickupTime(requestDto.product().pickupTime());
+        productEntity.setProductProviderId(reqBody.product().productProviderId());
+        productEntity.setName(reqBody.name());
+        productEntity.setDescription(reqBody.description());
+        productEntity.setImage(reqBody.image());
+        productEntity.setPrice(reqBody.product().price());
+        productEntity.setPickupTime(reqBody.product().pickupTime());
 
         // Save product
         final ProductEntity savedProductEntity;
@@ -64,8 +64,8 @@ public class FoodService {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving product: " + e.getMessage());
         }
 
-        // Check that food categories exist and retrieve them
-        if (requestDto.foodCategoryIds().size() != foodCategoryRepository.findAllCatsByIds(requestDto.foodCategoryIds()).size()) {
+        // Check that food categories exist
+        if (reqBody.foodCategoryIds().size() != foodCategoryRepository.findAllCatsByIds(reqBody.foodCategoryIds()).size()) {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food category not found");
         }
 
@@ -73,7 +73,7 @@ public class FoodService {
         final FoodEntity foodEntity = new FoodEntity();
         foodEntity.setProductId(savedProductEntity.getProductId().getId());
         foodEntity.setProductTypeName(ProductType.FOOD);
-        foodEntity.setDietaryRestrictions(requestDto.dietaryRestrictions());
+        foodEntity.setDietaryRestrictions(reqBody.dietaryRestrictions());
 
         // Save food
         final FoodEntity savedFoodEntity;
@@ -84,16 +84,17 @@ public class FoodService {
         }
 
         // Create food categories
-        foodFoodCategoryRepository.saveAll(requestDto.foodCategoryIds().stream()
-                .map(foodCategoryId -> {
-                    final FoodFoodCategoryEntity foodFoodCategoryEntity = new FoodFoodCategoryEntity();
-                    foodFoodCategoryEntity.getId().setFoodId(savedFoodEntity.getId());
-                    foodFoodCategoryEntity.getId().setFoodCategoryId(foodCategoryId);
-                    return foodFoodCategoryEntity;
-                }).collect(Collectors.toList()));
+        foodFoodCategoryRepository.saveAll(
+                reqBody.foodCategoryIds().stream()
+                        .map(id -> {
+                            final FoodFoodCategoryEntity ffc = new FoodFoodCategoryEntity();
+                            ffc.getId().setFoodId(savedFoodEntity.getId());
+                            ffc.getId().setFoodCategoryId(id);
+                            return ffc;
+                        }).collect(Collectors.toList()));
 
         // Return GetFoodOut
-        return getFoodById(savedFoodEntity.getId(), null);
+        return getFoodById(savedFoodEntity.getId(), new GetFoodRequestFilter(null, true));
     }
 
     public GetFoodResponse getFoodById(Long id, GetFoodRequestFilter filter) {
