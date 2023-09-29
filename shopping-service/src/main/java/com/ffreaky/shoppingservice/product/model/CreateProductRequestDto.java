@@ -12,8 +12,8 @@ public record CreateProductRequestDto(
         @NotNull ProductType productType,
         @NotNull Long productProviderId,
         @NotBlank String name,
-        @NotBlank String description,
-        @NotBlank String image,
+        String description,
+        String image,
         @NotNull @Positive BigDecimal price,
         @NotNull Date pickupTime
 ) {

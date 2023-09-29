@@ -8,8 +8,6 @@ import com.ffreaky.shoppingservice.food.repository.FoodFoodCategoryRepository;
 import com.ffreaky.shoppingservice.food.repository.FoodRepository;
 import com.ffreaky.shoppingservice.product.ProductType;
 import com.ffreaky.shoppingservice.product.entity.ProductEntity;
-import com.ffreaky.shoppingservice.product.entity.ProductId;
-import com.ffreaky.shoppingservice.product.repository.ProductRepository;
 import com.ffreaky.shoppingservice.product.service.ProductService;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
 import jakarta.transaction.Transactional;
@@ -100,7 +98,7 @@ public class FoodService {
         return convertFoodDtoToGetFoodResponse(foodDto, foodCategories);
     }
 
-    public List<GetFoodResponse> getAll(GetFoodRequestFilter filter) {
+    public List<GetFoodResponse> getAll(FoodFilter filter) {
         // Get food and product information
         Set<FoodDto> foods = filter.foodCategoryIds() == null || filter.foodCategoryIds().isEmpty()
                 ? foodRepository.findAllDto()
@@ -145,7 +143,7 @@ public class FoodService {
     }
 
     @Transactional
-    public FoodDto updateFood(Long id, UpdateFoodRequest updatedFood) {
+    public FoodDto updateFood(UpdateFoodRequest updatedFood) {
         return null;
     }
 
