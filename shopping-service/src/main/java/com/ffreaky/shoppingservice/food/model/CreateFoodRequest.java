@@ -7,8 +7,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 
 public record CreateFoodRequest(
-        @NotBlank CreateProductRequestDto product,
-        @NotNull Set<Long> foodCategoryIds,
-        @NotBlank String dietaryRestrictions
+        @NotNull CreateProductRequestDto product,
+        Set<Long> foodCategoryIds,
+        String dietaryRestrictions,
+        @NotNull GetFoodRequestFilter filter
 ) {
 }

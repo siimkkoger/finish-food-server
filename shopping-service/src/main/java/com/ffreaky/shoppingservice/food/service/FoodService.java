@@ -88,16 +88,14 @@ public class FoodService {
                         }).collect(Collectors.toList()));
 
         // Return GetFoodOut
-        return getFoodById(savedFoodEntity.getId(), new GetFoodRequestFilter(null, true));
+        return getFoodById(savedFoodEntity.getId(), reqBody.filter().includeFoodCategories());
     }
 
-    public GetFoodResponse getFoodById(Long id, GetFoodRequestFilter filter) {
+    public GetFoodResponse getFoodById(Long id, boolean includeFoodCategories) {
         FoodDto foodDto = foodRepository.findDtoById(id)
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
 
-        Set<FoodCategoryDto> foodCategories = filter != null && filter.includeFoodCategories()
-                ? foodCategoryRepository.findCatByFoodId(foodDto.id())
-                : null;
+        Set<FoodCategoryDto> foodCategories = includeFoodCategories ? foodCategoryRepository.findCatByFoodId(foodDto.id()) : null;
 
         return convertFoodDtoToGetFoodResponse(foodDto, foodCategories);
     }

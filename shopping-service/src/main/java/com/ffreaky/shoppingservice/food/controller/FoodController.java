@@ -19,7 +19,7 @@ public class FoodController {
 
     @PostMapping("/{id}")
     public GetFoodResponse getById(@PathVariable Long id, @Validated @RequestBody GetFoodRequestFilter filter) {
-        return foodService.getFoodById(id, filter);
+        return foodService.getFoodById(id, filter.includeFoodCategories());
     }
 
     @PostMapping("/get-all")
