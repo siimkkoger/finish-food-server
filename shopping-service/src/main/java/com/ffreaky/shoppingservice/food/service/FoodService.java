@@ -76,14 +76,7 @@ public class FoodService {
         }
 
         // Create and save food categories
-        foodFoodCategoryRepository.saveAll(
-                reqBody.foodCategoryIds().stream()
-                        .map(id -> {
-                            final FoodFoodCategoryEntity ffc = new FoodFoodCategoryEntity();
-                            ffc.getId().setFoodId(savedFoodEntity.getId());
-                            ffc.getId().setFoodCategoryId(id);
-                            return ffc;
-                        }).collect(Collectors.toList()));
+        createOrUpdateFoodCateogries(savedFoodEntity.getId(), reqBody.foodCategoryIds());
 
         // Return GetFoodOut
         return getFoodById(savedFoodEntity.getId(), reqBody.filter().includeFoodCategories());
@@ -106,15 +99,15 @@ public class FoodService {
 
         // Include categories to response if requested
         if (filter.includeFoodCategories()) {
-            return addCatsToFoods(foods);
+            return addCategoriesToFoods(foods);
         }
 
         return foods.stream()
-                .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, null))
+                .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, Collections.emptySet()))
                 .collect(Collectors.toList());
     }
 
-    private List<GetFoodResponse> addCatsToFoods(Set<FoodDto> foods) {
+    private List<GetFoodResponse> addCategoriesToFoods(Set<FoodDto> foods) {
         Map<Long, Set<FoodCategoryDto>> foodCategoryMap = new HashMap<>();
         Set<Long> foodIds = foods.stream()
                 .map(FoodDto::id)
@@ -139,12 +132,49 @@ public class FoodService {
                 foodDto.pickupTime(),
                 foodDto.productType(),
                 foodDto.productProviderName(),
-                foodCategories);
+                foodCategories
+        );
     }
 
     @Transactional
-    public FoodDto updateFood(UpdateFoodRequest updatedFood) {
-        return null;
+    public GetFoodResponse updateFood(UpdateFoodRequest reqBody) {
+        FoodEntity fe = foodRepository.findById(reqBody.id())
+                .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + reqBody.id()));
+
+        // Save product entity
+        final ProductEntity savedProductEntity = productService.updateProduct(fe.getProductId(), reqBody.product());
+
+        // Update food entity
+        fe.setDietaryRestrictions(reqBody.dietaryRestrictions());
+
+        // Save food
+        final FoodEntity savedFoodEntity;
+        try {
+            savedFoodEntity = foodRepository.save(fe);
+        } catch (Exception e) {
+            throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving food: " + e.getMessage());
+        }
+
+        // Create and save food categories
+        createOrUpdateFoodCateogries(savedFoodEntity.getId(), reqBody.foodCategoryIds());
+
+        return getFoodById(savedFoodEntity.getId(), reqBody.filter().includeFoodCategories());
+    }
+
+    @Transactional
+    public List<FoodFoodCategoryEntity> createOrUpdateFoodCateogries(Long foodId, Set<Long> foodCategoryIds) {
+        // Delete all food categories
+        foodFoodCategoryRepository.deleteAll(foodFoodCategoryRepository.findAllByFoodId(foodId));
+
+        // Create and save food categories
+        return foodFoodCategoryRepository.saveAll(
+                foodCategoryIds.stream()
+                        .map(id -> {
+                            final FoodFoodCategoryEntity ffc = new FoodFoodCategoryEntity();
+                            ffc.getId().setFoodId(foodId);
+                            ffc.getId().setFoodCategoryId(id);
+                            return ffc;
+                        }).collect(Collectors.toList()));
     }
 
     public void deleteFood(Long id) {

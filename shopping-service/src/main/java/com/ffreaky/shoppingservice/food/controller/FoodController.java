@@ -33,7 +33,7 @@ public class FoodController {
     }
 
     @PostMapping("/update")
-    public FoodDto updateFood(@Validated @RequestBody UpdateFoodRequest updatedFood) {
+    public GetFoodResponse updateFood(@Validated @RequestBody UpdateFoodRequest updatedFood) {
         return foodService.updateFood(updatedFood);
     }
 
