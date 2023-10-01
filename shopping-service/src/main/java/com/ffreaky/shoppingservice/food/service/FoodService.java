@@ -46,7 +46,7 @@ public class FoodService {
      * @param reqBody
      * @return GetFoodResponse
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public GetFoodResponse createFood(CreateFoodRequest reqBody) {
         // Check that product category is FOOD
         if (!reqBody.product().productType().equals(ProductType.FOOD)) {
