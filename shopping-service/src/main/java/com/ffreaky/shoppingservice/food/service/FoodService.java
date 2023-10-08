@@ -10,8 +10,9 @@ import com.ffreaky.shoppingservice.product.ProductType;
 import com.ffreaky.shoppingservice.product.entity.ProductEntity;
 import com.ffreaky.shoppingservice.product.service.ProductService;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,7 +47,7 @@ public class FoodService {
      * @param reqBody
      * @return GetFoodResponse
      */
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
     public GetFoodResponse createFood(CreateFoodRequest reqBody) {
         // Check that product category is FOOD
         if (!reqBody.product().productType().equals(ProductType.FOOD)) {
@@ -66,7 +67,17 @@ public class FoodService {
         fe.setProductId(savedProductEntity.getProductId().getId());
         fe.setProductTypeName(ProductType.FOOD);
         fe.setDietaryRestrictions(reqBody.dietaryRestrictions());
+        final FoodEntity savedFoodEntity = saveFoodEntity(fe);
 
+        // Create and save food categories
+        createOrUpdateFoodCateogries(savedFoodEntity.getId(), reqBody.foodCategoryIds());
+
+        // Return GetFoodOut
+        return getFoodById(savedFoodEntity.getId(), reqBody.filter().includeFoodCategories());
+    }
+
+    @Transactional
+    public FoodEntity saveFoodEntity(FoodEntity fe) {
         // Save food
         final FoodEntity savedFoodEntity;
         try {
@@ -74,12 +85,7 @@ public class FoodService {
         } catch (Exception e) {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving food: " + e.getMessage());
         }
-
-        // Create and save food categories
-        createOrUpdateFoodCateogries(savedFoodEntity.getId(), reqBody.foodCategoryIds());
-
-        // Return GetFoodOut
-        return getFoodById(savedFoodEntity.getId(), reqBody.filter().includeFoodCategories());
+        return savedFoodEntity;
     }
 
     public GetFoodResponse getFoodById(Long id, boolean includeFoodCategories) {
@@ -99,7 +105,7 @@ public class FoodService {
 
         // Include categories to response if requested
         if (filter.includeFoodCategories()) {
-            return addCategoriesToFoods(foods);
+            return addCategoriesInfoToFoodsDto(foods);
         }
 
         return foods.stream()
@@ -107,7 +113,7 @@ public class FoodService {
                 .collect(Collectors.toList());
     }
 
-    private List<GetFoodResponse> addCategoriesToFoods(Set<FoodDto> foods) {
+    private List<GetFoodResponse> addCategoriesInfoToFoodsDto(Set<FoodDto> foods) {
         Map<Long, Set<FoodCategoryDto>> foodCategoryMap = new HashMap<>();
         Set<Long> foodIds = foods.stream()
                 .map(FoodDto::id)
@@ -142,18 +148,11 @@ public class FoodService {
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + reqBody.id()));
 
         // Save product entity
-        final ProductEntity savedProductEntity = productService.updateProduct(fe.getProductId(), reqBody.product());
+        productService.updateProduct(fe.getProductId(), reqBody.product());
 
         // Update food entity
         fe.setDietaryRestrictions(reqBody.dietaryRestrictions());
-
-        // Save food
-        final FoodEntity savedFoodEntity;
-        try {
-            savedFoodEntity = foodRepository.save(fe);
-        } catch (Exception e) {
-            throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving food: " + e.getMessage());
-        }
+        final FoodEntity savedFoodEntity = saveFoodEntity(fe);
 
         // Create and save food categories
         createOrUpdateFoodCateogries(savedFoodEntity.getId(), reqBody.foodCategoryIds());
