@@ -21,17 +21,17 @@ public class ProductService {
 
     // TODO : make sure that Transaction works as expected, maybe i have to add some annotations/keywords
     @Transactional
-    public ProductEntity createProduct(CreateProductRequestDto createProductRequestDto) {
+    public ProductEntity createProduct(CreateProductRequestDto dto) {
         final ProductEntity pe = new ProductEntity();
         final ProductId productId = new ProductId();
         productId.setProductType(ProductType.FOOD);
         pe.setProductId(productId);
-        pe.setProductProviderId(createProductRequestDto.productProviderId());
-        pe.setName(createProductRequestDto.name());
-        pe.setDescription(createProductRequestDto.description());
-        pe.setImage(createProductRequestDto.image());
-        pe.setPrice(createProductRequestDto.price());
-        pe.setPickupTime(createProductRequestDto.pickupTime());
+        pe.setProductProviderId(dto.productProviderId());
+        pe.setName(dto.name());
+        pe.setDescription(dto.description());
+        pe.setImage(dto.image());
+        pe.setPrice(dto.price());
+        pe.setPickupTime(dto.pickupTime());
 
         return saveProduct(pe);
     }

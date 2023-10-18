@@ -78,7 +78,6 @@ public class FoodService {
 
     @Transactional
     public FoodEntity saveFoodEntity(FoodEntity fe) {
-        // Save food
         final FoodEntity savedFoodEntity;
         try {
             savedFoodEntity = foodRepository.save(fe);
