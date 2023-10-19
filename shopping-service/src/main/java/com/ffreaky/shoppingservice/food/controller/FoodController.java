@@ -37,9 +37,20 @@ public class FoodController {
         return foodService.updateFood(updatedFood);
     }
 
+    @PostMapping("/update-food-category")
+    public GetFoodResponse updateFoodCategory(@Validated @RequestBody UpdateFoodCategoryRequest req) {
+        foodService.createOrUpdateFoodCategories(req);
+        return foodService.getFoodById(req.foodId(), true);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteFood(@PathVariable Long id) {
         foodService.deleteFood(id);
+    }
+
+    @GetMapping("/get-food-categories")
+    public List<GetFoodCategoryResponse> getAllFoodCategories() {
+        return foodService.getAllFoodCategories();
     }
 
 }

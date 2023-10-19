@@ -7,7 +7,6 @@ import java.util.Set;
 
 public record CreateFoodRequest(
         @NotNull CreateProductRequestDto product,
-        Set<Long> foodCategoryIds,
         String dietaryRestrictions,
         @NotNull FoodFilter filter
 ) {

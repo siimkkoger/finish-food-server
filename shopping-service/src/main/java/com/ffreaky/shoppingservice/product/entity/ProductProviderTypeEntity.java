@@ -16,7 +16,7 @@ public class ProductProviderTypeEntity extends BaseEntity {
 
     @Id
     @Enumerated(EnumType.STRING)
-    @Column(name = "categoryName", nullable = false)
+    @Column(name = "foodCategoryName", nullable = false)
     private ProductProviderType productProviderType;
 
     enum ProductProviderType {
