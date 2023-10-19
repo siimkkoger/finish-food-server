@@ -19,8 +19,6 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    // TODO : make sure that Transaction works as expected, maybe i have to add some annotations/keywords
-    @Transactional
     public ProductEntity createProduct(CreateProductRequestDto dto) {
         final ProductEntity pe = new ProductEntity();
         final ProductId productId = new ProductId();
@@ -36,7 +34,6 @@ public class ProductService {
         return saveProduct(pe);
     }
 
-    @Transactional
     public ProductEntity updateProduct(Long productId, UpdateProductRequestDto dto) {
         ProductEntity pe = productRepository.findById(productId)
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Product not found"));
@@ -47,7 +44,6 @@ public class ProductService {
         return saveProduct(pe);
     }
 
-    @Transactional
     public ProductEntity saveProduct(ProductEntity pe) {
         final ProductEntity savedProductEntity;
         try {

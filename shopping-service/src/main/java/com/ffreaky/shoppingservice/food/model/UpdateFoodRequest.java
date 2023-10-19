@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 
 public record UpdateFoodRequest(
-        @NotNull Long id,
+        @NotNull Long foodId,
         @NotNull UpdateProductRequestDto product,
         Set<Long> foodCategoryIds,
         String dietaryRestrictions,

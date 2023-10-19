@@ -76,7 +76,6 @@ public class FoodService {
         return getFoodById(savedFoodEntity.getId(), reqBody.filter().includeFoodCategories());
     }
 
-    @Transactional
     public FoodEntity saveFoodEntity(FoodEntity fe) {
         final FoodEntity savedFoodEntity;
         try {
@@ -143,20 +142,22 @@ public class FoodService {
 
     @Transactional
     public GetFoodResponse updateFood(UpdateFoodRequest reqBody) {
-        FoodEntity fe = foodRepository.findById(reqBody.id())
-                .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + reqBody.id()));
+        FoodEntity fe = foodRepository.findById(reqBody.foodId())
+                .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + reqBody.foodId()));
 
         // Save product entity
         productService.updateProduct(fe.getProductId(), reqBody.product());
 
         // Update food entity
-        fe.setDietaryRestrictions(reqBody.dietaryRestrictions());
-        final FoodEntity savedFoodEntity = saveFoodEntity(fe);
+        if (reqBody.dietaryRestrictions().equals(fe.getDietaryRestrictions())) {
+            fe.setDietaryRestrictions(reqBody.dietaryRestrictions());
+            saveFoodEntity(fe);
+        }
 
         // Create and save food categories
-        createOrUpdateFoodCateogries(savedFoodEntity.getId(), reqBody.foodCategoryIds());
+        createOrUpdateFoodCateogries(reqBody.foodId(), reqBody.foodCategoryIds());
 
-        return getFoodById(savedFoodEntity.getId(), reqBody.filter().includeFoodCategories());
+        return getFoodById(reqBody.foodId(), reqBody.filter().includeFoodCategories());
     }
 
     @Transactional
