@@ -69,14 +69,11 @@ public class FoodService {
         fe.setDietaryRestrictions(reqBody.dietaryRestrictions());
         final FoodEntity savedFoodEntity = saveFoodEntity(fe);
 
-        // Create and save food categories
-        createOrUpdateFoodCateogries(savedFoodEntity.getId(), reqBody.foodCategoryIds());
-
-        // Return GetFoodOut
+        // Return GetFoodResponse
         return getFoodById(savedFoodEntity.getId(), reqBody.filter().includeFoodCategories());
     }
 
-    public FoodEntity saveFoodEntity(FoodEntity fe) {
+    private FoodEntity saveFoodEntity(FoodEntity fe) {
         final FoodEntity savedFoodEntity;
         try {
             savedFoodEntity = foodRepository.save(fe);
@@ -140,7 +137,7 @@ public class FoodService {
         );
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
     public GetFoodResponse updateFood(UpdateFoodRequest reqBody) {
         FoodEntity fe = foodRepository.findById(reqBody.foodId())
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + reqBody.foodId()));
@@ -154,13 +151,10 @@ public class FoodService {
             saveFoodEntity(fe);
         }
 
-        // Create and save food categories
-        createOrUpdateFoodCateogries(reqBody.foodId(), reqBody.foodCategoryIds());
-
         return getFoodById(reqBody.foodId(), reqBody.filter().includeFoodCategories());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
     public List<FoodFoodCategoryEntity> createOrUpdateFoodCateogries(Long foodId, Set<Long> foodCategoryIds) {
         // Delete all food categories
         foodFoodCategoryRepository.deleteAll(foodFoodCategoryRepository.findAllByFoodId(foodId));
