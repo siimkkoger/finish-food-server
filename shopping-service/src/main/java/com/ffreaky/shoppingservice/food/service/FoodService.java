@@ -87,33 +87,26 @@ public class FoodService {
         return convertFoodDtoToGetFoodResponse(foodDto, foodCategorySet);
     }
 
-    public List<GetFoodResponse> getAll(FoodFilter filter) {
-        // Get food and product information
-        Set<FoodDto> foods = filter.foodCategoryIds() == null || filter.foodCategoryIds().isEmpty()
-                ? foodRepository.findAllDto()
-                : foodRepository.findAllByFoodCategoryIds(filter.foodCategoryIds());
-
-        // Include categories to response if requested
-        if (filter.includeFoodCategories()) {
-            final var foodIds = foods.stream().map(FoodDto::id).collect(Collectors.toSet());
-            final var foodIdCategoryMap = foodCategoryRepository.findCategoriesByFoodIds(foodIds)
-                    .stream()
-                    .collect(Collectors.groupingBy(
-                            FoodFoodCategoryDto::foodId,
-                            Collectors.mapping(
-                                    ffcDto -> new FoodCategoryDto(ffcDto.foodCategoryId(), ffcDto.foodCategoryName()),
-                                    Collectors.toSet()
-                            )
-                    ));
-
-            return foods.stream()
-                    .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, foodIdCategoryMap.get(foodDto.id())))
-                    .collect(Collectors.toList());
-        }
+    public List<GetFoodResponse> getFoods(FoodFilter filter) {
+        Set<FoodDto> foods = filter.foodCategoryIds().isEmpty() ? foodRepository.findAllDto() : foodRepository.findAllByFoodCategoryIds(filter.foodCategoryIds());
+        Set<Long> foodIds = foods.stream().map(FoodDto::id).collect(Collectors.toSet());
+        Map<Long, Set<FoodCategoryDto>> foodIdCategoryMap = filter.includeFoodCategories() ? getFoodCategories(foodIds) : Collections.emptyMap();
 
         return foods.stream()
-                .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, Collections.emptySet()))
+                .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, foodIdCategoryMap.getOrDefault(foodDto.id(), Collections.emptySet())))
                 .collect(Collectors.toList());
+    }
+
+    private Map<Long, Set<FoodCategoryDto>> getFoodCategories(Set<Long> foodIds) {
+        return foodCategoryRepository.findCategoriesByFoodIds(foodIds)
+                .stream()
+                .collect(Collectors.groupingBy(
+                        FoodFoodCategoryDto::foodId,
+                        Collectors.mapping(
+                                ffcDto -> new FoodCategoryDto(ffcDto.foodCategoryId(), ffcDto.foodCategoryName()),
+                                Collectors.toSet()
+                        )
+                ));
     }
 
     private GetFoodResponse convertFoodDtoToGetFoodResponse(FoodDto foodDto, Set<FoodCategoryDto> foodCategoryDtoSet) {

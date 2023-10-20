@@ -24,7 +24,7 @@ public class FoodController {
 
     @PostMapping("/get-all")
     public List<GetFoodResponse> getAllFoodsByFoodCategoryIds(@Validated @RequestBody FoodFilter filter) {
-        return foodService.getAll(filter);
+        return foodService.getFoods(filter);
     }
 
     @PostMapping("/create")

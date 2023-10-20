@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Set;
 
-public record FoodFilter(Set<Long> foodCategoryIds, @NotNull Boolean includeFoodCategories) {
+public record FoodFilter(@NotNull Set<Long> foodCategoryIds, @NotNull Boolean includeFoodCategories) {
     public FoodFilter {
         assert foodCategoryIds != null;
         assert includeFoodCategories != null;
