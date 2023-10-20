@@ -17,13 +17,13 @@ public class FoodController {
         this.foodService = foodService;
     }
 
-    @PostMapping("/{id}")
-    public GetFoodResponse getById(@PathVariable Long id, @Validated @RequestBody FoodFilter filter) {
-        return foodService.getFoodById(id, filter.includeFoodCategories());
+    @PostMapping("/{foodId}")
+    public GetFoodResponse getFoodById(@PathVariable Long foodId, @Validated @RequestBody FoodFilter filter) {
+        return foodService.getFoodById(foodId, filter.includeFoodCategories());
     }
 
     @PostMapping("/get-all")
-    public List<GetFoodResponse> getAllByFoodCategoryIds(@Validated @RequestBody FoodFilter filter) {
+    public List<GetFoodResponse> getAllFoodsByFoodCategoryIds(@Validated @RequestBody FoodFilter filter) {
         return foodService.getAll(filter);
     }
 
@@ -37,20 +37,25 @@ public class FoodController {
         return foodService.updateFood(updatedFood);
     }
 
+    @DeleteMapping("/{foodId}")
+    public boolean deleteFood(@PathVariable Long foodId) {
+        return foodService.deleteFood(foodId);
+    }
+
     @PostMapping("/update-food-category")
     public GetFoodResponse updateFoodCategory(@Validated @RequestBody UpdateFoodCategoryRequest req) {
         foodService.createOrUpdateFoodCategories(req);
         return foodService.getFoodById(req.foodId(), true);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteFood(@PathVariable Long id) {
-        foodService.deleteFood(id);
+    @GetMapping("/get-food-categories")
+    public GetFoodCategoryResponse getAllFoodCategories() {
+        return foodService.getAllFoodCategories();
     }
 
-    @GetMapping("/get-food-categories")
-    public List<GetFoodCategoryResponse> getAllFoodCategories() {
-        return foodService.getAllFoodCategories();
+    @GetMapping("/get-food-categories-for-food/{foodId}")
+    public GetFoodCategoryResponse getAllFoodCategoriesForFood(@PathVariable Long foodId) {
+        return foodService.getAllFoodCategoriesForFood(foodId);
     }
 
 }

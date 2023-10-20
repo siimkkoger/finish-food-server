@@ -154,7 +154,7 @@ public class FoodService {
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
-    public boolean createOrUpdateFoodCategories(UpdateFoodCategoryRequest req) {
+    public void createOrUpdateFoodCategories(UpdateFoodCategoryRequest req) {
         try {
             // Delete all food categories
             foodFoodCategoryRepository.deleteAll(foodFoodCategoryRepository.findAllByFoodId(req.foodId()));
@@ -168,19 +168,26 @@ public class FoodService {
                                 ffc.getId().setFoodCategoryId(id);
                                 return ffc;
                             }).collect(Collectors.toList()));
-
-            return true;
         } catch (Exception e) {
             throw new FinishFoodException(FinishFoodException.Type.BAD_REQUEST, "Error saving food categories: " + e.getMessage());
         }
     }
 
-    public void deleteFood(Long id) {
-        if (foodRepository.existsById(id)) {
-            foodRepository.deleteById(id);
-        } else {
+    public GetFoodCategoryResponse getAllFoodCategories() {
+        return new GetFoodCategoryResponse(foodCategoryRepository.findAllCategories());
+    }
+
+    public GetFoodCategoryResponse getAllFoodCategoriesForFood(Long foodId) {
+        return new GetFoodCategoryResponse(foodCategoryRepository.findCategoriesByFoodId(foodId));
+    }
+
+    public boolean deleteFood(Long id) {
+        if (!foodRepository.existsById(id)) {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id);
         }
+
+        foodRepository.deleteById(id);
+        return true;
     }
 
 }
