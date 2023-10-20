@@ -1,6 +1,8 @@
 package com.ffreaky.shoppingservice.food.controller;
 
-import com.ffreaky.shoppingservice.food.model.*;
+import com.ffreaky.shoppingservice.food.model.request.*;
+import com.ffreaky.shoppingservice.food.model.response.GetFoodCategoryResponse;
+import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import com.ffreaky.shoppingservice.food.service.FoodService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -17,34 +19,34 @@ public class FoodController {
         this.foodService = foodService;
     }
 
-    @PostMapping("/{foodId}")
-    public GetFoodResponse getFoodById(@PathVariable Long foodId, @Validated @RequestBody FoodFilter filter) {
-        return foodService.getFoodById(foodId, filter.includeFoodCategories());
+    @PostMapping("/get-food/{foodId}")
+    public GetFoodResponse getFoodById(@Validated @RequestBody GetFoodReqBody req) {
+        return foodService.getFoodById(req.foodId(), req.includeFoodCategories());
     }
 
-    @PostMapping("/get-all")
-    public List<GetFoodResponse> getAllFoodsByFoodCategoryIds(@Validated @RequestBody FoodFilter filter) {
+    @PostMapping("/get-foods")
+    public List<GetFoodResponse> getFoods(@Validated @RequestBody GetFoodsFilter filter) {
         return foodService.getFoods(filter);
     }
 
-    @PostMapping("/create")
-    public GetFoodResponse createFood(@Validated @RequestBody CreateFoodRequest food) {
+    @PostMapping("/create-food")
+    public GetFoodResponse createFood(@Validated @RequestBody CreateFoodReqBody food) {
         return foodService.createFood(food);
     }
 
-    @PostMapping("/update")
-    public GetFoodResponse updateFood(@Validated @RequestBody UpdateFoodRequest updatedFood) {
+    @PostMapping("/update-food")
+    public GetFoodResponse updateFood(@Validated @RequestBody UpdateFoodReqBody updatedFood) {
         return foodService.updateFood(updatedFood);
     }
 
-    @DeleteMapping("/{foodId}")
+    @DeleteMapping("/delete-food/{foodId}")
     public boolean deleteFood(@PathVariable Long foodId) {
         return foodService.deleteFood(foodId);
     }
 
     @PostMapping("/update-food-category")
-    public GetFoodResponse updateFoodCategory(@Validated @RequestBody UpdateFoodCategoryRequest req) {
-        foodService.createOrUpdateFoodCategories(req);
+    public GetFoodResponse updateFoodFoodCategories(@Validated @RequestBody UpdateFoodFoodCategoriesReqBody req) {
+        foodService.createOrUpdateFoodFoodCategories(req);
         return foodService.getFoodById(req.foodId(), true);
     }
 

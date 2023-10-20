@@ -3,6 +3,12 @@ package com.ffreaky.shoppingservice.food.service;
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
 import com.ffreaky.shoppingservice.food.entity.FoodFoodCategoryEntity;
 import com.ffreaky.shoppingservice.food.model.*;
+import com.ffreaky.shoppingservice.food.model.request.CreateFoodReqBody;
+import com.ffreaky.shoppingservice.food.model.request.GetFoodsFilter;
+import com.ffreaky.shoppingservice.food.model.request.UpdateFoodFoodCategoriesReqBody;
+import com.ffreaky.shoppingservice.food.model.request.UpdateFoodReqBody;
+import com.ffreaky.shoppingservice.food.model.response.GetFoodCategoryResponse;
+import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import com.ffreaky.shoppingservice.food.repository.FoodCategoryRepository;
 import com.ffreaky.shoppingservice.food.repository.FoodFoodCategoryRepository;
 import com.ffreaky.shoppingservice.food.repository.FoodRepository;
@@ -48,7 +54,7 @@ public class FoodService {
      * @return GetFoodResponse
      */
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
-    public GetFoodResponse createFood(CreateFoodRequest reqBody) {
+    public GetFoodResponse createFood(CreateFoodReqBody reqBody) {
         // Check that product category is FOOD
         if (!reqBody.product().productType().equals(ProductType.FOOD)) {
             throw new FinishFoodException(FinishFoodException.Type.INVALID_PRODUCT_TYPE, "Product type must be FOOD");
@@ -87,7 +93,7 @@ public class FoodService {
         return convertFoodDtoToGetFoodResponse(foodDto, foodCategorySet);
     }
 
-    public List<GetFoodResponse> getFoods(FoodFilter filter) {
+    public List<GetFoodResponse> getFoods(GetFoodsFilter filter) {
         Set<FoodDto> foods = filter.foodCategoryIds().isEmpty() ? foodRepository.findAllDto() : foodRepository.findAllByFoodCategoryIds(filter.foodCategoryIds());
         Set<Long> foodIds = foods.stream().map(FoodDto::id).collect(Collectors.toSet());
         Map<Long, Set<FoodCategoryDto>> foodIdCategoryMap = filter.includeFoodCategories() ? getFoodCategories(foodIds) : Collections.emptyMap();
@@ -125,7 +131,7 @@ public class FoodService {
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
-    public GetFoodResponse updateFood(UpdateFoodRequest req) {
+    public GetFoodResponse updateFood(UpdateFoodReqBody req) {
         FoodEntity fe = foodRepository.findById(req.foodId())
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + req.foodId()));
 
@@ -142,7 +148,7 @@ public class FoodService {
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
-    public void createOrUpdateFoodCategories(UpdateFoodCategoryRequest req) {
+    public void createOrUpdateFoodFoodCategories(UpdateFoodFoodCategoriesReqBody req) {
         try {
             // Delete all food categories
             foodFoodCategoryRepository.deleteAll(foodFoodCategoryRepository.findAllByFoodId(req.foodId()));

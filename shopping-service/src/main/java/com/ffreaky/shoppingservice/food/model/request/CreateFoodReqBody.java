@@ -1,13 +1,11 @@
-package com.ffreaky.shoppingservice.food.model;
+package com.ffreaky.shoppingservice.food.model.request;
 
 import com.ffreaky.shoppingservice.product.model.CreateProductRequestDto;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Set;
-
-public record CreateFoodRequest(
+public record CreateFoodReqBody(
         @NotNull CreateProductRequestDto product,
         String dietaryRestrictions,
-        @NotNull FoodFilter filter
+        @NotNull GetFoodsFilter filter
 ) {
 }

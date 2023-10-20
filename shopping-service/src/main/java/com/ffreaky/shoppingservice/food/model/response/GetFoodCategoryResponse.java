@@ -1,5 +1,6 @@
-package com.ffreaky.shoppingservice.food.model;
+package com.ffreaky.shoppingservice.food.model.response;
 
+import com.ffreaky.shoppingservice.food.model.FoodCategoryDto;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Set;
