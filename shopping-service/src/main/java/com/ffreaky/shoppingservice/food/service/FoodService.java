@@ -1,6 +1,5 @@
 package com.ffreaky.shoppingservice.food.service;
 
-import com.ffreaky.shoppingservice.food.entity.FoodCategoryEntity;
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
 import com.ffreaky.shoppingservice.food.entity.FoodFoodCategoryEntity;
 import com.ffreaky.shoppingservice.food.model.*;
@@ -96,28 +95,24 @@ public class FoodService {
 
         // Include categories to response if requested
         if (filter.includeFoodCategories()) {
-            return addCategoriesInfoToFoodsDto(foods);
+            final var foodIds = foods.stream().map(FoodDto::id).collect(Collectors.toSet());
+            final var foodIdCategoryMap = foodCategoryRepository.findCategoriesByFoodIds(foodIds)
+                    .stream()
+                    .collect(Collectors.groupingBy(
+                            FoodFoodCategoryDto::foodId,
+                            Collectors.mapping(
+                                    ffcDto -> new FoodCategoryDto(ffcDto.foodCategoryId(), ffcDto.foodCategoryName()),
+                                    Collectors.toSet()
+                            )
+                    ));
+
+            return foods.stream()
+                    .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, foodIdCategoryMap.get(foodDto.id())))
+                    .collect(Collectors.toList());
         }
 
         return foods.stream()
                 .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, Collections.emptySet()))
-                .collect(Collectors.toList());
-    }
-
-    private List<GetFoodResponse> addCategoriesInfoToFoodsDto(Set<FoodDto> foodDtoSet) {
-        Map<Long, Set<FoodCategoryDto>> foodCategoryMap = new HashMap<>();
-        Set<Long> foodIds = foodDtoSet.stream()
-                .map(FoodDto::id)
-                .collect(Collectors.toSet());
-
-        foodCategoryRepository.findCategoriesByFoodIds(foodIds)
-                .forEach(ffcDto -> {
-                    var foodCategoryDto = new FoodCategoryDto(ffcDto.foodCategoryId(), ffcDto.foodCategoryName());
-                    foodCategoryMap.computeIfAbsent(ffcDto.foodId(), k -> new HashSet<>()).add(foodCategoryDto);
-                });
-
-        return foodDtoSet.stream()
-                .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, foodCategoryMap.get(foodDto.id())))
                 .collect(Collectors.toList());
     }
 
@@ -173,14 +168,6 @@ public class FoodService {
         }
     }
 
-    public GetFoodCategoryResponse getAllFoodCategories() {
-        return new GetFoodCategoryResponse(foodCategoryRepository.findAllCategories());
-    }
-
-    public GetFoodCategoryResponse getAllFoodCategoriesForFood(Long foodId) {
-        return new GetFoodCategoryResponse(foodCategoryRepository.findCategoriesByFoodId(foodId));
-    }
-
     public boolean deleteFood(Long id) {
         if (!foodRepository.existsById(id)) {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id);
@@ -188,6 +175,14 @@ public class FoodService {
 
         foodRepository.deleteById(id);
         return true;
+    }
+
+    public GetFoodCategoryResponse getAllFoodCategories() {
+        return new GetFoodCategoryResponse(foodCategoryRepository.findAllCategories());
+    }
+
+    public GetFoodCategoryResponse getAllFoodCategoriesForFood(Long foodId) {
+        return new GetFoodCategoryResponse(foodCategoryRepository.findCategoriesByFoodId(foodId));
     }
 
 }
