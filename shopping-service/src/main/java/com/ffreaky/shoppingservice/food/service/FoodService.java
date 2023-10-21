@@ -132,17 +132,17 @@ public class FoodService {
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
-    public void createOrUpdateFoodFoodCategories(UpdateFoodFoodCategoriesReqBody req) {
+    public void createOrUpdateFoodFoodCategories(Long foodId, UpdateFoodFoodCategoriesReqBody req) {
         try {
             // Delete all food categories
-            foodFoodCategoryRepository.deleteAll(foodFoodCategoryRepository.findAllByFoodId(req.foodId()));
+            foodFoodCategoryRepository.deleteAll(foodFoodCategoryRepository.findAllByFoodId(foodId));
 
             // Create and save food categories
             foodFoodCategoryRepository.saveAll(
                     req.foodCategoryIds().stream()
                             .map(id -> {
                                 final FoodFoodCategoryEntity ffc = new FoodFoodCategoryEntity();
-                                ffc.getId().setFoodId(req.foodId());
+                                ffc.getId().setFoodId(foodId);
                                 ffc.getId().setFoodCategoryId(id);
                                 return ffc;
                             }).collect(Collectors.toList()));

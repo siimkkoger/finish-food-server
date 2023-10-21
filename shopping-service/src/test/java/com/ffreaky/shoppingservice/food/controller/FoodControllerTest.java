@@ -1,9 +1,12 @@
 package com.ffreaky.shoppingservice.food.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ffreaky.shoppingservice.food.model.FoodCategoryDto;
 import com.ffreaky.shoppingservice.food.model.request.CreateFoodReqBody;
 import com.ffreaky.shoppingservice.food.model.request.GetFoodsFilter;
+import com.ffreaky.shoppingservice.food.model.request.UpdateFoodFoodCategoriesReqBody;
 import com.ffreaky.shoppingservice.food.model.request.UpdateFoodReqBody;
+import com.ffreaky.shoppingservice.food.model.response.GetFoodCategoryResponse;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import com.ffreaky.shoppingservice.food.service.FoodService;
 import com.ffreaky.shoppingservice.product.ProductType;
@@ -23,6 +26,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -258,5 +262,71 @@ class FoodControllerTest {
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentTypeMismatchException))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void testUpdateFoodCategoriesForFood() throws Exception {
+        // Arrange
+        var foodId = 1L;
+        var reqBody = new UpdateFoodFoodCategoriesReqBody(Set.of(1L, 2L));
+        var expectedResponse = new GetFoodCategoryResponse(Set.of(
+                new FoodCategoryDto(1L, "Category 1"),
+                new FoodCategoryDto(2L, "Category 2")));
+
+        when(foodService.getAllFoodCategoriesForFood(foodId)).thenReturn(expectedResponse);
+
+        // Act
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .post(controllerPath + "/update-food-categories-for-food/%s".formatted(foodId))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reqBody))
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Assert
+        assertEquals(objectMapper.writeValueAsString(expectedResponse), result.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testGetAllFoodCategories() throws Exception {
+        // Arrange
+        var expectedResponse = new GetFoodCategoryResponse(Set.of(
+                new FoodCategoryDto(1L, "Category 1"),
+                new FoodCategoryDto(2L, "Category 2")));
+
+        when(foodService.getAllFoodCategories()).thenReturn(expectedResponse);
+
+        // Act
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .get(controllerPath + "/get-food-categories")
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Assert
+        assertEquals(objectMapper.writeValueAsString(expectedResponse), result.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testGetAllFoodCategoriesForFood() throws Exception {
+        // Arrange
+        var foodId = 1L;
+        var expectedResponse = new GetFoodCategoryResponse(Set.of(
+                new FoodCategoryDto(1L, "Category 1"),
+                new FoodCategoryDto(2L, "Category 2")));
+
+        when(foodService.getAllFoodCategoriesForFood(foodId)).thenReturn(expectedResponse);
+
+        // Act
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .get(controllerPath + "/get-food-categories-for-food/%s".formatted(foodId))
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Assert
+        assertEquals(objectMapper.writeValueAsString(expectedResponse), result.getResponse().getContentAsString());
+    }
+
 
 }

@@ -49,10 +49,16 @@ public class FoodController {
         return foodService.deleteFood(foodId);
     }
 
-    @PostMapping("/update-food-categories-for-food")
-    public GetFoodCategoryResponse updateFoodFoodCategories(@Validated @RequestBody UpdateFoodFoodCategoriesReqBody req) {
-        foodService.createOrUpdateFoodFoodCategories(req);
-        return foodService.getAllFoodCategoriesForFood(req.foodId());
+    /**
+     * Update the food categories for food.
+     * If a food in database has a food category that is not in the request body, it will be deleted.
+     */
+    @PostMapping("/update-food-categories-for-food/{foodId}")
+    public GetFoodCategoryResponse updateFoodFoodCategories(
+            @PathVariable @NotNull Long foodId,
+            @Validated @RequestBody UpdateFoodFoodCategoriesReqBody req) {
+        foodService.createOrUpdateFoodFoodCategories(foodId, req);
+        return foodService.getAllFoodCategoriesForFood(foodId);
     }
 
     @GetMapping("/get-food-categories")
