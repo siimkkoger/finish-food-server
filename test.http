@@ -1,38 +1,10 @@
-### TEST OK
-GET http://{{host}}:8080/api-gw/test
-
-### TEST EXCEPTION
-GET http://{{host}}:8080/api-gw/testexception
-
-### TEST GET ALL USERS
-GET http://{{host}}:8080/api-gw/user/getall
-
-### TEST GET ALL FOODS
-GET http://{{host}}:8020/food/1
-
-### TEST GET FOOD BY ID (intellij)
-POST http://{{host}}:8080/food/3
-Content-Type: application/json
-
-{
-  "includeFoodCategories": true
-}
-
-### TEST GET ALL FOODS (intellij)
-GET http://{{host}}:8080/food
-
-### TEST GET ALL FOODS BY foodCategoryIds (intellij)
-POST http://{{host}}:8080/food/get-all
+### test get foods
+POST http://{{host}}:8020/food/get-foods
 Content-Type: application/json
 
 {
     "foodCategoryIds": [2]
 }
 
-### TEST GET ALL FOODS BY foodCategoryIds null (intellij)
-POST http://{{host}}:8080/food/get-all
-Content-Type: application/json
-
-{
-  "foodCategoryIds": null
-}
+### test get food food categories
+GET http://{{host}}:8020/food/get-food-categories-for-food/4
