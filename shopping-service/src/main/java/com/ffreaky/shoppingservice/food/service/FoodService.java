@@ -85,15 +85,15 @@ public class FoodService {
     }
 
     public GetFoodResponse getFoodById(Long id) {
-        FoodDto foodDto = foodRepository.findDtoById(id)
+        final FoodDto foodDto = foodRepository.findDtoById(id)
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
-
         return convertFoodDtoToGetFoodResponse(foodDto);
     }
 
     public List<GetFoodResponse> getFoods(GetFoodsFilter filter) {
-        Set<FoodDto> foods = filter.foodCategoryIds().isEmpty() ? foodRepository.findAllDto() : foodRepository.findAllByFoodCategoryIds(filter.foodCategoryIds());
-        Set<Long> foodIds = foods.stream().map(FoodDto::id).collect(Collectors.toSet());
+        final Set<FoodDto> foods = filter.foodCategoryIds().isEmpty()
+                ? foodRepository.findAllDto()
+                : foodRepository.findAllByFoodCategoryIds(filter.foodCategoryIds());
 
         return foods.stream()
                 .map(this::convertFoodDtoToGetFoodResponse)

@@ -42,12 +42,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * because it's included as a meta annotation in the Spring Boot test annotations
  * like @DataJpaTest, @WebMvcTest, and @SpringBootTest" - https://reflectoring.io/spring-boot-web-controller-test/
  * <p>
- *
- *
+ * <p>
+ * <p>
  * Learned:
  * that @Validated annotation does not work for validating fields of inner objects.
  * Use @Valid annotation instead.
- *
  */
 @WebMvcTest(controllers = FoodController.class)
 class FoodControllerTest {

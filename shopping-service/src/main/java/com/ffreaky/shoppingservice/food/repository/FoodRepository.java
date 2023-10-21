@@ -13,72 +13,72 @@ import java.util.Set;
 public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
 
     @Query("""
-             SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
-                 f.id,
-                 p.name,
-                 p.description,
-                 p.image,
-                 f.dietaryRestrictions,
-                 p.price,
-                 p.pickupTime,
-                 p.productId.productType,
-                 pp.name
-                 )
-             FROM FoodEntity f
-             JOIN ProductEntity p
-                ON f.productId = p.productId.id
-                AND f.productTypeName = p.productId.productType
-             JOIN ProductProviderEntity pp
-                ON p.productProviderId = pp.id
-             WHERE f.id = :id
-             """)
+            SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
+                f.id,
+                p.name,
+                p.description,
+                p.image,
+                f.dietaryRestrictions,
+                p.price,
+                p.pickupTime,
+                p.productId.productType,
+                pp.name
+                )
+            FROM FoodEntity f
+            JOIN ProductEntity p
+               ON f.productId = p.productId.id
+               AND f.productTypeName = p.productId.productType
+            JOIN ProductProviderEntity pp
+               ON p.productProviderId = pp.id
+            WHERE f.id = :id
+            """)
     Optional<FoodDto> findDtoById(long id);
 
     @Query("""
-             SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
-                 f.id,
-                 p.name,
-                 p.description,
-                 p.image,
-                 f.dietaryRestrictions,
-                 p.price,
-                 p.pickupTime,
-                 p.productId.productType,
-                 pp.name
-                 )
-             FROM FoodEntity f
-             JOIN ProductEntity p
-                ON f.productId = p.productId.id
-                AND f.productTypeName = p.productId.productType
-             JOIN ProductProviderEntity pp
-                ON p.productProviderId = pp.id
-             """)
+            SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
+                f.id,
+                p.name,
+                p.description,
+                p.image,
+                f.dietaryRestrictions,
+                p.price,
+                p.pickupTime,
+                p.productId.productType,
+                pp.name
+                )
+            FROM FoodEntity f
+            JOIN ProductEntity p
+               ON f.productId = p.productId.id
+               AND f.productTypeName = p.productId.productType
+            JOIN ProductProviderEntity pp
+               ON p.productProviderId = pp.id
+            """)
     Set<FoodDto> findAllDto();
 
     @Query("""
-             SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
-                 f.id,
-                 p.name,
-                 p.description,
-                 p.image,
-                 f.dietaryRestrictions,
-                 p.price,
-                 p.pickupTime,
-                 p.productId.productType,
-                 pp.name
-                 )
-             FROM FoodEntity f
-             JOIN ProductEntity p
-                ON f.productId = p.productId.id
-                AND f.productTypeName = p.productId.productType
-             JOIN ProductProviderEntity pp
-                ON p.productProviderId = pp.id
-             WHERE f.id in (
-                    SELECT ffc.id.foodId
-                    FROM FoodFoodCategoryEntity ffc
-                    WHERE ffc.id.foodCategoryId in :foodCategoryIds
-             )
-             """)
+            SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
+                f.id,
+                p.name,
+                p.description,
+                p.image,
+                f.dietaryRestrictions,
+                p.price,
+                p.pickupTime,
+                p.productId.productType,
+                pp.name
+                )
+            FROM FoodEntity f
+            JOIN ProductEntity p
+               ON f.productId = p.productId.id
+               AND f.productTypeName = p.productId.productType
+            JOIN ProductProviderEntity pp
+               ON p.productProviderId = pp.id
+            WHERE f.id in (
+                   SELECT ffc.id.foodId
+                   FROM FoodFoodCategoryEntity ffc
+                   WHERE ffc.id.foodCategoryId in :foodCategoryIds
+            )
+            """)
     Set<FoodDto> findAllByFoodCategoryIds(Set<Long> foodCategoryIds);
 
 }

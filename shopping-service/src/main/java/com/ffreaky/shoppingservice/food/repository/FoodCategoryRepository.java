@@ -2,7 +2,6 @@ package com.ffreaky.shoppingservice.food.repository;
 
 import com.ffreaky.shoppingservice.food.entity.FoodCategoryEntity;
 import com.ffreaky.shoppingservice.food.model.FoodCategoryDto;
-import com.ffreaky.shoppingservice.food.model.FoodFoodCategoryDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

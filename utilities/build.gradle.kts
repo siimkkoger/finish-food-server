@@ -34,6 +34,8 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:1.18.28")
 }
 
+tasks.register("prepareKotlinBuildScriptModel") {}
+
 tasks.withType<Jar> {
     enabled = true
     archiveBaseName.set("utilities")

@@ -18,15 +18,4 @@ public record FoodDto(
         @NotBlank ProductType productType,
         @NotBlank String productProviderName
 ) {
-    public FoodDto {
-        assert id != null;
-        assert name != null;
-        assert description != null;
-        assert image != null;
-        assert dietaryRestrictions != null;
-        assert price != null;
-        assert pickupTime != null;
-        assert productType != null;
-        assert productProviderName != null;
-    }
 }
