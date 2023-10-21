@@ -4,6 +4,9 @@ import com.ffreaky.shoppingservice.food.model.request.*;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodCategoryResponse;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import com.ffreaky.shoppingservice.food.service.FoodService;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +23,8 @@ public class FoodController {
     }
 
     @PostMapping("/get-food/{foodId}")
-    public GetFoodResponse getFoodById(@Validated @RequestBody GetFoodReqBody req) {
-        return foodService.getFoodById(req.foodId(), req.includeFoodCategories());
+    public GetFoodResponse getFoodById(@PathVariable @NotNull Long foodId) {
+        return foodService.getFoodById(foodId);
     }
 
     @PostMapping("/get-foods")
@@ -34,20 +37,22 @@ public class FoodController {
         return foodService.createFood(food);
     }
 
-    @PostMapping("/update-food")
-    public GetFoodResponse updateFood(@Validated @RequestBody UpdateFoodReqBody updatedFood) {
-        return foodService.updateFood(updatedFood);
+    @PostMapping("/update-food/{foodId}")
+    public GetFoodResponse updateFood(
+            @PathVariable @NotNull Long foodId,
+            @Validated @RequestBody UpdateFoodReqBody updatedFood) {
+        return foodService.updateFood(foodId, updatedFood);
     }
 
     @DeleteMapping("/delete-food/{foodId}")
-    public boolean deleteFood(@PathVariable Long foodId) {
+    public boolean deleteFood(@PathVariable @NotNull Long foodId) {
         return foodService.deleteFood(foodId);
     }
 
-    @PostMapping("/update-food-category")
-    public GetFoodResponse updateFoodFoodCategories(@Validated @RequestBody UpdateFoodFoodCategoriesReqBody req) {
+    @PostMapping("/update-food-categories-for-food")
+    public GetFoodCategoryResponse updateFoodFoodCategories(@Validated @RequestBody UpdateFoodFoodCategoriesReqBody req) {
         foodService.createOrUpdateFoodFoodCategories(req);
-        return foodService.getFoodById(req.foodId(), true);
+        return foodService.getAllFoodCategoriesForFood(req.foodId());
     }
 
     @GetMapping("/get-food-categories")
@@ -56,7 +61,7 @@ public class FoodController {
     }
 
     @GetMapping("/get-food-categories-for-food/{foodId}")
-    public GetFoodCategoryResponse getAllFoodCategoriesForFood(@PathVariable Long foodId) {
+    public GetFoodCategoryResponse getAllFoodCategoriesForFood(@PathVariable @NotNull Long foodId) {
         return foodService.getAllFoodCategoriesForFood(foodId);
     }
 

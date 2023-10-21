@@ -18,7 +18,6 @@ public record GetFoodResponse(
         @NotNull BigDecimal price,
         @NotBlank Date pickupTime,
         @NotBlank ProductType productType,
-        @NotBlank String productProviderName,
-        @NotNull Set<FoodCategoryDto> foodCategories
+        @NotBlank String productProviderName
 ) {
 }

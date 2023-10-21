@@ -28,19 +28,6 @@ public interface FoodCategoryRepository extends JpaRepository<FoodCategoryEntity
     Set<FoodCategoryDto> findCategoriesByFoodId(Long foodId);
 
     @Query("""
-            SELECT new com.ffreaky.shoppingservice.food.model.FoodFoodCategoryDto(
-                ffc.id.foodId,
-                fc.id,
-                fc.name
-                )
-            FROM FoodFoodCategoryEntity ffc
-            JOIN FoodCategoryEntity fc
-                ON ffc.id.foodCategoryId = fc.id
-            WHERE ffc.id.foodId in :foodIds
-            """)
-    Set<FoodFoodCategoryDto> findCategoriesByFoodIds(Set<Long> foodIds);
-
-    @Query("""
             SELECT new com.ffreaky.shoppingservice.food.model.FoodCategoryDto(
                 fc.id,
                 fc.name

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.Date;
@@ -56,6 +57,13 @@ public abstract class FinishFoodExceptionHandler {
         }
         final FinishFoodException ffException = new FinishFoodException(FinishFoodException.Type.BAD_REQUEST, "JPA constraint violations");
         final ErrorMessageDto body = buildErrorMessageBody(ffException, request, constraintViolations);
+        return new ResponseEntity<>(body, ffException.getStatusCode());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorMessageDto> handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException ex, final WebRequest request) {
+        final FinishFoodException ffException = new FinishFoodException(FinishFoodException.Type.BAD_REQUEST, "Method argument type mismatch");
+        final ErrorMessageDto body = buildErrorMessageBody(ffException, request, ex.getMessage());
         return new ResponseEntity<>(body, ffException.getStatusCode());
     }
 

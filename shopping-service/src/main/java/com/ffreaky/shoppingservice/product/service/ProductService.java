@@ -3,11 +3,10 @@ package com.ffreaky.shoppingservice.product.service;
 import com.ffreaky.shoppingservice.product.ProductType;
 import com.ffreaky.shoppingservice.product.entity.ProductEntity;
 import com.ffreaky.shoppingservice.product.entity.ProductId;
-import com.ffreaky.shoppingservice.product.model.CreateProductRequestDto;
-import com.ffreaky.shoppingservice.product.model.UpdateProductRequestDto;
+import com.ffreaky.shoppingservice.product.model.request.CreateProductReqBody;
+import com.ffreaky.shoppingservice.product.model.request.UpdateProductReqBody;
 import com.ffreaky.shoppingservice.product.repository.ProductRepository;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,7 +18,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ProductEntity createProduct(CreateProductRequestDto dto) {
+    public ProductEntity createProduct(CreateProductReqBody dto) {
         final ProductEntity pe = new ProductEntity();
         final ProductId productId = new ProductId();
         productId.setProductType(ProductType.FOOD);
@@ -34,7 +33,7 @@ public class ProductService {
         return saveProduct(pe);
     }
 
-    public ProductEntity updateProduct(Long productId, UpdateProductRequestDto dto) {
+    public ProductEntity updateProduct(Long productId, UpdateProductReqBody dto) {
         ProductEntity pe = productRepository.findById(productId)
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Product not found"));
         pe.setName(dto.name());

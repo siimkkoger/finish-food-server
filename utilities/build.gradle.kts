@@ -39,6 +39,6 @@ tasks.withType<Jar> {
     archiveBaseName.set("utilities")
 }
 
-tasks.withType <BootJar> {
+tasks.withType<BootJar> {
     enabled = false
 }

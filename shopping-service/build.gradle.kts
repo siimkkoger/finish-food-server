@@ -35,7 +35,6 @@ dependencies {
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
 
     // OpenAPI (Swagger)
     implementation(group = "org.springdoc", name = "springdoc-openapi-starter-webmvc-ui", version = "2.0.2")
@@ -57,7 +56,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.withType <Jar> {
+tasks.withType<Jar> {
     enabled = false
 }
 

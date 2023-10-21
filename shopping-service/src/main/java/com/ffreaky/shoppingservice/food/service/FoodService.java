@@ -71,7 +71,7 @@ public class FoodService {
         final FoodEntity savedFoodEntity = saveFoodEntity(fe);
 
         // Return GetFoodResponse
-        return getFoodById(savedFoodEntity.getId(), reqBody.filter().includeFoodCategories());
+        return getFoodById(savedFoodEntity.getId());
     }
 
     private FoodEntity saveFoodEntity(FoodEntity fe) {
@@ -84,38 +84,23 @@ public class FoodService {
         return savedFoodEntity;
     }
 
-    public GetFoodResponse getFoodById(Long id, boolean includeFoodCategories) {
+    public GetFoodResponse getFoodById(Long id) {
         FoodDto foodDto = foodRepository.findDtoById(id)
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
 
-        Set<FoodCategoryDto> foodCategorySet = includeFoodCategories ? foodCategoryRepository.findCategoriesByFoodId(foodDto.id()) : null;
-
-        return convertFoodDtoToGetFoodResponse(foodDto, foodCategorySet);
+        return convertFoodDtoToGetFoodResponse(foodDto);
     }
 
     public List<GetFoodResponse> getFoods(GetFoodsFilter filter) {
         Set<FoodDto> foods = filter.foodCategoryIds().isEmpty() ? foodRepository.findAllDto() : foodRepository.findAllByFoodCategoryIds(filter.foodCategoryIds());
         Set<Long> foodIds = foods.stream().map(FoodDto::id).collect(Collectors.toSet());
-        Map<Long, Set<FoodCategoryDto>> foodIdCategoryMap = filter.includeFoodCategories() ? getFoodCategories(foodIds) : Collections.emptyMap();
 
         return foods.stream()
-                .map(foodDto -> convertFoodDtoToGetFoodResponse(foodDto, foodIdCategoryMap.getOrDefault(foodDto.id(), Collections.emptySet())))
+                .map(this::convertFoodDtoToGetFoodResponse)
                 .collect(Collectors.toList());
     }
 
-    private Map<Long, Set<FoodCategoryDto>> getFoodCategories(Set<Long> foodIds) {
-        return foodCategoryRepository.findCategoriesByFoodIds(foodIds)
-                .stream()
-                .collect(Collectors.groupingBy(
-                        FoodFoodCategoryDto::foodId,
-                        Collectors.mapping(
-                                ffcDto -> new FoodCategoryDto(ffcDto.foodCategoryId(), ffcDto.foodCategoryName()),
-                                Collectors.toSet()
-                        )
-                ));
-    }
-
-    private GetFoodResponse convertFoodDtoToGetFoodResponse(FoodDto foodDto, Set<FoodCategoryDto> foodCategoryDtoSet) {
+    private GetFoodResponse convertFoodDtoToGetFoodResponse(FoodDto foodDto) {
         return new GetFoodResponse(
                 foodDto.id(),
                 foodDto.name(),
@@ -125,15 +110,14 @@ public class FoodService {
                 foodDto.price(),
                 foodDto.pickupTime(),
                 foodDto.productType(),
-                foodDto.productProviderName(),
-                foodCategoryDtoSet
+                foodDto.productProviderName()
         );
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
-    public GetFoodResponse updateFood(UpdateFoodReqBody req) {
-        FoodEntity fe = foodRepository.findById(req.foodId())
-                .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + req.foodId()));
+    public GetFoodResponse updateFood(Long foodId, UpdateFoodReqBody req) {
+        FoodEntity fe = foodRepository.findById(foodId)
+                .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + foodId));
 
         // Save product entity
         productService.updateProduct(fe.getProductId(), req.product());
@@ -144,7 +128,7 @@ public class FoodService {
             saveFoodEntity(fe);
         }
 
-        return getFoodById(req.foodId(), req.filter().includeFoodCategories());
+        return getFoodById(foodId);
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
