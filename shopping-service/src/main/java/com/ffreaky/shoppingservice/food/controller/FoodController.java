@@ -7,6 +7,8 @@ import com.ffreaky.shoppingservice.food.service.FoodService;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/food")
 public class FoodController {
+
+    static Logger logger = LoggerFactory.getLogger(FoodController.class);
 
     private final FoodService foodService;
 
@@ -30,6 +34,11 @@ public class FoodController {
     @PostMapping("/get-foods")
     public List<GetFoodResponse> getFoods(@Validated @RequestBody GetFoodsFilter filter) {
         return foodService.getFoods(filter);
+    }
+
+    @PostMapping("/get-foods-querydsl")
+    public List<GetFoodResponse> getFoodsQueryDsl(@Validated @RequestBody GetFoodsFilter filter) {
+        return foodService.getFoodsQueryDsl(filter);
     }
 
     @PostMapping("/create-food")

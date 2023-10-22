@@ -21,13 +21,13 @@ public class FoodEntity extends BaseEntity {
     @Column(name = "product_id", nullable = false, updatable = false)
     private Long productId;
 
-    // TODO : read more about optimistic locking
+    // TODO - read more about optimistic locking
     @Version
     private Long version;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_type_name", nullable = false, updatable = false)
-    private ProductType productTypeName;
+    private ProductType productType;
 
     @Column(name = "dietary_restrictions", nullable = false, length = 1000)
     private String dietaryRestrictions;

@@ -2,6 +2,8 @@ package com.ffreaky.shoppingservice.food.service;
 
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
 import com.ffreaky.shoppingservice.food.entity.FoodFoodCategoryEntity;
+import com.ffreaky.shoppingservice.food.entity.QFoodEntity;
+import com.ffreaky.shoppingservice.food.entity.QFoodFoodCategoryEntity;
 import com.ffreaky.shoppingservice.food.model.*;
 import com.ffreaky.shoppingservice.food.model.request.CreateFoodReqBody;
 import com.ffreaky.shoppingservice.food.model.request.GetFoodsFilter;
@@ -14,8 +16,23 @@ import com.ffreaky.shoppingservice.food.repository.FoodFoodCategoryRepository;
 import com.ffreaky.shoppingservice.food.repository.FoodRepository;
 import com.ffreaky.shoppingservice.product.ProductType;
 import com.ffreaky.shoppingservice.product.entity.ProductEntity;
+import com.ffreaky.shoppingservice.product.entity.QProductEntity;
+import com.ffreaky.shoppingservice.product.entity.QProductProviderEntity;
 import com.ffreaky.shoppingservice.product.service.ProductService;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
+import com.ffreaky.utilities.exceptions.FinishFoodExceptionHandler;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +40,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.jooq.impl.DSL.field;
+import static org.jooq.impl.DSL.table;
+
 @Service
 public class FoodService {
+
+    static Logger logger = LoggerFactory.getLogger(FoodService.class);
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    private final DSLContext dsl;
 
     private final FoodRepository foodRepository;
     private final FoodCategoryRepository foodCategoryRepository;
@@ -32,10 +59,12 @@ public class FoodService {
     private final ProductService productService;
 
     public FoodService(
+            DSLContext dsl,
             FoodRepository foodRepository,
             FoodCategoryRepository foodCategoryRepository,
             FoodFoodCategoryRepository foodFoodCategoryRepository,
             ProductService productService) {
+        this.dsl = dsl;
         this.foodRepository = foodRepository;
         this.foodCategoryRepository = foodCategoryRepository;
         this.foodFoodCategoryRepository = foodFoodCategoryRepository;
@@ -66,7 +95,7 @@ public class FoodService {
         // Create food
         final FoodEntity fe = new FoodEntity();
         fe.setProductId(savedProductEntity.getProductId().getId());
-        fe.setProductTypeName(ProductType.FOOD);
+        fe.setProductType(ProductType.FOOD);
         fe.setDietaryRestrictions(reqBody.dietaryRestrictions());
         final FoodEntity savedFoodEntity = saveFoodEntity(fe);
 
@@ -91,14 +120,102 @@ public class FoodService {
     }
 
     public List<GetFoodResponse> getFoods(GetFoodsFilter filter) {
-        final Set<FoodDto> foods = filter.foodCategoryIds().isEmpty()
-                ? foodRepository.findAllDto()
-                : foodRepository.findAllByFoodCategoryIds(filter.foodCategoryIds());
+        // Apply filters based on user input
+        Condition condition = DSL.noCondition();
+        if (filter.foodCategoryIds() != null && !filter.foodCategoryIds().isEmpty()) {
+            condition = condition.and(field("FOOD.ID", Long.class).in(
+                    dsl.select(field("FOOD_FOOD_CATEGORY.FOOD_ID", Long.class))
+                            .from(table("FOOD_FOOD_CATEGORY"))
+                            .where(field("FOOD_FOOD_CATEGORY.FOOD_CATEGORY_ID", Long.class).in(filter.foodCategoryIds()))
+            ));
+        }
 
-        return foods.stream()
+        // Define the base query
+        var query = dsl.select(
+                        field("FOOD.ID", Long.class),
+                        field("PRODUCT.NAME", String.class),
+                        field("PRODUCT.DESCRIPTION", String.class),
+                        field("PRODUCT.IMAGE", String.class),
+                        field("FOOD.DIETARY_RESTRICTIONS", String.class),
+                        field("PRODUCT.PRICE", Double.class),
+                        field("PRODUCT.PICKUP_TIME", Date.class),
+                        field("PRODUCT.PRODUCT_TYPE_NAME", String.class),
+                        field("PRODUCT_PROVIDER.NAME", String.class))
+                .from(table("FOOD"))
+                .join(table("PRODUCT"))
+                .on(field("FOOD.PRODUCT_ID", Long.class).eq(field("PRODUCT.ID", Long.class))
+                        .and(field("FOOD.PRODUCT_TYPE_NAME", String.class).eq(field("PRODUCT.PRODUCT_TYPE_NAME", String.class))))
+                .join(table("PRODUCT_PROVIDER"))
+                .on(field("PRODUCT.PRODUCT_PROVIDER_ID", Long.class).eq(field("PRODUCT_PROVIDER.ID", Long.class)))
+                .where(condition);
+
+        // Execute the query
+        var result = query.fetch();
+
+        logger.info("Query: " + query.getSQL());
+
+        // Map the result to a Set of FoodDto
+        return result.into(FoodDto.class).stream()
                 .map(this::convertFoodDtoToGetFoodResponse)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Same as getFoods() but using QueryDSL
+     */
+    public List<GetFoodResponse> getFoodsQueryDsl(GetFoodsFilter filter) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+        QFoodEntity food = QFoodEntity.foodEntity;
+        QProductEntity product = QProductEntity.productEntity;
+        QProductProviderEntity productProvider = QProductProviderEntity.productProviderEntity;
+
+        // Create a list of conditions
+        BooleanExpression condition = Expressions.asBoolean(true).isTrue();
+
+        if (filter.foodCategoryIds() != null && !filter.foodCategoryIds().isEmpty()) {
+            QFoodFoodCategoryEntity foodFoodCategory = QFoodFoodCategoryEntity.foodFoodCategoryEntity;
+            condition = condition.and(food.id.in(
+                    JPAExpressions.select(foodFoodCategory.id.foodId)
+                            .from(foodFoodCategory)
+                            .where(foodFoodCategory.id.foodCategoryId.in(filter.foodCategoryIds()))));
+        }
+
+        List<FoodDto> result = queryFactory
+                .select(
+                        food.id,
+                        product.name,
+                        product.description,
+                        product.image,
+                        food.dietaryRestrictions,
+                        product.price,
+                        product.pickupTime,
+                        product.productId.productType,
+                        productProvider.name
+                )
+                .from(food)
+                .join(product).on(food.productId.eq(product.productId.id))
+                .join(productProvider).on(product.productProviderId.eq(productProvider.id))
+                .where(condition)
+                .fetch()
+                .stream()
+                .map(tuple -> new FoodDto(
+                        tuple.get(food.id),
+                        tuple.get(product.name),
+                        tuple.get(product.description),
+                        tuple.get(product.image),
+                        tuple.get(food.dietaryRestrictions),
+                        tuple.get(product.price),
+                        tuple.get(product.pickupTime),
+                        tuple.get(product.productId.productType),
+                        tuple.get(productProvider.name)
+                ))
+                .toList();
+
+        return result.stream()
+                .map(this::convertFoodDtoToGetFoodResponse)
+                .collect(Collectors.toList());
+    }
+
 
     private GetFoodResponse convertFoodDtoToGetFoodResponse(FoodDto foodDto) {
         return new GetFoodResponse(

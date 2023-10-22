@@ -9,6 +9,12 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Repository for food.
+ *
+ * Keeping some of the unused methods for future reference.
+ * Replaced findAllDto and findAllByFoodCategoryIds with jOOQ conditional query.
+ */
 @Repository
 public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
 
@@ -27,7 +33,7 @@ public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
             FROM FoodEntity f
             JOIN ProductEntity p
                ON f.productId = p.productId.id
-               AND f.productTypeName = p.productId.productType
+               AND f.productType = p.productId.productType
             JOIN ProductProviderEntity pp
                ON p.productProviderId = pp.id
             WHERE f.id = :id
@@ -49,7 +55,7 @@ public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
             FROM FoodEntity f
             JOIN ProductEntity p
                ON f.productId = p.productId.id
-               AND f.productTypeName = p.productId.productType
+               AND f.productType = p.productId.productType
             JOIN ProductProviderEntity pp
                ON p.productProviderId = pp.id
             """)
@@ -70,7 +76,7 @@ public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
             FROM FoodEntity f
             JOIN ProductEntity p
                ON f.productId = p.productId.id
-               AND f.productTypeName = p.productId.productType
+               AND f.productType = p.productId.productType
             JOIN ProductProviderEntity pp
                ON p.productProviderId = pp.id
             WHERE f.id in (

@@ -1,9 +1,17 @@
 ### test get foods
-POST http://{{host}}:8020/food/get-foods
+POST http://{{host}}:8080/food/get-foods
 Content-Type: application/json
 
 {
     "foodCategoryIds": [2]
+}
+
+### test get foods 2
+POST http://{{host}}:8080/food/get-foods-2
+Content-Type: application/json
+
+{
+  "foodCategoryIds": [2]
 }
 
 ### test get food food categories
