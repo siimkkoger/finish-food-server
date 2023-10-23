@@ -4,12 +4,10 @@ import com.ffreaky.shoppingservice.food.model.request.*;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodCategoryResponse;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import com.ffreaky.shoppingservice.food.service.FoodService;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,19 +30,19 @@ public class FoodController {
     }
 
     @PostMapping("/get-foods")
-    public List<GetFoodResponse> getFoods(@Validated @RequestBody GetFoodsFilter filter) {
+    public List<GetFoodResponse> getFoods(@Valid @RequestBody GetFoodsFilter filter) {
         return foodService.getFoodsQueryDsl(filter);
     }
 
     @PostMapping("/create-food")
-    public GetFoodResponse createFood(@Validated @RequestBody CreateFoodReqBody food) {
+    public GetFoodResponse createFood(@Valid @RequestBody CreateFoodReqBody food) {
         return foodService.createFood(food);
     }
 
     @PostMapping("/update-food/{foodId}")
     public GetFoodResponse updateFood(
             @PathVariable @NotNull Long foodId,
-            @Validated @RequestBody UpdateFoodReqBody updatedFood) {
+            @Valid @RequestBody UpdateFoodReqBody updatedFood) {
         return foodService.updateFood(foodId, updatedFood);
     }
 
@@ -60,7 +58,7 @@ public class FoodController {
     @PostMapping("/update-food-categories-for-food/{foodId}")
     public GetFoodCategoryResponse updateFoodFoodCategories(
             @PathVariable @NotNull Long foodId,
-            @Validated @RequestBody UpdateFoodFoodCategoriesReqBody req) {
+            @Valid @RequestBody UpdateFoodFoodCategoriesReqBody req) {
         foodService.createOrUpdateFoodFoodCategories(foodId, req);
         return foodService.getAllFoodCategoriesForFood(foodId);
     }

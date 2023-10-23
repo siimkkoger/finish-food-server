@@ -1,6 +1,7 @@
-package com.ffreaky.shoppingservice.food.controller;
+package com.ffreaky.shoppingservice.food;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ffreaky.shoppingservice.food.controller.FoodController;
 import com.ffreaky.shoppingservice.food.model.FoodCategoryDto;
 import com.ffreaky.shoppingservice.food.model.request.CreateFoodReqBody;
 import com.ffreaky.shoppingservice.food.model.request.GetFoodsFilter;
