@@ -33,11 +33,6 @@ public class FoodController {
 
     @PostMapping("/get-foods")
     public List<GetFoodResponse> getFoods(@Validated @RequestBody GetFoodsFilter filter) {
-        return foodService.getFoods(filter);
-    }
-
-    @PostMapping("/get-foods-querydsl")
-    public List<GetFoodResponse> getFoodsQueryDsl(@Validated @RequestBody GetFoodsFilter filter) {
         return foodService.getFoodsQueryDsl(filter);
     }
 

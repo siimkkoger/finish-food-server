@@ -22,6 +22,7 @@ import com.ffreaky.shoppingservice.product.service.ProductService;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
 import com.ffreaky.utilities.exceptions.FinishFoodExceptionHandler;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -114,12 +115,15 @@ public class FoodService {
     }
 
     public GetFoodResponse getFoodById(Long id) {
-        final FoodDto foodDto = foodRepository.findDtoById(id)
+        return foodRepository.findDtoById(id)
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
-        return convertFoodDtoToGetFoodResponse(foodDto);
     }
 
-    public List<GetFoodResponse> getFoods(GetFoodsFilter filter) {
+    /**
+     * Does exactly the same as getFoodsQueryDsl but I'm gonna keep it here for future references
+     * TODO : refactor to support jooq code generation
+     */
+    public List<GetFoodResponse> getFoodsJooq(GetFoodsFilter filter) {
         // Apply filters based on user input
         Condition condition = DSL.noCondition();
         if (filter.foodCategoryIds() != null && !filter.foodCategoryIds().isEmpty()) {
@@ -155,80 +159,39 @@ public class FoodService {
         logger.info("Query: " + query.getSQL());
 
         // Map the result to a Set of FoodDto
-        return result.into(FoodDto.class).stream()
-                .map(this::convertFoodDtoToGetFoodResponse)
-                .collect(Collectors.toList());
+        return result.into(GetFoodResponse.class);
     }
 
-    /**
-     * Same as getFoods() but using QueryDSL
-     */
+
     public List<GetFoodResponse> getFoodsQueryDsl(GetFoodsFilter filter) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-        QFoodEntity food = QFoodEntity.foodEntity;
-        QProductEntity product = QProductEntity.productEntity;
-        QProductProviderEntity productProvider = QProductProviderEntity.productProviderEntity;
+        QFoodEntity f = QFoodEntity.foodEntity;
+        QProductEntity p = QProductEntity.productEntity;
+        QProductProviderEntity pp = QProductProviderEntity.productProviderEntity;
 
         // Create a list of conditions
         BooleanExpression condition = Expressions.asBoolean(true).isTrue();
 
         if (filter.foodCategoryIds() != null && !filter.foodCategoryIds().isEmpty()) {
-            QFoodFoodCategoryEntity foodFoodCategory = QFoodFoodCategoryEntity.foodFoodCategoryEntity;
-            condition = condition.and(food.id.in(
-                    JPAExpressions.select(foodFoodCategory.id.foodId)
-                            .from(foodFoodCategory)
-                            .where(foodFoodCategory.id.foodCategoryId.in(filter.foodCategoryIds()))));
+            QFoodFoodCategoryEntity ffc = QFoodFoodCategoryEntity.foodFoodCategoryEntity;
+            condition = condition.and(f.id.in(queryFactory.select(ffc.id.foodId).from(ffc).where(ffc.id.foodCategoryId.in(filter.foodCategoryIds()))));
         }
-
-        List<FoodDto> result = queryFactory
-                .select(
-                        food.id,
-                        product.name,
-                        product.description,
-                        product.image,
-                        food.dietaryRestrictions,
-                        product.price,
-                        product.pickupTime,
-                        product.productId.productType,
-                        productProvider.name
-                )
-                .from(food)
-                .join(product).on(food.productId.eq(product.productId.id))
-                .join(productProvider).on(product.productProviderId.eq(productProvider.id))
+        return queryFactory
+                .select(Projections.constructor(GetFoodResponse.class,
+                        f.id,
+                        p.name,
+                        p.description,
+                        p.image,
+                        f.dietaryRestrictions,
+                        p.price,
+                        p.pickupTime,
+                        p.productId.productType,
+                        pp.name))
+                .from(f)
+                .join(p).on(f.productId.eq(p.productId.id))
+                .join(pp).on(p.productProviderId.eq(pp.id))
                 .where(condition)
-                .fetch()
-                .stream()
-                .map(tuple -> new FoodDto(
-                        tuple.get(food.id),
-                        tuple.get(product.name),
-                        tuple.get(product.description),
-                        tuple.get(product.image),
-                        tuple.get(food.dietaryRestrictions),
-                        tuple.get(product.price),
-                        tuple.get(product.pickupTime),
-                        tuple.get(product.productId.productType),
-                        tuple.get(productProvider.name)
-                ))
-                .toList();
-
-        return result.stream()
-                .map(this::convertFoodDtoToGetFoodResponse)
-                .collect(Collectors.toList());
-    }
-
-
-    private GetFoodResponse convertFoodDtoToGetFoodResponse(FoodDto foodDto) {
-        return new GetFoodResponse(
-                foodDto.id(),
-                foodDto.name(),
-                foodDto.description(),
-                foodDto.image(),
-                foodDto.dietaryRestrictions(),
-                foodDto.price(),
-                foodDto.pickupTime(),
-                foodDto.productType(),
-                foodDto.productProviderName()
-        );
+                .fetch();
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)

@@ -2,6 +2,7 @@ package com.ffreaky.shoppingservice.food.repository;
 
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
 import com.ffreaky.shoppingservice.food.model.FoodDto;
+import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -38,7 +39,7 @@ public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
                ON p.productProviderId = pp.id
             WHERE f.id = :id
             """)
-    Optional<FoodDto> findDtoById(long id);
+    Optional<GetFoodResponse> findDtoById(long id);
 
     @Query("""
             SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
