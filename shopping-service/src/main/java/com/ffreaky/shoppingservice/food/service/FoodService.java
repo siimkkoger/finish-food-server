@@ -184,6 +184,8 @@ public class FoodService {
         if (filter.pickupTimeTo() != null) {
             condition = condition.and(p.pickupTime.before(filter.pickupTimeTo()));
         }
+        int offset = (filter.page() - 1) * filter.pageSize();
+
         return queryFactory
                 .select(Projections.constructor(GetFoodResponse.class,
                         f.id,
@@ -199,6 +201,8 @@ public class FoodService {
                 .join(p).on(f.productId.eq(p.productId.id))
                 .join(pp).on(p.productProviderId.eq(pp.id))
                 .where(condition)
+                .offset(offset)
+                .limit(filter.pageSize())
                 .fetch();
     }
 

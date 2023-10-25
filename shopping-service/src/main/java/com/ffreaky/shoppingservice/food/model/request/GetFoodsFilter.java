@@ -10,6 +10,8 @@ public record GetFoodsFilter(
         LocalDateTime createdAtFrom,
         LocalDateTime createdAtTo,
         LocalDateTime pickupTimeFrom,
-        LocalDateTime pickupTimeTo) {
-
+        LocalDateTime pickupTimeTo,
+        Integer page,   // Page number (1-based)
+        Integer pageSize // Number of items per page
+) {
 }

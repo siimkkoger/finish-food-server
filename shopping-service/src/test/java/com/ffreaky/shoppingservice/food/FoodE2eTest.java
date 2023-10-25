@@ -106,7 +106,7 @@ public class FoodE2eTest {
                         food.foodProductProviderName()
                 ))
                 .toList();
-        var filter = new GetFoodsFilter(null, null, null, null, null, null, null);
+        var filter = new GetFoodsFilter(null, null, null, null, null, null, null, null, null);
 
         // When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -119,6 +119,74 @@ public class FoodE2eTest {
 
         // Then
         assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
+    }
+
+    @Test
+    void testGetFoods_pagination() throws Exception {
+        var resource = new ClassPathResource("test-data.json");
+        var testData = objectMapper.readValue(resource.getFile(), TestData.class);
+        var expectedFoods = testData.getExpectedFoods();
+
+        // Given
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        var expectedResponse = expectedFoods.stream()
+                .map(food -> new GetFoodResponse(
+                        food.foodId(),
+                        food.foodName(),
+                        food.foodDescription(),
+                        food.foodImage(),
+                        food.foodDietaryRestrictions(),
+                        new BigDecimal(food.foodPrice()),
+                        LocalDateTime.parse(food.foodPickupTime(), formatter),
+                        ProductType.FOOD,
+                        food.foodProductProviderName()
+                ))
+                .toList();
+
+        // when page = 1 and pageSize = 10
+        var page = 1;
+        var pageSize = 10;
+        var filter = new GetFoodsFilter(null, null, null, null, null, null, null, page, pageSize);
+        MvcResult result_10 = mockMvc.perform(MockMvcRequestBuilders
+                        .post(controllerPath + "/get-foods")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(filter))
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Then page 1 should return 10 items
+        assertThat(result_10.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
+
+        // when page = 1 and pageSize = 1
+        page = 1;
+        pageSize = 5;
+        filter = new GetFoodsFilter(null, null, null, null, null, null, null, page, pageSize);
+        MvcResult result_5 = mockMvc.perform(MockMvcRequestBuilders
+                        .post(controllerPath + "/get-foods")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(filter))
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Then page 1 should return 5 items
+        assertThat(result_5.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse.subList(0, 5)));
+
+        // when page = 2 and pageSize = 10
+        page = 2;
+        pageSize = 10;
+        filter = new GetFoodsFilter(null, null, null, null, null, null, null, page, pageSize);
+        MvcResult result_10_page_2 = mockMvc.perform(MockMvcRequestBuilders
+                        .post(controllerPath + "/get-foods")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(filter))
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Then page 2 should return 0 items
+        assertThat(result_10_page_2.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(List.of()));
     }
 
 
