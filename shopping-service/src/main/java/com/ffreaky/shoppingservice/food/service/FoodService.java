@@ -67,6 +67,10 @@ public class FoodService {
         this.productService = productService;
     }
 
+    public GetFoodResponse getFoodById(Long id) {
+        return foodRepository.findDtoById(id)
+                .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food with id " + id + " not found"));
+    }
 
     /**
      * Add a new food row to the database.
@@ -108,12 +112,6 @@ public class FoodService {
         }
         return savedFoodEntity;
     }
-
-    public GetFoodResponse getFoodById(Long id) {
-        return foodRepository.findDtoById(id)
-                .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
-    }
-
 
     @Deprecated // Use getFoods instead (uses querydsl)
     public List<GetFoodResponse> getFoodsJooq(GetFoodsFilter filter) {
@@ -174,16 +172,16 @@ public class FoodService {
         if (filter.dietaryRestrictions() != null && !filter.dietaryRestrictions().isEmpty()) {
             condition = condition.and(f.dietaryRestrictions.containsIgnoreCase(filter.dietaryRestrictions()));
         }
-        if(filter.createdAtFrom() != null) {
+        if (filter.createdAtFrom() != null) {
             condition = condition.and(p.createdAt.after(filter.createdAtFrom()));
         }
-        if(filter.createdAtTo() != null) {
+        if (filter.createdAtTo() != null) {
             condition = condition.and(p.createdAt.before(filter.createdAtTo()));
         }
-        if(filter.pickupTimeFrom() != null) {
+        if (filter.pickupTimeFrom() != null) {
             condition = condition.and(p.pickupTime.after(filter.pickupTimeFrom()));
         }
-        if(filter.pickupTimeTo() != null) {
+        if (filter.pickupTimeTo() != null) {
             condition = condition.and(p.pickupTime.before(filter.pickupTimeTo()));
         }
         return queryFactory

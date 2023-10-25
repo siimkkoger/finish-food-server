@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public record CreateProductReqBody(
         @NotNull ProductType productType,
@@ -15,6 +15,6 @@ public record CreateProductReqBody(
         String description,
         String image,
         @NotNull @Positive BigDecimal price,
-        @NotNull Date pickupTime
+        @NotNull LocalDateTime pickupTime
 ) {
 }

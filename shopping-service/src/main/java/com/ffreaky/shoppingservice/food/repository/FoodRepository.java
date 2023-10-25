@@ -1,7 +1,6 @@
 package com.ffreaky.shoppingservice.food.repository;
 
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
-import com.ffreaky.shoppingservice.food.model.FoodDto;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +19,7 @@ import java.util.Set;
 public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
 
     @Query("""
-            SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
+            SELECT new com.ffreaky.shoppingservice.food.model.response.GetFoodResponse(
                 f.id,
                 p.name,
                 p.description,
@@ -42,7 +41,7 @@ public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
     Optional<GetFoodResponse> findDtoById(long id);
 
     @Query("""
-            SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
+            SELECT new com.ffreaky.shoppingservice.food.model.response.GetFoodResponse(
                 f.id,
                 p.name,
                 p.description,
@@ -60,10 +59,10 @@ public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
             JOIN ProductProviderEntity pp
                ON p.productProviderId = pp.id
             """)
-    Set<FoodDto> findAllDto();
+    Set<GetFoodResponse> findAllDto();
 
     @Query("""
-            SELECT new com.ffreaky.shoppingservice.food.model.FoodDto(
+            SELECT new com.ffreaky.shoppingservice.food.model.response.GetFoodResponse(
                 f.id,
                 p.name,
                 p.description,
@@ -86,6 +85,6 @@ public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
                    WHERE ffc.id.foodCategoryId in :foodCategoryIds
             )
             """)
-    Set<FoodDto> findAllByFoodCategoryIds(Set<Long> foodCategoryIds);
+    Set<GetFoodResponse> findAllByFoodCategoryIds(Set<Long> foodCategoryIds);
 
 }

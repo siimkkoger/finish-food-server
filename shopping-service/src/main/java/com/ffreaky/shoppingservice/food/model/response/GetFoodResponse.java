@@ -1,13 +1,11 @@
 package com.ffreaky.shoppingservice.food.model.response;
 
-import com.ffreaky.shoppingservice.food.model.FoodCategoryDto;
 import com.ffreaky.shoppingservice.product.ProductType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 public record GetFoodResponse(
         @NotNull Long id,
@@ -16,7 +14,7 @@ public record GetFoodResponse(
         @NotBlank String image,
         @NotBlank String dietaryRestrictions,
         @NotNull BigDecimal price,
-        @NotBlank Date pickupTime,
+        @NotBlank LocalDateTime pickupTime,
         @NotBlank ProductType productType,
         @NotBlank String productProviderName
 ) {

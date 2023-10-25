@@ -6,8 +6,8 @@ Content-Type: application/json
     "foodCategoryIds": [2]
 }
 
-### test get foods 2
-POST http://{{host}}:8080/food/get-foods-2
+### test get foods querydsl
+POST http://{{host}}:8080/food/get-foods-querydsl
 Content-Type: application/json
 
 {

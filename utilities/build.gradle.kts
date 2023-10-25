@@ -18,20 +18,38 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    val queryDslVersion = "5.0.0"
+    val lombokVersion = "1.18.28"
+
+    implementation("org.springframework.boot:spring-boot-starter-web:3.1.0")
 
     // Database connectivity
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(group = "org.springframework.boot", name = "spring-boot-starter-data-jpa", version = "3.0.4")
+
+    // Querydsl
+    implementation(group = "com.querydsl", name = "querydsl-core", version = queryDslVersion)
+    implementation(group = "com.querydsl", name = "querydsl-jpa", version = queryDslVersion)
+    implementation(group = "com.querydsl", name = "querydsl-apt", version = queryDslVersion, classifier = "jakarta")
+
+    // Test
+    testImplementation(group = "org.springframework.boot", name = "spring-boot-starter-test", version = "3.1.0")
 
     // Validation
-    implementation("org.springframework.boot:spring-boot-starter-validation:3.1.3")
+    implementation(group = "org.springframework.boot", name = "spring-boot-starter-validation", version = "3.1.3")
 
     // Lombok
-    compileOnly("org.projectlombok:lombok:1.18.28")
-    annotationProcessor("org.projectlombok:lombok:1.18.28")
-    testCompileOnly("org.projectlombok:lombok:1.18.28")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.28")
+    compileOnly(group = "org.projectlombok", name = "lombok", version = lombokVersion)
+    testCompileOnly(group = "org.projectlombok", name = "lombok", version = lombokVersion)
+
+    // Annotation processor dependencies
+    annotationProcessor(group = "com.querydsl", name = "querydsl-apt", version = queryDslVersion, classifier = "jakarta")
+    annotationProcessor(group = "jakarta.persistence", name = "jakarta.persistence-api", version = "3.1.0")
+    annotationProcessor(group = "jakarta.annotation", name = "jakarta.annotation-api", version = "2.1.1")
+    annotationProcessor(group = "org.springframework.boot", name = "spring-boot-starter-data-jpa", version = "3.1.0")
+    annotationProcessor(group = "org.projectlombok", name = "lombok", version = lombokVersion)
+
+    testAnnotationProcessor(group = "org.projectlombok", name = "lombok", version = lombokVersion)
+    testAnnotationProcessor(group = "com.querydsl", name = "querydsl-apt", version = queryDslVersion, classifier = "jakarta")
 }
 
 tasks.register("prepareKotlinBuildScriptModel") {}

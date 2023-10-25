@@ -1,6 +1,5 @@
 package com.ffreaky.shoppingservice.product.service;
 
-import com.ffreaky.shoppingservice.product.ProductType;
 import com.ffreaky.shoppingservice.product.entity.ProductEntity;
 import com.ffreaky.shoppingservice.product.entity.ProductId;
 import com.ffreaky.shoppingservice.product.model.request.CreateProductReqBody;
@@ -21,7 +20,7 @@ public class ProductService {
     public ProductEntity createProduct(CreateProductReqBody dto) {
         final ProductEntity pe = new ProductEntity();
         final ProductId productId = new ProductId();
-        productId.setProductType(ProductType.FOOD);
+        productId.setProductType(dto.productType());
         pe.setProductId(productId);
         pe.setProductProviderId(dto.productProviderId());
         pe.setName(dto.name());
@@ -43,12 +42,12 @@ public class ProductService {
         return saveProduct(pe);
     }
 
-    public ProductEntity saveProduct(ProductEntity pe) {
+    private ProductEntity saveProduct(ProductEntity pe) {
         final ProductEntity savedProductEntity;
         try {
             savedProductEntity = productRepository.save(pe);
         } catch (Exception e) {
-            throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving product: " + e.getMessage());
+            throw new FinishFoodException(FinishFoodException.Type.SERVER_ERROR, "Error saving product: " + e.getMessage());
         }
         return savedProductEntity;
     }

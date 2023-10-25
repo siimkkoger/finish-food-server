@@ -13,7 +13,6 @@ import com.ffreaky.shoppingservice.food.service.FoodService;
 import com.ffreaky.shoppingservice.product.ProductType;
 import com.ffreaky.shoppingservice.product.model.request.CreateProductReqBody;
 import com.ffreaky.shoppingservice.product.model.request.UpdateProductReqBody;
-import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,9 +22,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -69,7 +69,7 @@ class FoodControllerTest {
         long foodId = 1L;
         final GetFoodResponse expectedResponse = new GetFoodResponse(
                 foodId, "Sample Food", "Description", "image.jpg", "Restrictions",
-                BigDecimal.valueOf(10.99), new Date(), ProductType.FOOD, "Provider");
+                BigDecimal.valueOf(10.99), LocalDateTime.now(), ProductType.FOOD, "Provider");
 
         given(foodService.getFoodById(foodId)).willReturn(expectedResponse);
 
@@ -99,7 +99,7 @@ class FoodControllerTest {
         final List<GetFoodResponse> expectedResponseList = List.of(
                 new GetFoodResponse(
                         1L, "Sample Food", "Description", "image.jpg", "Restrictions",
-                        BigDecimal.valueOf(10.99), new Date(), ProductType.FOOD, "Provider")
+                        BigDecimal.valueOf(10.99), LocalDateTime.now(), ProductType.FOOD, "Provider")
         );
 
         GetFoodsFilter filter = new GetFoodsFilter(null, null, null, null, null, null, null);
@@ -124,13 +124,13 @@ class FoodControllerTest {
         // Arrange
         var createProductReqBody = new CreateProductReqBody(
                 ProductType.FOOD, 1L, "Sample Food",
-                "Description", "image.jpg", BigDecimal.valueOf(10.99), new Date());
+                "Description", "image.jpg", BigDecimal.valueOf(10.99), LocalDateTime.now());
 
         var reqBody = new CreateFoodReqBody(createProductReqBody, "Restrictions");
 
         var expectedResponse = new GetFoodResponse(
                 1L, "Sample Food", "Description", "image.jpg", "Restrictions",
-                BigDecimal.valueOf(10.99), new Date(), ProductType.FOOD, "Provider");
+                BigDecimal.valueOf(10.99), LocalDateTime.now(), ProductType.FOOD, "Provider");
 
         given(foodService.createFood(reqBody)).willReturn(expectedResponse);
 
@@ -151,15 +151,15 @@ class FoodControllerTest {
     public void testCreateFood_invalidInput() {
         final List<CreateProductReqBody> invalidInputs = List.of(
                 new CreateProductReqBody(null, 1L, "Sample Food",
-                        "Description", "image.jpg", BigDecimal.valueOf(10.99), new Date()),
+                        "Description", "image.jpg", BigDecimal.valueOf(10.99), LocalDateTime.now()),
                 new CreateProductReqBody(ProductType.FOOD, null, "Sample Food",
-                        "Description", "image.jpg", BigDecimal.valueOf(10.99), new Date()),
+                        "Description", "image.jpg", BigDecimal.valueOf(10.99), LocalDateTime.now()),
                 new CreateProductReqBody(ProductType.FOOD, 1L, null,
-                        "Description", "image.jpg", BigDecimal.valueOf(10.99), new Date()),
+                        "Description", "image.jpg", BigDecimal.valueOf(10.99), LocalDateTime.now()),
                 new CreateProductReqBody(ProductType.FOOD, 1L, "Sample Food",
-                        "Description", "image.jpg", null, new Date()),
+                        "Description", "image.jpg", null, LocalDateTime.now()),
                 new CreateProductReqBody(ProductType.FOOD, 1L, "Sample Food",
-                        "Description", "image.jpg", BigDecimal.valueOf(-1L), new Date()),
+                        "Description", "image.jpg", BigDecimal.valueOf(-1L), LocalDateTime.now()),
                 new CreateProductReqBody(ProductType.FOOD, 1L, "Sample Food",
                         "Description", "image.jpg", BigDecimal.valueOf(10.99), null)
         );
@@ -183,13 +183,13 @@ class FoodControllerTest {
     public void testUpdateFood() throws Exception {
         // Arrange
         var updateProductReqBody = new UpdateProductReqBody(
-                "Sample Food", "Description", BigDecimal.valueOf(10.99), new Date());
+                "Sample Food", "Description", "image", BigDecimal.valueOf(10.99), LocalDateTime.now());
 
         var reqBody = new UpdateFoodReqBody("Restrictions", updateProductReqBody);
 
         var expectedResponse = new GetFoodResponse(
                 1L, "Sample Food", "Description", "image.jpg", "Restrictions",
-                BigDecimal.valueOf(10.99), new Date(), ProductType.FOOD, "Provider");
+                BigDecimal.valueOf(10.99), LocalDateTime.now(), ProductType.FOOD, "Provider");
 
         given(foodService.updateFood(1L, reqBody)).willReturn(expectedResponse);
 
@@ -229,13 +229,13 @@ class FoodControllerTest {
         // Test invalid UpdateProductReqBody
         final var invalidInputs = List.of(
                 new UpdateFoodReqBody("Restrictions",
-                        new UpdateProductReqBody(null, "Description", BigDecimal.ONE, new Date())),
+                        new UpdateProductReqBody(null, "Description", "image", BigDecimal.ONE, LocalDateTime.now())),
                 new UpdateFoodReqBody("Restrictions",
-                        new UpdateProductReqBody("Name", "Description", null, new Date())),
+                        new UpdateProductReqBody("Name", "Description", "image", null, LocalDateTime.now())),
                 new UpdateFoodReqBody("Restrictions",
-                        new UpdateProductReqBody("Name", "Description", BigDecimal.valueOf(-1L), new Date())),
+                        new UpdateProductReqBody("Name", "Description", "image", BigDecimal.valueOf(-1L), LocalDateTime.now())),
                 new UpdateFoodReqBody("Restrictions",
-                        new UpdateProductReqBody("Name", "Description", BigDecimal.ONE, null))
+                        new UpdateProductReqBody("Name", "Description", "image", BigDecimal.ONE, null))
         );
         invalidInputs.forEach(invalidInput -> {
             try {

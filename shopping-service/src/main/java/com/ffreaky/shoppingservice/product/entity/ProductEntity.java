@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -35,6 +35,6 @@ public class ProductEntity extends BaseEntity {
     private String image;
 
     @Column(name = "pickup_time", nullable = false)
-    private Date pickupTime;
+    private LocalDateTime pickupTime;
 
 }
