@@ -35,8 +35,7 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "image", length = 300)
     private String image;
 
-    // TODO - convert to Timestamp from LocalDateTime
     @Column(name = "pickup_time", nullable = false)
-    private Timestamp pickupTime;
+    private LocalDateTime pickupTime;
 
 }

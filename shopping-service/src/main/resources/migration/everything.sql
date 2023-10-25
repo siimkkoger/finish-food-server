@@ -112,7 +112,7 @@ CREATE TABLE public.product
     description         VARCHAR(1000),
     image               VARCHAR(300),
     price               DECIMAL(19, 4)     NOT NULL,
-    pickup_time         DATE               NOT NULL,
+    pickup_time         timestamp               NOT NULL,
 
     created_at          timestamp          NOT NULL DEFAULT current_timestamp,
     updated_at          timestamp          NOT NULL DEFAULT current_timestamp,
