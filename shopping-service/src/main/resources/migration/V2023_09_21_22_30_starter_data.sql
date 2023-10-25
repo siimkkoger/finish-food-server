@@ -1,3 +1,4 @@
+-- insert data
 INSERT INTO public.user (first_name, last_name, username, password, email, phone)
 VALUES ('John', 'Doe', 'johndoe', 'password123', 'john.doe@example.com', '+15555555555'),
        ('Jane', 'Doe', 'janedoe', 'password123', 'jane.doe@example.com', '+15555555556'),
@@ -32,13 +33,6 @@ VALUES (1, 1, 'Credit Card', '1234-5678-9012-3456', '2023-12-31'),
 INSERT INTO public.product_type (name)
 VALUES ('FOOD'),
        ('CLOTHES');
-
-INSERT INTO public.food_category (name)
-VALUES ('American'),
-       ('Italian'),
-       ('Chinese'),
-       ('Mexican'),
-       ('Indian');
 
 INSERT INTO public.clothes_category (name)
 VALUES ('Tops'),
@@ -137,12 +131,12 @@ VALUES (1, 1),
        (4, 2),
        (5, 2),
        (6, 3),
-       (7, 1),
-       (8, 1),
-       (9, 2),
-       (10, 3),
-       (11, 4),
-       (12, 5);
+       (1, 2),
+       (2, 3),
+       (3, 4),
+       (4, 1),
+       (5, 3),
+       (1, 3);
 
 INSERT INTO clothes_category (name)
 VALUES ('Tops'),
@@ -152,11 +146,11 @@ VALUES ('Tops'),
        ('Shoes');
 
 INSERT INTO clothes (product_id, size, color)
-VALUES (7, 'Medium', 'Black'),
-       (8, '32W32L', 'Blue'),
-       (9, 'Small', 'Black and white'),
-       (10, 'Medium', 'Denim'),
-       (11, '8', 'White');
+VALUES (13, 'Medium', 'Black'),
+       (14, '32W32L', 'Blue'),
+       (15, 'Small', 'Black and white'),
+       (16, 'Medium', 'Denim'),
+       (17, '8', 'White');
 
 INSERT INTO clothes_clothes_category (clothes_id, clothes_category_id)
 VALUES (1, 1),

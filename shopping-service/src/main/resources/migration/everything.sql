@@ -6,7 +6,6 @@ GRANT ALL ON SCHEMA public TO public;
 GRANT ALL ON SCHEMA public TO testuser;
 
 
-
 -- create tables
 CREATE TABLE public.user
 (
@@ -283,12 +282,6 @@ CREATE TABLE public.clothes_clothes_category
 );
 
 
-
-
-
-
-
-
 -- insert data
 INSERT INTO public.user (first_name, last_name, username, password, email, phone)
 VALUES ('John', 'Doe', 'johndoe', 'password123', 'john.doe@example.com', '+15555555555'),
@@ -325,13 +318,6 @@ INSERT INTO public.product_type (name)
 VALUES ('FOOD'),
        ('CLOTHES');
 
-INSERT INTO public.food_category (name)
-VALUES ('American'),
-       ('Italian'),
-       ('Chinese'),
-       ('Mexican'),
-       ('Indian');
-
 INSERT INTO public.clothes_category (name)
 VALUES ('Tops'),
        ('Bottoms'),
@@ -361,8 +347,8 @@ VALUES ('Chipotle', 'RESTAURANT', 'Fast food restaurant chain', '123 Main Street
         'https://www.fishermanscatch.com/', 'https://example.com/fishermanscatch.jpg');
 
 INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time)
-VALUES ('FOOD', 1, 'Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
-        'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:00:00'),
+VALUES ('FOOD', 2, 'Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
+        'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:30:00'),
        ('FOOD', 1, 'Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
         'https://example.com/pizza.jpg', 12.99, '2023-09-22 12:30:00'),
        ('FOOD', 2, 'Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.', 'https://example.com/pasta.jpg',
@@ -415,12 +401,18 @@ VALUES ('American'),
 
 -- food table
 INSERT INTO food (product_id, dietary_restrictions)
-VALUES (1, 'None'),
+VALUES (1, 'Contains beef and dairy.'),
        (2, 'Pork'),
        (3, 'None'),
        (4, 'Dairy'),
        (5, 'Eggs, Dairy'),
-       (6, 'None');
+       (6, 'None'),
+       (7, 'Contains beef and dairy.'),
+       (8, 'None'),
+       (9, 'None'),
+       (10, 'None'),
+       (11, 'None'),
+       (12, 'None');
 
 INSERT INTO food_food_category (food_id, food_category_id)
 VALUES (1, 1),

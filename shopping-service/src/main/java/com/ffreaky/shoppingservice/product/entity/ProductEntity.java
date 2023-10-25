@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
@@ -34,7 +35,8 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "image", length = 300)
     private String image;
 
+    // TODO - convert to Timestamp from LocalDateTime
     @Column(name = "pickup_time", nullable = false)
-    private LocalDateTime pickupTime;
+    private Timestamp pickupTime;
 
 }
