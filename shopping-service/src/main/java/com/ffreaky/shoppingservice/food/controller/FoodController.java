@@ -39,6 +39,7 @@ public class FoodController {
         return foodService.createFood(food);
     }
 
+    // TODO - support validation groups
     @PostMapping("/update-food/{foodId}")
     public GetFoodResponse updateFood(
             @PathVariable @NotNull Long foodId,

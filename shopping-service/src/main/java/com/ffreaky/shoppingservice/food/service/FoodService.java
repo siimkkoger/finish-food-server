@@ -115,7 +115,7 @@ public class FoodService {
     }
 
 
-    @Deprecated
+    @Deprecated // Use getFoods instead (uses querydsl)
     public List<GetFoodResponse> getFoodsJooq(GetFoodsFilter filter) {
         // Apply filters based on user input
         Condition condition = DSL.noCondition();

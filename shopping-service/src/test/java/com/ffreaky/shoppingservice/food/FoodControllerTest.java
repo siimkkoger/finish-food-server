@@ -29,8 +29,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -71,7 +71,7 @@ class FoodControllerTest {
                 foodId, "Sample Food", "Description", "image.jpg", "Restrictions",
                 BigDecimal.valueOf(10.99), new Date(), ProductType.FOOD, "Provider");
 
-        when(foodService.getFoodById(foodId)).thenReturn(expectedResponse);
+        given(foodService.getFoodById(foodId)).willReturn(expectedResponse);
 
         // Act
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -81,7 +81,7 @@ class FoodControllerTest {
                 .andReturn();
 
         // Assert
-        assertEquals(objectMapper.writeValueAsString(expectedResponse), result.getResponse().getContentAsString());
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
     }
 
     @Test
@@ -89,7 +89,7 @@ class FoodControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .post(controllerPath + "/get-food/tere")
                         .contentType("application/json"))
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentTypeMismatchException))
+                .andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentTypeMismatchException.class))
                 .andExpect(status().isBadRequest());
     }
 
@@ -102,9 +102,9 @@ class FoodControllerTest {
                         BigDecimal.valueOf(10.99), new Date(), ProductType.FOOD, "Provider")
         );
 
-        GetFoodsFilter filter = new GetFoodsFilter(Set.of(1L, 2L));
+        GetFoodsFilter filter = new GetFoodsFilter(null, null, null, null, null, null, null);
 
-        when(foodService.getFoods(filter)).thenReturn(expectedResponseList);
+        given(foodService.getFoods(filter)).willReturn(expectedResponseList);
 
         // Act
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -116,7 +116,7 @@ class FoodControllerTest {
                 .andReturn();
 
         // Assert
-        assertEquals(objectMapper.writeValueAsString(expectedResponseList), result.getResponse().getContentAsString());
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponseList));
     }
 
     @Test
@@ -132,7 +132,7 @@ class FoodControllerTest {
                 1L, "Sample Food", "Description", "image.jpg", "Restrictions",
                 BigDecimal.valueOf(10.99), new Date(), ProductType.FOOD, "Provider");
 
-        when(foodService.createFood(reqBody)).thenReturn(expectedResponse);
+        given(foodService.createFood(reqBody)).willReturn(expectedResponse);
 
         // Act
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -144,7 +144,7 @@ class FoodControllerTest {
                 .andReturn();
 
         // Assert
-        assertEquals(objectMapper.writeValueAsString(expectedResponse), result.getResponse().getContentAsString());
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
     }
 
     @Test
@@ -171,7 +171,7 @@ class FoodControllerTest {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(new CreateFoodReqBody(invalidInput, "Restrictions")))
                                 .contentType("application/json"))
-                        .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
+                        .andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentNotValidException.class))
                         .andExpect(status().isBadRequest());
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -191,7 +191,7 @@ class FoodControllerTest {
                 1L, "Sample Food", "Description", "image.jpg", "Restrictions",
                 BigDecimal.valueOf(10.99), new Date(), ProductType.FOOD, "Provider");
 
-        when(foodService.updateFood(1L, reqBody)).thenReturn(expectedResponse);
+        given(foodService.updateFood(1L, reqBody)).willReturn(expectedResponse);
 
         // Act
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -203,7 +203,7 @@ class FoodControllerTest {
                 .andReturn();
 
         // Assert
-        assertEquals(objectMapper.writeValueAsString(expectedResponse), result.getResponse().getContentAsString());
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
     }
 
     @Test
@@ -214,7 +214,7 @@ class FoodControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content("{}")
                         .contentType("application/json"))
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
+                .andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentNotValidException.class))
                 .andExpect(status().isBadRequest());
 
         // Test invalid UpdateFoodReqBody
@@ -223,7 +223,7 @@ class FoodControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UpdateFoodReqBody("Restrictions", null)))
                         .contentType("application/json"))
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
+                .andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentNotValidException.class))
                 .andExpect(status().isBadRequest());
 
         // Test invalid UpdateProductReqBody
@@ -244,7 +244,7 @@ class FoodControllerTest {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(invalidInput))
                                 .contentType("application/json"))
-                        .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
+                        .andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentNotValidException.class))
                         .andExpect(status().isBadRequest());
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -256,7 +256,7 @@ class FoodControllerTest {
     public void testDeleteFood() throws Exception {
         // Arrange
         var expectedResponse = true;
-        when(foodService.deleteFood(1L)).thenReturn(expectedResponse);
+        given(foodService.deleteFood(1L)).willReturn(expectedResponse);
 
         // Act
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -266,7 +266,7 @@ class FoodControllerTest {
                 .andReturn();
 
         // Assert
-        assertEquals(objectMapper.writeValueAsString(expectedResponse), result.getResponse().getContentAsString());
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
     }
 
     @Test
@@ -274,7 +274,7 @@ class FoodControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .delete(controllerPath + "/delete-food/tere")
                         .contentType("application/json"))
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentTypeMismatchException))
+                .andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentTypeMismatchException.class))
                 .andExpect(status().isBadRequest());
     }
 
@@ -287,7 +287,7 @@ class FoodControllerTest {
                 new FoodCategoryDto(1L, "Category 1"),
                 new FoodCategoryDto(2L, "Category 2")));
 
-        when(foodService.getAllFoodCategoriesForFood(foodId)).thenReturn(expectedResponse);
+        given(foodService.getAllFoodCategoriesForFood(foodId)).willReturn(expectedResponse);
 
         // Act
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -299,7 +299,7 @@ class FoodControllerTest {
                 .andReturn();
 
         // Assert
-        assertEquals(objectMapper.writeValueAsString(expectedResponse), result.getResponse().getContentAsString());
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
     }
 
     @Test
@@ -309,7 +309,7 @@ class FoodControllerTest {
                 new FoodCategoryDto(1L, "Category 1"),
                 new FoodCategoryDto(2L, "Category 2")));
 
-        when(foodService.getAllFoodCategories()).thenReturn(expectedResponse);
+        given(foodService.getAllFoodCategories()).willReturn(expectedResponse);
 
         // Act
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -319,7 +319,7 @@ class FoodControllerTest {
                 .andReturn();
 
         // Assert
-        assertEquals(objectMapper.writeValueAsString(expectedResponse), result.getResponse().getContentAsString());
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
     }
 
     @Test
@@ -330,7 +330,7 @@ class FoodControllerTest {
                 new FoodCategoryDto(1L, "Category 1"),
                 new FoodCategoryDto(2L, "Category 2")));
 
-        when(foodService.getAllFoodCategoriesForFood(foodId)).thenReturn(expectedResponse);
+        given(foodService.getAllFoodCategoriesForFood(foodId)).willReturn(expectedResponse);
 
         // Act
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -340,7 +340,7 @@ class FoodControllerTest {
                 .andReturn();
 
         // Assert
-        assertEquals(objectMapper.writeValueAsString(expectedResponse), result.getResponse().getContentAsString());
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
     }
 
 
