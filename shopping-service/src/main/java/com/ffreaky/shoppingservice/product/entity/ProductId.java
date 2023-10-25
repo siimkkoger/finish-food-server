@@ -22,6 +22,11 @@ public class ProductId implements Serializable {
     @Column(name = "product_type_name", nullable = false, updatable = false)
     private ProductType productType;
 
+    public ProductId(Long id, ProductType productType) {
+        this.id = id;
+        this.productType = productType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

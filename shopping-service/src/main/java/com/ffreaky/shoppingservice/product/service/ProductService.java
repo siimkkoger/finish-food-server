@@ -8,6 +8,8 @@ import com.ffreaky.shoppingservice.product.repository.ProductRepository;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class ProductService {
 
@@ -35,11 +37,25 @@ public class ProductService {
     public ProductEntity updateProduct(Long productId, UpdateProductReqBody dto) {
         ProductEntity pe = productRepository.findById(productId)
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Product not found"));
+
+        if (dtoFieldsEqualEntity(dto, pe)) {
+            return pe;
+        }
+
         pe.setName(dto.name());
         pe.setDescription(dto.description());
+        pe.setImage(dto.image());
         pe.setPrice(dto.price());
         pe.setPickupTime(dto.pickupTime());
         return saveProduct(pe);
+    }
+
+    private boolean dtoFieldsEqualEntity(UpdateProductReqBody dto, ProductEntity entity) {
+        return Objects.equals(dto.name(), entity.getName()) &&
+                Objects.equals(dto.price(), entity.getPrice()) &&
+                Objects.equals(dto.pickupTime(), entity.getPickupTime()) &&
+                Objects.equals(dto.description(), entity.getDescription()) &&
+                Objects.equals(dto.image(), entity.getImage());
     }
 
     private ProductEntity saveProduct(ProductEntity pe) {

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public record CreateProductReqBody(
         @NotNull ProductType productType,
-        @NotNull Long productProviderId,
+        @NotNull Long productProviderId, // TODO - product provider should come from the token / credentials
         @NotBlank String name,
         String description,
         String image,

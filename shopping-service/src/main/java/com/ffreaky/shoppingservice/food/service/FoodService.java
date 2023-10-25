@@ -108,7 +108,7 @@ public class FoodService {
         try {
             savedFoodEntity = foodRepository.save(fe);
         } catch (Exception e) {
-            throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Error saving food: " + e.getMessage());
+            throw new FinishFoodException(FinishFoodException.Type.SERVER_ERROR, "Error saving food: " + e.getMessage());
         }
         return savedFoodEntity;
     }
