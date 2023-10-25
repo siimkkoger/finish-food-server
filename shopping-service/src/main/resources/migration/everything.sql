@@ -112,7 +112,7 @@ CREATE TABLE public.product
     description         VARCHAR(1000),
     image               VARCHAR(300),
     price               DECIMAL(19, 4)     NOT NULL,
-    pickup_time         timestamp               NOT NULL,
+    pickup_time         timestamp          NOT NULL,
 
     created_at          timestamp          NOT NULL DEFAULT current_timestamp,
     updated_at          timestamp          NOT NULL DEFAULT current_timestamp,
@@ -329,66 +329,86 @@ INSERT INTO product_provider_type (name)
 VALUES ('RESTAURANT'),
        ('STORE');
 
+-- dummy data for product_provider table (RESTAURANT)
 INSERT INTO product_provider (name, product_provider_type, description, address, phone, email, website, image)
-VALUES ('Chipotle', 'RESTAURANT', 'Fast food restaurant chain', '123 Main Street, Anytown, CA 91234', '+15555555555',
-        'info@chipotle.com', 'https://www.chipotle.com/', 'https://example.com/chipotle.jpg'),
-       ('McDonalds', 'RESTAURANT', 'Fast food restaurant chain', '456 Elm Street, Anytown, CA 91234', '+15555555556',
+VALUES ('McDonalds', 'RESTAURANT', 'Fast food restaurant chain', '456 Elm Street, Anytown, CA 91234', '+15555555556',
         'info@mcdonalds.com', 'https://www.mcdonalds.com/', 'https://example.com/mcdonalds.jpg'),
-       ('Walmart', 'STORE', 'Department store chain', '456 Elm Street, Anytown, CA 91234', '+15555555556',
-        'info@walmart.com', 'https://www.walmart.com/', 'https://example.com/walmart.jpg'),
-       ('Target', 'STORE', 'Discount store chain', '789 Oak Street, Anytown, CA 91234', '+15555555557',
-        'info@target.com', 'https://www.target.com/', 'https://example.com/target.jpg'),
        ('Subway', 'RESTAURANT', 'Submarine sandwich chain', '123 Elm Street, Anytown, CA 91234', '+15555555588',
         'info@subway.com', 'https://www.subway.com/', 'https://example.com/subway.jpg'),
        ('Pizza Hut', 'RESTAURANT', 'Pizza restaurant chain', '456 Oak Street, Anytown, CA 91234', '+15555555589',
         'info@pizzahut.com', 'https://www.pizzahut.com/', 'https://example.com/pizzahut.jpg'),
-       ('Fisherman Catch', 'RESTAURANT', 'Seafood restaurant with a variety of fresh catches',
-        '789 Pine Street, Anytown, CA 91234', '+15555555590', 'info@fishermanscatch.com',
-        'https://www.fishermanscatch.com/', 'https://example.com/fishermanscatch.jpg');
+       ('Chipotle', 'RESTAURANT', 'Fast food restaurant chain', '123 Main Street, Anytown, CA 91234', '+15555555555',
+        'info@chipotle.com', 'https://www.chipotle.com/', 'https://example.com/chipotle.jpg'),
+       ('Tiki Taco', 'RESTAURANT', 'Fast food restaurant chain', '123 Main Street, Anytown, CA 91234', '+15555555555',
+        'info@tikitaco.com', 'https://www.tikitaco.com/', 'https://example.com/tikitaco.jpg');
 
+-- dummy data for product_provider table (STORE)
+INSERT INTO product_provider (name, product_provider_type, description, address, phone, email, website, image)
+VALUES ('Fashion Avenue', 'STORE', 'Trendy clothing store', '789 Fashion Street, Anytown, CA 91234', '+15555555501',
+        'info@fashionavenue.com', 'https://www.fashionavenue.com/', 'https://example.com/fashionavenue.jpg'),
+       ('Trendy Threads', 'STORE', 'Chic clothing boutique', '123 Style Avenue, Anytown, CA 91234', '+15555555502',
+        'info@trendythreads.com', 'https://www.trendythreads.com/', 'https://example.com/trendythreads.jpg'),
+       ('Casual Comforts', 'STORE', 'Relaxed clothing shop', '456 Cozy Street, Anytown, CA 91234', '+15555555503',
+        'info@casualcomforts.com', 'https://www.casualcomforts.com/', 'https://example.com/casualcomforts.jpg'),
+       ('Shoe Paradise', 'STORE', 'Footwear specialty store', '789 Footwear Avenue, Anytown, CA 91234', '+15555555504',
+        'info@shoeparadise.com', 'https://www.shoeparadise.com/', 'https://example.com/shoeparadise.jpg'),
+       ('Sports Gear Store', 'STORE', 'Athletic wear and equipment shop', '123 Sporty Street, Anytown, CA 91234',
+        '+15555555505', 'info@sportsgearstore.com', 'https://www.sportsgearstore.com/',
+        'https://example.com/sportsgearstore.jpg');
+
+-- dummy data for product table (FOOD)
 INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time)
-VALUES ('FOOD', 2, 'Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
+VALUES ('FOOD', 1, 'Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
         'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:30:00'),
-       ('FOOD', 1, 'Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
+       ('FOOD', 3, 'Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
         'https://example.com/pizza.jpg', 12.99, '2023-09-22 12:30:00'),
        ('FOOD', 2, 'Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.', 'https://example.com/pasta.jpg',
         14.99, '2023-09-22 13:00:00'),
-       ('FOOD', 2, 'Ice cream', 'A bowl of cold, delicious ice cream.', 'https://example.com/icecream.jpg', 4.99,
+       ('FOOD', 1, 'Ice cream', 'A bowl of cold, delicious ice cream.', 'https://example.com/icecream.jpg', 4.99,
         '2023-09-22 13:30:00'),
-       ('FOOD', 2, 'Tiramisu',
+       ('FOOD', 1, 'Tiramisu',
         'A classic Italian dessert made with coffee-dipped ladyfingers and a creamy mascarpone filling.',
         'https://example.com/tiramisu.jpg', 6.99, '2023-09-22 14:00:00'),
-       ('FOOD', 3, 'Fried rice', 'A dish of rice fried with vegetables and your choice of protein.',
+       ('FOOD', 4, 'Fried rice', 'A dish of rice fried with vegetables and your choice of protein.',
         'https://example.com/friedrice.jpg', 11.99, '2023-09-22 14:30:00'),
-
        ('FOOD', 2, 'Cheeseburger', 'A classic cheeseburger with lettuce, tomato, onion, and a juicy patty.',
         'https://example.com/cheeseburger.jpg', 8.99, '2023-09-22 12:15:00'),
-       ('FOOD', 6, 'Margherita Pizza', 'A traditional Margherita pizza with fresh mozzarella, basil, and tomato sauce.',
+       ('FOOD', 3, 'Margherita Pizza', 'A traditional Margherita pizza with fresh mozzarella, basil, and tomato sauce.',
         'https://example.com/margheritapizza.jpg', 11.99, '2023-09-22 12:45:00'),
-       ('FOOD', 7, 'General Tso Chicken', 'Crispy chicken in a sweet and spicy General Tso sauce with steamed rice.',
+       ('FOOD', 3, 'General Tso Chicken', 'Crispy chicken in a sweet and spicy General Tso sauce with steamed rice.',
         'https://example.com/generaltsochicken.jpg', 13.99, '2023-09-22 13:15:00'),
        ('FOOD', 5, 'Tacos', 'Delicious street-style tacos with your choice of fillings.',
-        'https://example.com/tacos.jpg', 9.99, '2023-09-22 13:45:00'),
-       ('FOOD', 5, 'Butter Chicken', 'A rich and creamy Indian butter chicken dish served with naan bread.',
-        'https://example.com/butterchicken.jpg', 14.99, '2023-09-22 14:15:00'),
-       ('FOOD', 5, 'Sushi Platter', 'A variety of fresh sushi rolls served with soy sauce and wasabi.',
-        'https://example.com/sushi.jpg', 16.99, '2023-09-22 14:45:00'),
+        'https://example.com/tacos.jpg', 9.99, '2023-09-22 13:45:00');
 
-       ('CLOTHES', 3, 'T-shirt', 'A classic black cotton t-shirt.', 'https://example.com/tshirt.jpg', 19.99,
+-- dummy data for product table (CLOTHES)
+INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time)
+VALUES ('CLOTHES', 6, 'T-shirt', 'A classic black cotton t-shirt.', 'https://example.com/tshirt.jpg', 19.99,
         '2023-09-22 15:00:00'),
-       ('CLOTHES', 3, 'Jeans', 'A pair of blue denim jeans.', 'https://example.com/jeans.jpg', 29.99,
+       ('CLOTHES', 6, 'Jeans', 'A pair of blue denim jeans.', 'https://example.com/jeans.jpg', 29.99,
         '2023-09-22 15:30:00'),
-       ('CLOTHES', 4, 'Dress', 'A black and white striped dress with a belted waist.', 'https://example.com/dress.jpg',
+       ('CLOTHES', 7, 'Dress', 'A black and white striped dress with a belted waist.', 'https://example.com/dress.jpg',
         39.99, '2023-09-22 16:00:00'),
-       ('CLOTHES', 4, 'Jacket', 'A denim jacket with a button-front closure and two pockets.',
+       ('CLOTHES', 7, 'Jacket', 'A denim jacket with a button-front closure and two pockets.',
         'https://example.com/jacket.jpg', 49.99, '2023-09-22 16:30:00'),
-       ('CLOTHES', 4, 'Sneakers', 'A pair of white sneakers with a rubber sole.', 'https://example.com/sneakers.jpg',
-        59.99, '2023-09-22 17:00:00');
+       ('CLOTHES', 8, 'Sneakers', 'A pair of white sneakers with a rubber sole.', 'https://example.com/sneakers.jpg',
+        59.99, '2023-09-22 17:00:00'),
+       ('CLOTHES', 8, 'Hoodie', 'A cozy hooded sweatshirt in charcoal gray.', 'https://example.com/hoodie.jpg', 34.99,
+        '2023-09-22 17:30:00'),
+       ('CLOTHES', 9, 'Skirt', 'A floral-print skirt with an elastic waistband.', 'https://example.com/skirt.jpg',
+        24.99, '2023-09-22 18:00:00'),
+       ('CLOTHES', 9, 'Blouse', 'A stylish blouse with a v-neck and three-quarter sleeves.',
+        'https://example.com/blouse.jpg', 27.99, '2023-09-22 18:30:00'),
+       ('CLOTHES', 10, 'Sweatpants', 'Comfortable sweatpants in heather gray for lounging.',
+        'https://example.com/sweatpants.jpg', 19.99, '2023-09-22 19:00:00'),
+       ('CLOTHES', 10, 'Sandals', 'Casual sandals with a cushioned sole for walking.',
+        'https://example.com/sandals.jpg', 39.99, '2023-09-22 19:30:00');
 
 
 -- food_category table
 INSERT INTO food_category (name)
-VALUES ('American'),
+VALUES ('Fast food'),
+       ('Dessert'),
+       ('American'),
        ('Italian'),
        ('Chinese'),
        ('Mexican'),
@@ -401,58 +421,104 @@ VALUES ('American'),
 
 -- food table
 INSERT INTO food (product_id, dietary_restrictions)
-VALUES (1, 'Contains beef and dairy.'),
-       (2, 'Pork'),
-       (3, 'None'),
-       (4, 'Dairy'),
-       (5, 'Eggs, Dairy'),
-       (6, 'None'),
-       (7, 'Contains beef and dairy.'),
-       (8, 'None'),
-       (9, 'None'),
-       (10, 'None'),
-       (11, 'None'),
-       (12, 'None');
+SELECT id,
+       CASE
+           WHEN name = 'Hamburger' THEN 'None'
+           WHEN name = 'Pizza' THEN 'None'
+           WHEN name = 'Pasta' THEN 'None'
+           WHEN name = 'Ice cream' THEN 'Contains dairy.'
+           WHEN name = 'Tiramisu' THEN 'Contains dairy and gluten.'
+           WHEN name = 'Fried rice' THEN 'None'
+           WHEN name = 'Cheeseburger' THEN 'None'
+           WHEN name = 'Margherita Pizza' THEN 'None'
+           WHEN name = 'General Tso Chicken' THEN 'Contains gluten.'
+           WHEN name = 'Tacos' THEN 'None'
+           END
+FROM product
+WHERE name IN ('Hamburger', 'Pizza', 'Pasta', 'Ice cream', 'Tiramisu', 'Fried rice', 'Cheeseburger', 'Margherita Pizza',
+               'General Tso Chicken', 'Tacos');
+
 
 INSERT INTO food_food_category (food_id, food_category_id)
-VALUES (1, 1),
-       (2, 1),
-       (3, 1),
-       (4, 2),
-       (5, 2),
-       (6, 3),
-       (1, 2),
-       (2, 3),
-       (3, 4),
-       (4, 1),
-       (5, 3),
-       (1, 3);
+VALUES (1, 1),  -- Hamburger is Fast Food
+       (1, 3),  -- Hamburger is American
+       (2, 1),  -- Pizza is Fast Food
+       (2, 3),  -- Pizza is American
+       (2, 4),  -- Pizza is Italian
+       (3, 4),  -- Pasta is Italian
+       (3, 5),  -- Pasta is Chinese
+       (4, 2),  -- Ice cream is Dessert
+       (4, 7),  -- Ice cream is Indian
+       (5, 2),  -- Tiramisu is Dessert
+       (5, 4),  -- Tiramisu is Italian
+       (6, 5),  -- Fried rice is Chinese
+       (6, 7),  -- Fried rice is Indian
+       (7, 1),  -- Cheeseburger is Fast Food
+       (7, 3),  -- Cheeseburger is American
+       (8, 1),  -- Margherita Pizza is Fast Food
+       (8, 3),  -- Margherita Pizza is American
+       (8, 4),  -- Margherita Pizza is Italian
+       (9, 1),  -- General Tso Chicken is Fast Food
+       (9, 5),  -- General Tso Chicken is Chinese
+       (10, 1), -- Tacos is Fast Food
+       (10, 6); -- Tacos is Mexican
+
 
 INSERT INTO clothes_category (name)
 VALUES ('Tops'),
        ('Bottoms'),
        ('Dresses'),
        ('Outerwear'),
-       ('Shoes');
+       ('Shoes'),
+       ('Accessories'),
+       ('Athletic wear'),
+       ('Swimwear'),
+       ('Underwear'),
+       ('Sleepwear'),
+       ('Socks'),
+       ('Hats'),
+       ('Belts'),
+       ('Jewelry'),
+       ('Bags'),
+       ('Sunglasses'),
+       ('Scarves'),
+       ('Gloves'),
+       ('Wallets'),
+       ('Watches');
 
 INSERT INTO clothes (product_id, size, color)
-VALUES (13, 'Medium', 'Black'),
-       (14, '32W32L', 'Blue'),
-       (15, 'Small', 'Black and white'),
-       (16, 'Medium', 'Denim'),
-       (17, '8', 'White');
+VALUES (11, 'Medium', 'Black'),
+       (12, '32x32', 'Blue'),
+       (13, 'Small', 'Black and White'),
+       (14, 'Large', 'Denim Blue'),
+       (15, '10', 'White'),
+       (16, 'Large', 'Charcoal Gray'),
+       (17, 'Medium', 'Floral Print'),
+       (18, 'Small', 'Navy Blue'),
+       (19, 'Medium', 'Heather Gray'),
+       (20, '8', 'Brown');
 
 INSERT INTO clothes_clothes_category (clothes_id, clothes_category_id)
-VALUES (1, 1),
-       (2, 2),
-       (3, 3),
-       (4, 4),
-       (5, 5);
+VALUES (1, 1),  -- T-shirt is Tops
+       (2, 2),  -- Jeans is Bottoms
+       (3, 3),  -- Dress is Dresses
+       (4, 4),  -- Jacket is Outerwear
+       (5, 5),  -- Sneakers is Shoes
+       (5, 7),  -- Sneakers is Athletic wear
+       (6, 1),  -- Hoodie is Tops
+       (6, 4),  -- Hoodie is Outerwear
+       (7, 3),  -- Skirt is Dresses
+       (8, 1),  -- Blouse is Tops
+       (9, 2),  -- Sweatpants is Bottoms
+       (10, 5); -- Sandals is Shoes
+
 
 INSERT INTO discount (product_id, name, discount_percent, description, active)
-VALUES (1, 'Labor Day Sale', 10, 'Get 10% off your purchase of hamburgers on Labor Day.', true),
-       (3, 'Pasta Night', 20, 'Get 20% off your purchase of pasta on Wednesday nights.', true),
-       (4, 'Ice Cream Sundae Special', 15, 'Get 15% off your purchase of ice cream sundaes on Sundays.', true),
-       (7, 'Meatless Monday', 15, 'Get 15% off vegetarian food on Mondays.', true),
-       (8, 'Pizza Night', 10, 'Get 10% off all pizzas on Friday nights.', true),
-       (10, 'Weekend Special', 12, 'Get 12% off your weekend food order.', true);
+VALUES (1, 'Summer Sizzle', 15, 'Get ready for summer with a 15% discount on your favorite burgers!', true),
+       (2, 'Pizza Palooza', 20, 'Celebrate with a 20% discount on all pizza varieties.', true),
+       (5, 'Dessert Delight', 10, 'Indulge in sweet treats with a 10% discount on desserts.', true),
+       (7, 'Meatless Monday', 15, 'Enjoy a 15% discount on all vegetarian food items every Monday.', true),
+       (8, 'Weekend Feast', 12, 'Get 12% off your weekend food order to savor the weekend vibes.', true),
+       (10, 'Fashion Frenzy', 25, 'Revamp your wardrobe with a 25% discount on clothing and accessories.', true),
+       (11, 'Back to School Sale', 30, 'Upgrade your school style with a 30% discount on clothing.', true);
+

@@ -1,5 +1,6 @@
 package com.ffreaky.shoppingservice.food;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ffreaky.shoppingservice.food.controller.FoodController;
 import com.ffreaky.shoppingservice.food.model.request.CreateFoodReqBody;
 import com.ffreaky.shoppingservice.food.model.request.GetFoodsFilter;
@@ -11,25 +12,39 @@ import com.ffreaky.shoppingservice.product.ProductType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.io.FileReader;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "/application-test.properties")
+@AutoConfigureMockMvc
 public class FoodE2eTest {
 
     @Value("${spring.application.name}")
-    String applicationName;
+    private String applicationName;
 
     @Autowired
-    FoodController foodController;
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private final String controllerPath = "/food";
 
     @Test
     void test() {
@@ -37,40 +52,37 @@ public class FoodE2eTest {
     }
 
     @Test
-    void testGetFoodById() {
-        // Given
-        Long foodId = 1L;
-        String foodName = "Hamburger";
-        String foodDescription = "A classic American hamburger with lettuce, tomato, onion, and cheese.";
-        String foodImage = "https://example.com/hamburger.jpg";
-        String foodDietaryRestrictions = "Contains beef and dairy.";
-        BigDecimal foodPrice = new BigDecimal("9.9900");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime foodPickupTime = LocalDateTime.parse("2023-09-22 12:30:00", formatter);
-        ProductType foodProductType = ProductType.FOOD;
-        String foodProductProviderName = "McDonalds";
+    void testGetFoodById() throws Exception {
+        var resource = new ClassPathResource("test-data.json");
+        var testData = objectMapper.readValue(resource.getFile(), TestData.class);
+        var expectedFoods = testData.getExpectedFoods();
+        var expectedFood_id1 = expectedFoods.get(0);
 
-        GetFoodResponse expectedGetFoodResponse = new GetFoodResponse(
-                foodId,
-                foodName,
-                foodDescription,
-                foodImage,
-                foodDietaryRestrictions,
-                foodPrice,
-                foodPickupTime,
-                foodProductType,
-                foodProductProviderName
+        // Given
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        var expectedResponse = new GetFoodResponse(
+                expectedFood_id1.foodId(),
+                expectedFood_id1.foodName(),
+                expectedFood_id1.foodDescription(),
+                expectedFood_id1.foodImage(),
+                expectedFood_id1.foodDietaryRestrictions(),
+                new BigDecimal(expectedFood_id1.foodPrice()),
+                LocalDateTime.parse(expectedFood_id1.foodPickupTime(), formatter),
+                ProductType.FOOD,
+                expectedFood_id1.foodProductProviderName()
         );
 
-
         // When
-        GetFoodResponse getFoodResponse = foodController.getFoodById(foodId);
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .post(controllerPath + "/get-food/%s".formatted(expectedFood_id1.foodId()))
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
 
         // Then
-        assertThat(getFoodResponse).isEqualTo(expectedGetFoodResponse);
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
     }
 
-    /*
     @Test
     void testGetFoods() {
         // Given
@@ -84,6 +96,9 @@ public class FoodE2eTest {
         assertThat(getFoodResponses).isNotNull();
         assertThat(getFoodResponses.size()).isGreaterThan(0);
     }
+
+
+    /*
 
     @Test
     void testCreateFood() {
