@@ -94,14 +94,29 @@ class FoodControllerTest {
     }
 
     @Test
-    public void testGetFoods_invalidInput() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
+    public void testGetFoods() throws Exception {
+        // Arrange
+        final List<GetFoodResponse> expectedResponseList = List.of(
+                new GetFoodResponse(
+                        1L, "Sample Food", "Description", "image.jpg", "Restrictions",
+                        BigDecimal.valueOf(10.99), new Date(), ProductType.FOOD, "Provider")
+        );
+
+        GetFoodsFilter filter = new GetFoodsFilter(Set.of(1L, 2L));
+
+        when(foodService.getFoods(filter)).thenReturn(expectedResponseList);
+
+        // Act
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
                         .post(controllerPath + "/get-foods")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new GetFoodsFilter(null)))
+                        .content(objectMapper.writeValueAsString(filter))
                         .contentType("application/json"))
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Assert
+        assertEquals(objectMapper.writeValueAsString(expectedResponseList), result.getResponse().getContentAsString());
     }
 
     @Test

@@ -31,7 +31,7 @@ public class FoodController {
 
     @PostMapping("/get-foods")
     public List<GetFoodResponse> getFoods(@Valid @RequestBody GetFoodsFilter filter) {
-        return foodService.getFoodsQueryDsl(filter);
+        return foodService.getFoods(filter);
     }
 
     @PostMapping("/create-food")

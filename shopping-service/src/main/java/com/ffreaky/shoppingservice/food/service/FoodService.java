@@ -4,7 +4,6 @@ import com.ffreaky.shoppingservice.food.entity.FoodEntity;
 import com.ffreaky.shoppingservice.food.entity.FoodFoodCategoryEntity;
 import com.ffreaky.shoppingservice.food.entity.QFoodEntity;
 import com.ffreaky.shoppingservice.food.entity.QFoodFoodCategoryEntity;
-import com.ffreaky.shoppingservice.food.model.*;
 import com.ffreaky.shoppingservice.food.model.request.CreateFoodReqBody;
 import com.ffreaky.shoppingservice.food.model.request.GetFoodsFilter;
 import com.ffreaky.shoppingservice.food.model.request.UpdateFoodFoodCategoriesReqBody;
@@ -20,13 +19,9 @@ import com.ffreaky.shoppingservice.product.entity.QProductEntity;
 import com.ffreaky.shoppingservice.product.entity.QProductProviderEntity;
 import com.ffreaky.shoppingservice.product.service.ProductService;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
-import com.ffreaky.utilities.exceptions.FinishFoodExceptionHandler;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -119,10 +114,8 @@ public class FoodService {
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id));
     }
 
-    /**
-     * Does exactly the same as getFoodsQueryDsl but I'm gonna keep it here for future references
-     * TODO : refactor to support jooq code generation
-     */
+
+    @Deprecated
     public List<GetFoodResponse> getFoodsJooq(GetFoodsFilter filter) {
         // Apply filters based on user input
         Condition condition = DSL.noCondition();
@@ -163,18 +156,35 @@ public class FoodService {
     }
 
 
-    public List<GetFoodResponse> getFoodsQueryDsl(GetFoodsFilter filter) {
+    public List<GetFoodResponse> getFoods(GetFoodsFilter filter) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
         QFoodEntity f = QFoodEntity.foodEntity;
         QProductEntity p = QProductEntity.productEntity;
         QProductProviderEntity pp = QProductProviderEntity.productProviderEntity;
 
-        // Create a list of conditions
         BooleanExpression condition = Expressions.asBoolean(true).isTrue();
 
         if (filter.foodCategoryIds() != null && !filter.foodCategoryIds().isEmpty()) {
             QFoodFoodCategoryEntity ffc = QFoodFoodCategoryEntity.foodFoodCategoryEntity;
             condition = condition.and(f.id.in(queryFactory.select(ffc.id.foodId).from(ffc).where(ffc.id.foodCategoryId.in(filter.foodCategoryIds()))));
+        }
+        if (filter.productProviderName() != null && !filter.productProviderName().isEmpty()) {
+            condition = condition.and(pp.name.eq(filter.productProviderName()));
+        }
+        if (filter.dietaryRestrictions() != null && !filter.dietaryRestrictions().isEmpty()) {
+            condition = condition.and(f.dietaryRestrictions.containsIgnoreCase(filter.dietaryRestrictions()));
+        }
+        if(filter.createdAtFrom() != null) {
+            condition = condition.and(p.createdAt.after(filter.createdAtFrom()));
+        }
+        if(filter.createdAtTo() != null) {
+            condition = condition.and(p.createdAt.before(filter.createdAtTo()));
+        }
+        if(filter.pickupTimeFrom() != null) {
+            condition = condition.and(p.pickupTime.after(filter.pickupTimeFrom()));
+        }
+        if(filter.pickupTimeTo() != null) {
+            condition = condition.and(p.pickupTime.before(filter.pickupTimeTo()));
         }
         return queryFactory
                 .select(Projections.constructor(GetFoodResponse.class,
