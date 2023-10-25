@@ -16,12 +16,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -84,17 +86,39 @@ public class FoodE2eTest {
     }
 
     @Test
-    void testGetFoods() {
+    void testGetFoods() throws Exception {
+        var resource = new ClassPathResource("test-data.json");
+        var testData = objectMapper.readValue(resource.getFile(), TestData.class);
+        var expectedFoods = testData.getExpectedFoods();
+
         // Given
-        GetFoodsFilter filter = new GetFoodsFilter();
-        filter.setName("Pizza");
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        var expectedResponse = expectedFoods.stream()
+                .map(food -> new GetFoodResponse(
+                        food.foodId(),
+                        food.foodName(),
+                        food.foodDescription(),
+                        food.foodImage(),
+                        food.foodDietaryRestrictions(),
+                        new BigDecimal(food.foodPrice()),
+                        LocalDateTime.parse(food.foodPickupTime(), formatter),
+                        ProductType.FOOD,
+                        food.foodProductProviderName()
+                ))
+                .toList();
+        var filter = new GetFoodsFilter(null, null, null, null, null, null, null);
 
         // When
-        List<GetFoodResponse> getFoodResponses = foodController.getFoods(filter);
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .post(controllerPath + "/get-foods")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(filter))
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
 
         // Then
-        assertThat(getFoodResponses).isNotNull();
-        assertThat(getFoodResponses.size()).isGreaterThan(0);
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
     }
 
 

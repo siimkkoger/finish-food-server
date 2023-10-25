@@ -375,7 +375,7 @@ VALUES ('FOOD', 1, 'Hamburger', 'A classic American hamburger with lettuce, toma
         'https://example.com/cheeseburger.jpg', 8.99, '2023-09-22 12:15:00'),
        ('FOOD', 3, 'Margherita Pizza', 'A traditional Margherita pizza with fresh mozzarella, basil, and tomato sauce.',
         'https://example.com/margheritapizza.jpg', 11.99, '2023-09-22 12:45:00'),
-       ('FOOD', 3, 'General Tso Chicken', 'Crispy chicken in a sweet and spicy General Tso sauce with steamed rice.',
+       ('FOOD', 4, 'General Tso Chicken', 'Crispy chicken in a sweet and spicy General Tso sauce with steamed rice.',
         'https://example.com/generaltsochicken.jpg', 13.99, '2023-09-22 13:15:00'),
        ('FOOD', 5, 'Tacos', 'Delicious street-style tacos with your choice of fillings.',
         'https://example.com/tacos.jpg', 9.99, '2023-09-22 13:45:00');
