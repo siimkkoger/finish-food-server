@@ -335,9 +335,9 @@ VALUES ('McDonalds', 'RESTAURANT', 'Fast food restaurant chain', '456 Elm Street
         'info@mcdonalds.com', 'https://www.mcdonalds.com/', 'https://example.com/mcdonalds.jpg'),
        ('Subway', 'RESTAURANT', 'Submarine sandwich chain', '123 Elm Street, Anytown, CA 91234', '+15555555588',
         'info@subway.com', 'https://www.subway.com/', 'https://example.com/subway.jpg'),
-       ('Pizza Hut', 'RESTAURANT', 'Pizza restaurant chain', '456 Oak Street, Anytown, CA 91234', '+15555555589',
+       ('Pizza Mc Hut', 'RESTAURANT', 'Pizza restaurant chain', '456 Oak Street, Anytown, CA 91234', '+15555555589',
         'info@pizzahut.com', 'https://www.pizzahut.com/', 'https://example.com/pizzahut.jpg'),
-       ('Chipotle', 'RESTAURANT', 'Fast food restaurant chain', '123 Main Street, Anytown, CA 91234', '+15555555555',
+       ('Chipotle Mc', 'RESTAURANT', 'Fast food restaurant chain', '123 Main Street, Anytown, CA 91234', '+15555555555',
         'info@chipotle.com', 'https://www.chipotle.com/', 'https://example.com/chipotle.jpg'),
        ('Tiki Taco', 'RESTAURANT', 'Fast food restaurant chain', '123 Main Street, Anytown, CA 91234', '+15555555555',
         'info@tikitaco.com', 'https://www.tikitaco.com/', 'https://example.com/tikitaco.jpg');
@@ -359,26 +359,26 @@ VALUES ('Fashion Avenue', 'STORE', 'Trendy clothing store', '789 Fashion Street,
 -- dummy data for product table (FOOD)
 INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time)
 VALUES ('FOOD', 1, 'Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
-        'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:25:00'),
+        'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:00:00'),
        ('FOOD', 3, 'Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
-        'https://example.com/pizza.jpg', 12.99, '2023-09-22 12:30:00'),
+        'https://example.com/pizza.jpg', 12.99, '2023-09-22 13:30:00'),
        ('FOOD', 2, 'Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.', 'https://example.com/pasta.jpg',
-        14.99, '2023-09-22 13:00:00'),
+        14.99, '2023-09-23 13:00:00'),
        ('FOOD', 1, 'Ice cream', 'A bowl of cold, delicious ice cream.', 'https://example.com/icecream.jpg', 4.99,
-        '2023-09-22 13:30:00'),
+        '2023-09-23 13:30:00'),
        ('FOOD', 1, 'Tiramisu',
         'A classic Italian dessert made with coffee-dipped ladyfingers and a creamy mascarpone filling.',
-        'https://example.com/tiramisu.jpg', 6.99, '2023-09-22 14:00:00'),
+        'https://example.com/tiramisu.jpg', 6.99, '2023-09-24 14:00:00'),
        ('FOOD', 4, 'Fried rice', 'A dish of rice fried with vegetables and your choice of protein.',
-        'https://example.com/friedrice.jpg', 11.99, '2023-09-22 14:30:00'),
+        'https://example.com/friedrice.jpg', 11.99, '2023-09-25 14:30:00'),
        ('FOOD', 2, 'Cheeseburger', 'A classic cheeseburger with lettuce, tomato, onion, and a juicy patty.',
-        'https://example.com/cheeseburger.jpg', 8.99, '2023-09-22 12:15:00'),
+        'https://example.com/cheeseburger.jpg', 8.99, '2023-10-25 12:15:00'),
        ('FOOD', 3, 'Margherita Pizza', 'A traditional Margherita pizza with fresh mozzarella, basil, and tomato sauce.',
-        'https://example.com/margheritapizza.jpg', 11.99, '2023-09-22 12:45:00'),
+        'https://example.com/margheritapizza.jpg', 11.99, '2024-10-25 12:45:00'),
        ('FOOD', 4, 'General Tso Chicken', 'Crispy chicken in a sweet and spicy General Tso sauce with steamed rice.',
-        'https://example.com/generaltsochicken.jpg', 13.99, '2023-09-22 13:15:00'),
+        'https://example.com/generaltsochicken.jpg', 13.99, '2024-11-25 13:15:00'),
        ('FOOD', 5, 'Tacos', 'Delicious street-style tacos with your choice of fillings.',
-        'https://example.com/tacos.jpg', 9.99, '2023-09-22 13:45:00');
+        'https://example.com/tacos.jpg', 9.99, '2025-01-01 13:45:00');
 
 -- dummy data for product table (CLOTHES)
 INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time)

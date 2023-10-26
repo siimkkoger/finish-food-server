@@ -163,28 +163,22 @@ public class FoodService {
         QProductProviderEntity pp = QProductProviderEntity.productProviderEntity;
 
         BooleanExpression condition = Expressions.asBoolean(true).isTrue();
-        condition = condition.and(p.deletedAt.isNull());
+        condition = condition.and(p.deletedAt.isNull()); // TODO - write test to check if not deleted
 
         if (filter.foodCategoryIds() != null && !filter.foodCategoryIds().isEmpty()) {
             QFoodFoodCategoryEntity ffc = QFoodFoodCategoryEntity.foodFoodCategoryEntity;
             condition = condition.and(f.id.in(queryFactory.select(ffc.id.foodId).from(ffc).where(ffc.id.foodCategoryId.in(filter.foodCategoryIds()))));
         }
         if (filter.productProviderName() != null && !filter.productProviderName().isEmpty()) {
-            condition = condition.and(pp.name.eq(filter.productProviderName()));
+            condition = condition.and(pp.name.containsIgnoreCase(filter.productProviderName()));
         }
-        if (filter.dietaryRestrictions() != null && !filter.dietaryRestrictions().isEmpty()) {
-            condition = condition.and(f.dietaryRestrictions.containsIgnoreCase(filter.dietaryRestrictions()));
+        if (filter.pickupTimeFrom() != null || filter.pickupTimeTo() != null) {
+            condition = condition.and(p.pickupTime.between(filter.pickupTimeFrom(), filter.pickupTimeTo()));
         }
-        if (filter.pickupTimeFrom() != null) {
-            condition = condition.and(p.pickupTime.after(filter.pickupTimeFrom()));
-        }
-        if (filter.pickupTimeTo() != null) {
-            condition = condition.and(p.pickupTime.before(filter.pickupTimeTo()));
-        }
+
         var offset = (filter.page() - 1) * filter.pageSize();
         var orderSpecifier = orderSpecifier(filter.orderBy(), filter.direction());
 
-        // TODO - write test to check if not deleted
         return queryFactory
                 .select(Projections.constructor(GetFoodResponse.class,
                         f.id,
@@ -208,8 +202,7 @@ public class FoodService {
 
     private OrderSpecifier<?> orderSpecifier(ProductOrderBy orderBy, Order direction) {
         return switch (orderBy) {
-            case ID ->
-                    direction.equals(Order.ASC) ? QFoodEntity.foodEntity.id.asc() : QFoodEntity.foodEntity.id.desc();
+            case ID -> direction.equals(Order.ASC) ? QFoodEntity.foodEntity.id.asc() : QFoodEntity.foodEntity.id.desc();
             case NAME ->
                     direction.equals(Order.ASC) ? QProductEntity.productEntity.name.asc() : QProductEntity.productEntity.name.desc();
             case PRICE ->
