@@ -21,13 +21,13 @@ public interface FoodRepository extends JpaRepository<FoodEntity, Long> {
                 f.dietaryRestrictions,
                 p.price,
                 p.pickupTime,
-                p.productId.productType,
+                p.productType,
                 pp.name
                 )
             FROM FoodEntity f
             JOIN ProductEntity p
-               ON f.productId = p.productId.id
-               AND f.productType = p.productId.productType
+               ON f.productId = p.id
+               AND f.productType = p.productType
             JOIN ProductProviderEntity pp
                ON p.productProviderId = pp.id
             WHERE f.id = :id

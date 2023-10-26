@@ -2,11 +2,16 @@ package com.ffreaky.shoppingservice.food;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
+import com.ffreaky.shoppingservice.food.model.request.CreateFoodReqBody;
 import com.ffreaky.shoppingservice.food.model.request.GetFoodsFilter;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import com.ffreaky.shoppingservice.food.repository.FoodFoodCategoryRepository;
+import com.ffreaky.shoppingservice.food.repository.FoodRepository;
 import com.ffreaky.shoppingservice.product.ProductOrderBy;
 import com.ffreaky.shoppingservice.product.ProductType;
+import com.ffreaky.shoppingservice.product.entity.ProductEntity;
+import com.ffreaky.shoppingservice.product.model.request.CreateProductReqBody;
+import com.ffreaky.shoppingservice.product.repository.ProductRepository;
 import com.querydsl.core.types.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +52,12 @@ public class FoodE2eTest {
     @Autowired
     private FoodFoodCategoryRepository foodFoodCategoryRepository;
 
+    @Autowired
+    private FoodRepository foodRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
     private final String controllerPath = "/food";
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -63,7 +74,7 @@ public class FoodE2eTest {
 
         // When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
-                        .post(controllerPath + "/get-food/%s".formatted(expectedFood_id1.id()))
+                        .post(controllerPath + "/get-food/%s".formatted(expectedFood_id1.foodId()))
                         .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -157,7 +168,7 @@ public class FoodE2eTest {
         // OrderBy = CREATED_AT
         filter = new GetFoodsFilter(null, null, null, null, page, pageSize, ProductOrderBy.CREATED_AT, order);
         MvcResult result_created_at_asc = createMockRequestGetFoods(filter);
-        // Then (id and createdAt order are the same in db test data script)
+        // Then (foodId and createdAt order are the same in db test data script)
         assertThat(result_created_at_asc.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
 
         // When
@@ -166,7 +177,7 @@ public class FoodE2eTest {
         filter = new GetFoodsFilter(null, null, null, null, page, pageSize, ProductOrderBy.ID, order);
         MvcResult result_price_desc = createMockRequestGetFoods(filter);
         // Then
-        var expectedResponseReversed = expectedResponse.stream().sorted((f1, f2) -> f2.id().compareTo(f1.id())).toList();
+        var expectedResponseReversed = expectedResponse.stream().sorted((f1, f2) -> f2.foodId().compareTo(f1.foodId())).toList();
         assertThat(result_price_desc.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponseReversed));
     }
 
@@ -177,7 +188,7 @@ public class FoodE2eTest {
 
         Set<Long> categoryIds = Set.of(1L, 3L);
         Set<FoodEntity> foodEntities = foodFoodCategoryRepository.findFoodsByFoodCategoryIds(categoryIds);
-        expectedResponse.removeIf(exampleFood -> foodEntities.stream().noneMatch(foodEntity -> foodEntity.getId().equals(exampleFood.id())));
+        expectedResponse.removeIf(exampleFood -> foodEntities.stream().noneMatch(foodEntity -> foodEntity.getId().equals(exampleFood.foodId())));
 
         // When
         var filter = new GetFoodsFilter(categoryIds, null, null, null, null, null, null, null);
@@ -269,6 +280,62 @@ public class FoodE2eTest {
                         exampleFood.foodProductProviderName()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    @Test
+    void testCreateFood() throws Exception {
+        // Given
+        var createProductReqBody = new CreateProductReqBody(
+                ProductType.FOOD,
+                1L, // McDonalds
+                "New Created Food",
+                "New Created Food Description",
+                "https://example.com/new-created-food.jpg",
+                new BigDecimal("9.9900"),
+                LocalDateTime.now().plusHours(1).withNano(0)
+        );
+        var createFoodReqBody = new CreateFoodReqBody(createProductReqBody, "New Created Food Dietary Restrictions");
+
+        // When
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .post(controllerPath + "/create-food")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createFoodReqBody))
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Then
+        var response = objectMapper.readValue(result.getResponse().getContentAsString(), GetFoodResponse.class);
+        assertThat(response).isNotNull();
+        assertThat(response.name()).isEqualTo(createProductReqBody.name());
+        assertThat(response.description()).isEqualTo(createProductReqBody.description());
+        assertThat(response.image()).isEqualTo(createProductReqBody.image());
+        assertThat(response.price()).isEqualTo(createProductReqBody.price());
+        assertThat(response.pickupTime()).isEqualTo(createProductReqBody.pickupTime());
+        assertThat(response.productType()).isEqualTo(createProductReqBody.productType());
+        assertThat(response.productProviderName()).isEqualTo("McDonalds");
+
+        ProductEntity p = productRepository.findByFoodId(response.foodId());
+        assertThat(p).isNotNull();
+        assertThat(p.getName()).isEqualTo(createProductReqBody.name());
+        assertThat(p.getDescription()).isEqualTo(createProductReqBody.description());
+        assertThat(p.getImage()).isEqualTo(createProductReqBody.image());
+        assertThat(p.getPrice()).isEqualTo(createProductReqBody.price());
+        assertThat(p.getPickupTime()).isEqualTo(createProductReqBody.pickupTime());
+        assertThat(p.getProductType()).isEqualTo(createProductReqBody.productType());
+        assertThat(p.getProductProviderId()).isEqualTo(createProductReqBody.productProviderId());
+
+        FoodEntity f = foodRepository.findById(response.foodId()).orElseThrow();
+        assertThat(f).isNotNull();
+        assertThat(f.getDietaryRestrictions()).isEqualTo(createFoodReqBody.dietaryRestrictions());
+        assertThat(f.getProductId()).isEqualTo(p.getId());
+
+        // Cleanup
+        foodRepository.deleteById(response.foodId());
+        productRepository.deleteById(p.getId());
+        assertThat(foodRepository.findById(response.foodId())).isEmpty();
+        assertThat(productRepository.findByFoodId(response.foodId())).isNull();
     }
 
     /*

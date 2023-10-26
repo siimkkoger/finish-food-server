@@ -16,7 +16,7 @@ import java.util.Objects;
 public class ProductId implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "foodId")
     private Long id;
     @Enumerated(EnumType.STRING)
     @Column(name = "product_type_name", nullable = false, updatable = false)

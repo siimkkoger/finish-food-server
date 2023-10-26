@@ -56,8 +56,8 @@ public class ProductServiceTest {
         final ProductEntity response = productService.createProduct(reqBody);
 
         // then
-        assertThat(response.getProductId().getId()).isEqualTo(createdId);
-        assertThat(response.getProductId().getProductType()).isEqualTo(reqBody.productType());
+        assertThat(response.getId()).isEqualTo(createdId);
+        assertThat(response.getProductType()).isEqualTo(reqBody.productType());
         assertThat(response.getProductProviderId()).isEqualTo(reqBody.productProviderId());
         assertThat(response.getName()).isEqualTo(reqBody.name());
         assertThat(response.getDescription()).isEqualTo(reqBody.description());
@@ -94,12 +94,10 @@ public class ProductServiceTest {
 
     private ProductEntity convertToEntity(CreateProductReqBody req, Long id) {
         final ProductEntity pe = new ProductEntity();
-        final ProductId productId = new ProductId();
-        productId.setProductType(req.productType());
+        pe.setProductType(req.productType());
         if (id != null) {
-            productId.setId(id);
+            pe.setId(id);
         }
-        pe.setProductId(productId);
         pe.setProductProviderId(req.productProviderId());
         pe.setName(req.name());
         pe.setDescription(req.description());
@@ -111,7 +109,7 @@ public class ProductServiceTest {
 
     private ProductEntity productEntityArgumentMatcher(ProductEntity p) {
         return argThat(
-                pe -> pe.getProductId().getProductType().equals(p.getProductId().getProductType()) &&
+                pe -> pe.getProductType().equals(p.getProductType()) &&
                         pe.getProductProviderId().equals(p.getProductProviderId()) &&
                         pe.getName().equals(p.getName()) &&
                         pe.getDescription().equals(p.getDescription()) &&
@@ -147,8 +145,8 @@ public class ProductServiceTest {
         final ProductEntity response = productService.updateProduct(updatedId, reqBody);
 
         // then
-        assertThat(response.getProductId().getId()).isEqualTo(updatedId);
-        assertThat(response.getProductId().getProductType()).isEqualTo(productType);
+        assertThat(response.getId()).isEqualTo(updatedId);
+        assertThat(response.getProductType()).isEqualTo(productType);
         assertThat(response.getProductProviderId()).isEqualTo(productProviderId);
         assertThat(response.getName()).isEqualTo(reqBody.name());
         assertThat(response.getDescription()).isEqualTo(reqBody.description());
@@ -211,10 +209,8 @@ public class ProductServiceTest {
 
     private ProductEntity convertToEntity(UpdateProductReqBody req, Long id, ProductType productType, long productProviderId) {
         final ProductEntity pe = new ProductEntity();
-        final ProductId productId = new ProductId();
-        productId.setProductType(productType);
-        productId.setId(id);
-        pe.setProductId(productId);
+        pe.setProductType(productType);
+        pe.setId(id);
         pe.setProductProviderId(productProviderId);
         pe.setName(req.name());
         pe.setDescription(req.description());

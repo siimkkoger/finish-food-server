@@ -1,5 +1,6 @@
 package com.ffreaky.shoppingservice.product.entity;
 
+import com.ffreaky.shoppingservice.product.ProductType;
 import com.ffreaky.utilities.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,8 +17,13 @@ import java.time.LocalDateTime;
 @Table(name = "product", schema = "public")
 public class ProductEntity extends BaseEntity {
 
-    @EmbeddedId
-    private ProductId productId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "product_type_name", nullable = false, updatable = false)
+    private ProductType productType;
 
     @Column(name = "product_provider_id", nullable = false, updatable = false)
     private Long productProviderId;

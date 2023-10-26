@@ -105,18 +105,18 @@ CREATE TABLE public.product_type
 
 CREATE TABLE public.product
 (
-    id                  SERIAL PRIMARY KEY NOT NULL,
-    product_type_name   VARCHAR(50)        NOT NULL REFERENCES public.product_type (name),
-    product_provider_id INT                NOT NULL REFERENCES public.product_provider (id),
-    name                VARCHAR(50)        NOT NULL,
+    id                  SERIAL PRIMARY KEY,
+    product_type_name   VARCHAR(50)    NOT NULL REFERENCES public.product_type (name),
+    product_provider_id INT            NOT NULL REFERENCES public.product_provider (id),
+    name                VARCHAR(50)    NOT NULL,
     description         VARCHAR(1000),
     image               VARCHAR(300),
-    price               DECIMAL(19, 4)     NOT NULL,
-    pickup_time         timestamp          NOT NULL,
+    price               DECIMAL(19, 4) NOT NULL,
+    pickup_time         timestamp      NOT NULL,
 
-    created_at          timestamp          NOT NULL DEFAULT current_timestamp,
-    updated_at          timestamp          NOT NULL DEFAULT current_timestamp,
-    deleted_at          timestamp          NULL,
+    created_at          timestamp      NOT NULL DEFAULT current_timestamp,
+    updated_at          timestamp      NOT NULL DEFAULT current_timestamp,
+    deleted_at          timestamp      NULL,
 
     CONSTRAINT constraint_id_and_product_type_name UNIQUE (id, product_type_name)
 );
@@ -228,8 +228,7 @@ CREATE TABLE public.food
     deleted_at           timestamp     NULL,
 
     CONSTRAINT check_product_type_is_food_value CHECK (product_type_name = 'FOOD'),
-    CONSTRAINT fk_food_product FOREIGN KEY (product_id, product_type_name)
-        REFERENCES public.product (id, product_type_name)
+    CONSTRAINT fk_food_product FOREIGN KEY (product_id, product_type_name) REFERENCES public.product (id, product_type_name)
 );
 
 CREATE TABLE public.food_food_category
@@ -325,12 +324,12 @@ VALUES ('Tops'),
        ('Outerwear'),
        ('Shoes');
 
-INSERT INTO product_provider_type (name)
+INSERT INTO public.product_provider_type (name)
 VALUES ('RESTAURANT'),
        ('STORE');
 
 -- dummy data for product_provider table (RESTAURANT)
-INSERT INTO product_provider (name, product_provider_type, description, address, phone, email, website, image)
+INSERT INTO public.product_provider (name, product_provider_type, description, address, phone, email, website, image)
 VALUES ('McDonalds', 'RESTAURANT', 'Fast food restaurant chain', '456 Elm Street, Anytown, CA 91234', '+15555555556',
         'info@mcdonalds.com', 'https://www.mcdonalds.com/', 'https://example.com/mcdonalds.jpg'),
        ('Subway', 'RESTAURANT', 'Submarine sandwich chain', '123 Elm Street, Anytown, CA 91234', '+15555555588',
@@ -343,7 +342,7 @@ VALUES ('McDonalds', 'RESTAURANT', 'Fast food restaurant chain', '456 Elm Street
         'info@tikitaco.com', 'https://www.tikitaco.com/', 'https://example.com/tikitaco.jpg');
 
 -- dummy data for product_provider table (STORE)
-INSERT INTO product_provider (name, product_provider_type, description, address, phone, email, website, image)
+INSERT INTO public.product_provider (name, product_provider_type, description, address, phone, email, website, image)
 VALUES ('Fashion Avenue', 'STORE', 'Trendy clothing store', '789 Fashion Street, Anytown, CA 91234', '+15555555501',
         'info@fashionavenue.com', 'https://www.fashionavenue.com/', 'https://example.com/fashionavenue.jpg'),
        ('Trendy Threads', 'STORE', 'Chic clothing boutique', '123 Style Avenue, Anytown, CA 91234', '+15555555502',
@@ -357,7 +356,8 @@ VALUES ('Fashion Avenue', 'STORE', 'Trendy clothing store', '789 Fashion Street,
         'https://example.com/sportsgearstore.jpg');
 
 -- dummy data for product table (FOOD)
-INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
+                            deleted_at)
 VALUES ('FOOD', 1, 'Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
         'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:00:00', null),
        ('FOOD', 3, 'Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
@@ -381,7 +381,7 @@ VALUES ('FOOD', 1, 'Hamburger', 'A classic American hamburger with lettuce, toma
         'https://example.com/tacos.jpg', 9.99, '2025-01-01 13:45:00', null);
 
 -- dummy data for product table (CLOTHES)
-INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time)
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time)
 VALUES ('CLOTHES', 6, 'T-shirt', 'A classic black cotton t-shirt.', 'https://example.com/tshirt.jpg', 19.99,
         '2023-09-22 15:00:00'),
        ('CLOTHES', 6, 'Jeans', 'A pair of blue denim jeans.', 'https://example.com/jeans.jpg', 29.99,
@@ -404,24 +404,24 @@ VALUES ('CLOTHES', 6, 'T-shirt', 'A classic black cotton t-shirt.', 'https://exa
         'https://example.com/sandals.jpg', 39.99, '2023-09-22 19:30:00');
 
 -- dummy data for product table (FOOD, deleted)
-INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
+                            deleted_at)
 VALUES ('FOOD', 1, 'DELETED - Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
         'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:00:00', '2023-09-22 12:00:00'),
        ('FOOD', 3, 'DELETED - Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
         'https://example.com/pizza.jpg', 12.99, '2023-09-22 13:30:00', '2023-09-22 12:00:00'),
        ('FOOD', 2, 'DELETED - Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.',
-        'https://example.com/pasta.jpg',
-        14.99, '2023-09-23 13:00:00', '2023-09-22 12:00:00'),
+        'https://example.com/pasta.jpg', 14.99, '2023-09-23 13:00:00', '2023-09-22 12:00:00'),
        ('FOOD', 1, 'DELETED - Ice cream', 'A bowl of cold, delicious ice cream.', 'https://example.com/icecream.jpg',
-        4.99,
-        '2023-09-23 13:30:00', '2023-09-22 12:00:00'),
+        4.99, '2023-09-23 13:30:00', '2023-09-22 12:00:00'),
        ('FOOD', 1, 'DELETED - Tiramisu',
         'A classic Italian dessert made with coffee-dipped ladyfingers and a creamy mascarpone filling.',
-        'https://example.com/tiramisu.jpg', 6.99, '2023-09-24 14:00:00', '2023-09-22 12:00:00');
+        'https://example.com/tiramisu.jpg',
+        6.99, '2023-09-24 14:00:00', '2023-09-22 12:00:00');
 
 
 -- food_category table
-INSERT INTO food_category (name)
+INSERT INTO public.food_category (name)
 VALUES ('Fast food'),
        ('Dessert'),
        ('American'),
@@ -436,31 +436,25 @@ VALUES ('Fast food'),
        ('BBQ');
 
 -- food table
-INSERT INTO food (product_id, dietary_restrictions)
-SELECT id,
-       CASE
-           WHEN name = 'Hamburger' THEN 'None'
-           WHEN name = 'Pizza' THEN 'None'
-           WHEN name = 'Pasta' THEN 'None'
-           WHEN name = 'Ice cream' THEN 'Contains dairy.'
-           WHEN name = 'Tiramisu' THEN 'Contains dairy and gluten.'
-           WHEN name = 'Fried rice' THEN 'None'
-           WHEN name = 'Cheeseburger' THEN 'None'
-           WHEN name = 'Margherita Pizza' THEN 'None'
-           WHEN name = 'General Tso Chicken' THEN 'Contains gluten.'
-           WHEN name = 'Tacos' THEN 'None'
-           WHEN name = 'DELETED - Hamburger' THEN 'None'
-           WHEN name = 'DELETED - Pizza' THEN 'None'
-           WHEN name = 'DELETED - Pasta' THEN 'None'
-           WHEN name = 'DELETED - Ice cream' THEN 'Contains dairy.'
-           WHEN name = 'DELETED - Tiramisu' THEN 'Contains dairy and gluten.'
-           END
-FROM product
-WHERE name IN ('Hamburger', 'Pizza', 'Pasta', 'Ice cream', 'Tiramisu', 'Fried rice', 'Cheeseburger', 'Margherita Pizza',
-               'General Tso Chicken', 'Tacos', 'DELETED - Hamburger', 'DELETED - Pizza', 'DELETED - Pasta', 'DELETED - Ice cream', 'DELETED - Tiramisu');
+INSERT INTO public.food (product_id, dietary_restrictions)
+VALUES (1, 'None'),
+       (2, 'None'),
+       (3, 'None'),
+       (4, 'Contains dairy.'),
+       (5, 'Contains dairy and gluten.'),
+       (6, 'None'),
+       (7, 'None'),
+       (8, 'None'),
+       (9, 'Contains gluten.'),
+       (10, 'None'),
+       (21, 'None'),
+       (22, 'None'),
+       (23, 'None'),
+       (24, 'Contains dairy.'),
+       (25, 'Contains dairy and gluten.');
 
 
-INSERT INTO food_food_category (food_id, food_category_id)
+INSERT INTO public.food_food_category (food_id, food_category_id)
 VALUES (1, 1),  -- Hamburger is Fast Food
        (1, 3),  -- Hamburger is American
        (2, 1),  -- Pizza is Fast Food
@@ -496,7 +490,7 @@ VALUES (1, 1),  -- Hamburger is Fast Food
        (15, 4); -- DELETED - Tiramisu is Italian
 
 
-INSERT INTO clothes_category (name)
+INSERT INTO public.clothes_category (name)
 VALUES ('Tops'),
        ('Bottoms'),
        ('Dresses'),
@@ -518,7 +512,7 @@ VALUES ('Tops'),
        ('Wallets'),
        ('Watches');
 
-INSERT INTO clothes (product_id, size, color)
+INSERT INTO public.clothes (product_id, size, color)
 VALUES (11, 'Medium', 'Black'),
        (12, '32x32', 'Blue'),
        (13, 'Small', 'Black and White'),
@@ -530,7 +524,7 @@ VALUES (11, 'Medium', 'Black'),
        (19, 'Medium', 'Heather Gray'),
        (20, '8', 'Brown');
 
-INSERT INTO clothes_clothes_category (clothes_id, clothes_category_id)
+INSERT INTO public.clothes_clothes_category (clothes_id, clothes_category_id)
 VALUES (1, 1), -- T-shirt is Tops
        (2, 2), -- Jeans is Bottoms
        (3, 3), -- Dress is Dresses
@@ -545,7 +539,7 @@ VALUES (1, 1), -- T-shirt is Tops
        (10, 5); -- Sandals is Shoes
 
 
-INSERT INTO discount (product_id, name, discount_percent, description, active)
+INSERT INTO public.discount (product_id, name, discount_percent, description, active)
 VALUES (1, 'Summer Sizzle', 15, 'Get ready for summer with a 15% discount on your favorite burgers!', true),
        (2, 'Pizza Palooza', 20, 'Celebrate with a 20% discount on all pizza varieties.', true),
        (5, 'Dessert Delight', 10, 'Indulge in sweet treats with a 10% discount on desserts.', true),

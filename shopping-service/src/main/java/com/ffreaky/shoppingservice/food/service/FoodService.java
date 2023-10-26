@@ -71,7 +71,7 @@ public class FoodService {
     public GetFoodResponse getFoodById(Long id) {
         // TODO - write test to check if not deleted
         return foodRepository.findDtoById(id)
-                .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food with id " + id + " not found"));
+                .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food with foodId " + id + " not found"));
     }
 
     /**
@@ -96,7 +96,7 @@ public class FoodService {
 
         // Create food
         final FoodEntity fe = new FoodEntity();
-        fe.setProductId(savedProductEntity.getProductId().getId());
+        fe.setProductId(savedProductEntity.getId());
         fe.setProductType(ProductType.FOOD);
         fe.setDietaryRestrictions(reqBody.dietaryRestrictions());
         final FoodEntity savedFoodEntity = saveFoodEntity(fe);
@@ -188,10 +188,10 @@ public class FoodService {
                         f.dietaryRestrictions,
                         p.price,
                         p.pickupTime,
-                        p.productId.productType,
+                        p.productType,
                         pp.name))
                 .from(f)
-                .join(p).on(f.productId.eq(p.productId.id))
+                .join(p).on(f.productId.eq(p.id))
                 .join(pp).on(p.productProviderId.eq(pp.id))
                 .where(condition)
                 .offset(offset)

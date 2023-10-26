@@ -11,7 +11,7 @@ import java.util.Set;
 
 public record GetFoodsFilter(
         Set<Long> foodCategoryIds,
-        String productProviderName, // TODO - change to id
+        String productProviderName, // TODO - change to foodId
         LocalDateTime pickupTimeFrom,
         LocalDateTime pickupTimeTo,
         @NotNull @Min(1) Integer page,   // Page number (1-based)

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record GetFoodResponse(
-        @NotNull Long id,
+        @NotNull Long foodId,
         @NotBlank String name,
         @NotBlank String description,
         @NotBlank String image,

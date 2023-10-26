@@ -21,9 +21,7 @@ public class ProductService {
 
     public ProductEntity createProduct(CreateProductReqBody dto) {
         final ProductEntity pe = new ProductEntity();
-        final ProductId productId = new ProductId();
-        productId.setProductType(dto.productType());
-        pe.setProductId(productId);
+        pe.setProductType(dto.productType());
         pe.setProductProviderId(dto.productProviderId());
         pe.setName(dto.name());
         pe.setDescription(dto.description());

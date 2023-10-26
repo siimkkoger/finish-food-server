@@ -10,7 +10,6 @@ import com.ffreaky.shoppingservice.food.repository.FoodRepository;
 import com.ffreaky.shoppingservice.food.service.FoodService;
 import com.ffreaky.shoppingservice.product.ProductType;
 import com.ffreaky.shoppingservice.product.entity.ProductEntity;
-import com.ffreaky.shoppingservice.product.entity.ProductId;
 import com.ffreaky.shoppingservice.product.model.request.CreateProductReqBody;
 import com.ffreaky.shoppingservice.product.model.request.UpdateProductReqBody;
 import com.ffreaky.shoppingservice.product.service.ProductService;
@@ -101,7 +100,7 @@ public class FoodServiceTest {
         // then
         assertThatThrownBy(() -> foodService.getFoodById(FOOD_ID))
                 .isInstanceOf(FinishFoodException.class)
-                .hasMessageContaining("Food with id " + FOOD_ID + " not found");
+                .hasMessageContaining("Food with foodId " + FOOD_ID + " not found");
     }
 
     @Test
@@ -132,7 +131,8 @@ public class FoodServiceTest {
 
         final var productId = 1L;
         final var p = new ProductEntity();
-        p.setProductId(new ProductId(productId, ProductType.FOOD));
+        p.setId(productId);
+        p.setProductType(ProductType.FOOD);
         p.setProductProviderId(PRODUCT_PROVIDER_ID);
         p.setPrice(FOOD_PRICE);
         p.setName(FOOD_NAME);
@@ -165,7 +165,7 @@ public class FoodServiceTest {
         final GetFoodResponse response = foodService.createFood(reqBody);
 
         // then
-        assertThat(response.id()).isEqualTo(1L);
+        assertThat(response.foodId()).isEqualTo(1L);
         assertThat(response.productType()).isEqualTo(ProductType.FOOD);
         assertThat(response.productProviderName()).isEqualTo(PRODUCT_PROVIDER_NAME);
         assertThat(response.name()).isEqualTo(reqBody.product().name());
@@ -199,7 +199,8 @@ public class FoodServiceTest {
 
         final var productId = 1L;
         final var p = new ProductEntity();
-        p.setProductId(new ProductId(productId, ProductType.FOOD));
+        p.setId(productId);
+        p.setProductType(ProductType.FOOD);
         p.setProductProviderId(PRODUCT_PROVIDER_ID);
         p.setPrice(FOOD_PRICE);
         p.setName(FOOD_NAME);
@@ -260,7 +261,8 @@ public class FoodServiceTest {
         final var foodReqBody = new UpdateFoodReqBody(DIETARY_RESTRICTIONS, productReqBody);
 
         var p = new ProductEntity();
-        p.setProductId(new ProductId(PRODUCT_ID, ProductType.FOOD));
+        p.setId(PRODUCT_ID);
+        p.setProductType(ProductType.FOOD);
         p.setProductProviderId(PRODUCT_PROVIDER_ID);
         p.setPrice(FOOD_PRICE);
         p.setName(FOOD_NAME);
@@ -296,7 +298,7 @@ public class FoodServiceTest {
         final GetFoodResponse response = foodService.updateFood(FOOD_ID, foodReqBody);
 
         // then
-        assertThat(response.id()).isEqualTo(FOOD_ID);
+        assertThat(response.foodId()).isEqualTo(FOOD_ID);
         assertThat(response.productType()).isEqualTo(ProductType.FOOD);
         assertThat(response.productProviderName()).isEqualTo(PRODUCT_PROVIDER_NAME);
         assertThat(response.name()).isEqualTo(reqBody.product().name());
