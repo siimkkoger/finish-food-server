@@ -1,19 +1,15 @@
 package com.ffreaky.shoppingservice.food;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ffreaky.shoppingservice.food.controller.FoodController;
-import com.ffreaky.shoppingservice.food.model.request.CreateFoodReqBody;
 import com.ffreaky.shoppingservice.food.model.request.GetFoodsFilter;
-import com.ffreaky.shoppingservice.food.model.request.UpdateFoodFoodCategoriesReqBody;
-import com.ffreaky.shoppingservice.food.model.request.UpdateFoodReqBody;
-import com.ffreaky.shoppingservice.food.model.response.GetFoodCategoryResponse;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
+import com.ffreaky.shoppingservice.product.ProductOrderBy;
 import com.ffreaky.shoppingservice.product.ProductType;
+import com.querydsl.core.types.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
@@ -22,11 +18,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -109,13 +104,7 @@ public class FoodE2eTest {
         var filter = new GetFoodsFilter(null, null, null, null, null, null, null, null, null);
 
         // When
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
-                        .post(controllerPath + "/get-foods")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(filter))
-                        .contentType("application/json"))
-                .andExpect(status().isOk())
-                .andReturn();
+        MvcResult result = createMockRequestGetFoods(filter);
 
         // Then
         assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
@@ -143,52 +132,117 @@ public class FoodE2eTest {
                 ))
                 .toList();
 
-        // when page = 1 and pageSize = 10
+        // When
+        // page = 1 and pageSize = 10
         var page = 1;
         var pageSize = 10;
-        var filter = new GetFoodsFilter(null, null, null, null, null, null, null, page, pageSize);
-        MvcResult result_10 = mockMvc.perform(MockMvcRequestBuilders
-                        .post(controllerPath + "/get-foods")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(filter))
-                        .contentType("application/json"))
-                .andExpect(status().isOk())
-                .andReturn();
-
+        var filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.ID, Order.ASC);
+        MvcResult result_10 = createMockRequestGetFoods(filter);
         // Then page 1 should return 10 items
         assertThat(result_10.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
 
-        // when page = 1 and pageSize = 1
+        // When
+        // page = 1 and pageSize = 1
         page = 1;
         pageSize = 5;
-        filter = new GetFoodsFilter(null, null, null, null, null, null, null, page, pageSize);
-        MvcResult result_5 = mockMvc.perform(MockMvcRequestBuilders
-                        .post(controllerPath + "/get-foods")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(filter))
-                        .contentType("application/json"))
-                .andExpect(status().isOk())
-                .andReturn();
-
+        filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.ID, Order.ASC);
+        MvcResult result_5 = createMockRequestGetFoods(filter);
         // Then page 1 should return 5 items
         assertThat(result_5.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse.subList(0, 5)));
 
-        // when page = 2 and pageSize = 10
+        // When
+        // page = 2 and pageSize = 10
         page = 2;
         pageSize = 10;
-        filter = new GetFoodsFilter(null, null, null, null, null, null, null, page, pageSize);
-        MvcResult result_10_page_2 = mockMvc.perform(MockMvcRequestBuilders
-                        .post(controllerPath + "/get-foods")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(filter))
-                        .contentType("application/json"))
-                .andExpect(status().isOk())
-                .andReturn();
-
+        filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.ID, Order.ASC);
+        MvcResult result_10_page_2 = createMockRequestGetFoods(filter);
         // Then page 2 should return 0 items
         assertThat(result_10_page_2.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(List.of()));
     }
 
+    @Test
+    void testGetFoods_sorting() throws Exception {
+        var resource = new ClassPathResource("test-data.json");
+        var testData = objectMapper.readValue(resource.getFile(), TestData.class);
+        var expectedFoods = testData.getExpectedFoods();
+
+        // Given
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        var expectedResponse = expectedFoods.stream()
+                .map(food -> new GetFoodResponse(
+                        food.foodId(),
+                        food.foodName(),
+                        food.foodDescription(),
+                        food.foodImage(),
+                        food.foodDietaryRestrictions(),
+                        new BigDecimal(food.foodPrice()),
+                        LocalDateTime.parse(food.foodPickupTime(), formatter),
+                        ProductType.FOOD,
+                        food.foodProductProviderName()
+                ))
+                .toList();
+
+        var page = 1;
+        var pageSize = 10;
+        var order = Order.ASC;
+
+        // When
+        // order ASC
+        var filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.ID, order);
+        MvcResult result_price_asc = createMockRequestGetFoods(filter);
+        // Then
+        assertThat(result_price_asc.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
+
+        // When
+        // OrderBy = NAME
+        filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.NAME, order);
+        MvcResult result_name_asc = createMockRequestGetFoods(filter);
+        // Then
+        var expectedResponseSortedByName = expectedResponse.stream().sorted(Comparator.comparing(GetFoodResponse::name)).toList();
+        assertThat(result_name_asc.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponseSortedByName));
+
+        // When
+        // OrderBy = PRICE
+        filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.PRICE, order);
+        MvcResult result_price_asc_2 = createMockRequestGetFoods(filter);
+        // Then
+        var expectedResponseSortedByPrice = expectedResponse.stream().sorted(Comparator.comparing(GetFoodResponse::price)).toList();
+        assertThat(result_price_asc_2.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponseSortedByPrice));
+
+        // When
+        // OrderBy = PICKUP_TIME
+        filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.PICKUP_TIME, order);
+        MvcResult result_pickup_time_asc = createMockRequestGetFoods(filter);
+        // Then
+        var expectedResponseSortedByPickupTime = expectedResponse.stream().sorted(Comparator.comparing(GetFoodResponse::pickupTime)).toList();
+        assertThat(result_pickup_time_asc.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponseSortedByPickupTime));
+
+        // When
+        // OrderBy = CREATED_AT
+        filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.CREATED_AT, order);
+        MvcResult result_created_at_asc = createMockRequestGetFoods(filter);
+        // Then (id and createdAt order are the same in db test data script)
+        assertThat(result_created_at_asc.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
+
+        // When
+        // order DESC
+        order = Order.DESC;
+        filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.ID, order);
+        MvcResult result_price_desc = createMockRequestGetFoods(filter);
+        // Then
+        var expectedResponseReversed = expectedResponse.stream().sorted((f1, f2) -> f2.id().compareTo(f1.id())).toList();
+        assertThat(result_price_desc.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponseReversed));
+    }
+
+    private MvcResult createMockRequestGetFoods(GetFoodsFilter filter) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders
+                        .post(controllerPath + "/get-foods")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(filter))
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
 
     /*
 

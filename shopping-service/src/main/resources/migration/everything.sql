@@ -359,7 +359,7 @@ VALUES ('Fashion Avenue', 'STORE', 'Trendy clothing store', '789 Fashion Street,
 -- dummy data for product table (FOOD)
 INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time)
 VALUES ('FOOD', 1, 'Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
-        'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:30:00'),
+        'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:25:00'),
        ('FOOD', 3, 'Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
         'https://example.com/pizza.jpg', 12.99, '2023-09-22 12:30:00'),
        ('FOOD', 2, 'Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.', 'https://example.com/pasta.jpg',

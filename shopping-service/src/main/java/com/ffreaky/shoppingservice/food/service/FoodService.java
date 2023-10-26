@@ -1,5 +1,6 @@
 package com.ffreaky.shoppingservice.food.service;
 
+import com.ffreaky.shoppingservice.product.ProductOrderBy;
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
 import com.ffreaky.shoppingservice.food.entity.FoodFoodCategoryEntity;
 import com.ffreaky.shoppingservice.food.entity.QFoodEntity;
@@ -19,7 +20,7 @@ import com.ffreaky.shoppingservice.product.entity.QProductEntity;
 import com.ffreaky.shoppingservice.product.entity.QProductProviderEntity;
 import com.ffreaky.shoppingservice.product.service.ProductService;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
-import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -68,6 +69,7 @@ public class FoodService {
     }
 
     public GetFoodResponse getFoodById(Long id) {
+        // TODO - write test to check if not deleted
         return foodRepository.findDtoById(id)
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food with id " + id + " not found"));
     }
@@ -161,6 +163,7 @@ public class FoodService {
         QProductProviderEntity pp = QProductProviderEntity.productProviderEntity;
 
         BooleanExpression condition = Expressions.asBoolean(true).isTrue();
+        condition = condition.and(p.deletedAt.isNull());
 
         if (filter.foodCategoryIds() != null && !filter.foodCategoryIds().isEmpty()) {
             QFoodFoodCategoryEntity ffc = QFoodFoodCategoryEntity.foodFoodCategoryEntity;
@@ -172,20 +175,16 @@ public class FoodService {
         if (filter.dietaryRestrictions() != null && !filter.dietaryRestrictions().isEmpty()) {
             condition = condition.and(f.dietaryRestrictions.containsIgnoreCase(filter.dietaryRestrictions()));
         }
-        if (filter.createdAtFrom() != null) {
-            condition = condition.and(p.createdAt.after(filter.createdAtFrom()));
-        }
-        if (filter.createdAtTo() != null) {
-            condition = condition.and(p.createdAt.before(filter.createdAtTo()));
-        }
         if (filter.pickupTimeFrom() != null) {
             condition = condition.and(p.pickupTime.after(filter.pickupTimeFrom()));
         }
         if (filter.pickupTimeTo() != null) {
             condition = condition.and(p.pickupTime.before(filter.pickupTimeTo()));
         }
-        int offset = (filter.page() - 1) * filter.pageSize();
+        var offset = (filter.page() - 1) * filter.pageSize();
+        var orderSpecifier = orderSpecifier(filter.orderBy(), filter.direction());
 
+        // TODO - write test to check if not deleted
         return queryFactory
                 .select(Projections.constructor(GetFoodResponse.class,
                         f.id,
@@ -203,7 +202,23 @@ public class FoodService {
                 .where(condition)
                 .offset(offset)
                 .limit(filter.pageSize())
+                .orderBy(orderSpecifier)
                 .fetch();
+    }
+
+    private OrderSpecifier<?> orderSpecifier(ProductOrderBy orderBy, Order direction) {
+        return switch (orderBy) {
+            case ID ->
+                    direction.equals(Order.ASC) ? QFoodEntity.foodEntity.id.asc() : QFoodEntity.foodEntity.id.desc();
+            case NAME ->
+                    direction.equals(Order.ASC) ? QProductEntity.productEntity.name.asc() : QProductEntity.productEntity.name.desc();
+            case PRICE ->
+                    direction.equals(Order.ASC) ? QProductEntity.productEntity.price.asc() : QProductEntity.productEntity.price.desc();
+            case PICKUP_TIME ->
+                    direction.equals(Order.ASC) ? QProductEntity.productEntity.pickupTime.asc() : QProductEntity.productEntity.pickupTime.desc();
+            case CREATED_AT ->
+                    direction.equals(Order.ASC) ? QProductEntity.productEntity.createdAt.asc() : QProductEntity.productEntity.createdAt.desc();
+        };
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
