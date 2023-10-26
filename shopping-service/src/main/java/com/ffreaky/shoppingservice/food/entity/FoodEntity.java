@@ -22,8 +22,8 @@ public class FoodEntity extends BaseEntity {
     private Long productId;
 
     // TODO - read more about optimistic locking
-    @Version
-    private Long version;
+    // @Version
+    // private Long version;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_type_name", nullable = false, updatable = false)

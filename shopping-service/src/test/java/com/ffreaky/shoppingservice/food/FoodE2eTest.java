@@ -1,8 +1,11 @@
 package com.ffreaky.shoppingservice.food;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ffreaky.shoppingservice.food.entity.FoodEntity;
+import com.ffreaky.shoppingservice.food.entity.FoodFoodCategoryEntity;
 import com.ffreaky.shoppingservice.food.model.request.GetFoodsFilter;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
+import com.ffreaky.shoppingservice.food.repository.FoodFoodCategoryRepository;
 import com.ffreaky.shoppingservice.product.ProductOrderBy;
 import com.ffreaky.shoppingservice.product.ProductType;
 import com.querydsl.core.types.Order;
@@ -18,11 +21,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,6 +44,9 @@ public class FoodE2eTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private FoodFoodCategoryRepository foodFoodCategoryRepository;
 
     private final String controllerPath = "/food";
 
@@ -134,30 +141,25 @@ public class FoodE2eTest {
 
         // When
         // page = 1 and pageSize = 10
-        var page = 1;
-        var pageSize = 10;
-        var filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.ID, Order.ASC);
+        var filter = new GetFoodsFilter(null, null, null, null, null, 1, 10, ProductOrderBy.ID, Order.ASC);
         MvcResult result_10 = createMockRequestGetFoods(filter);
         // Then page 1 should return 10 items
         assertThat(result_10.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
 
         // When
         // page = 1 and pageSize = 1
-        page = 1;
-        pageSize = 5;
-        filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.ID, Order.ASC);
+        filter = new GetFoodsFilter(null, null, null, null, null, 1, 5, ProductOrderBy.ID, Order.ASC);
         MvcResult result_5 = createMockRequestGetFoods(filter);
         // Then page 1 should return 5 items
         assertThat(result_5.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse.subList(0, 5)));
 
         // When
-        // page = 2 and pageSize = 10
-        page = 2;
-        pageSize = 10;
-        filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.ID, Order.ASC);
+        // page = 2 and pageSize = 5
+        filter = new GetFoodsFilter(null, null, null, null, null, 2, 5, ProductOrderBy.ID, Order.ASC);
         MvcResult result_10_page_2 = createMockRequestGetFoods(filter);
-        // Then page 2 should return 0 items
-        assertThat(result_10_page_2.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(List.of()));
+        // Then page 2 should return foods 5 - 10
+        var expectedResponseFromFifthToTenth = expectedResponse.subList(5, 10);
+        assertThat(result_10_page_2.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponseFromFifthToTenth));
     }
 
     @Test
@@ -225,13 +227,47 @@ public class FoodE2eTest {
         assertThat(result_created_at_asc.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
 
         // When
-        // order DESC
+        // OrderBy DESC
         order = Order.DESC;
         filter = new GetFoodsFilter(null, null, null, null, null, page, pageSize, ProductOrderBy.ID, order);
         MvcResult result_price_desc = createMockRequestGetFoods(filter);
         // Then
         var expectedResponseReversed = expectedResponse.stream().sorted((f1, f2) -> f2.id().compareTo(f1.id())).toList();
         assertThat(result_price_desc.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponseReversed));
+    }
+
+    @Test
+    void testGetFoods_by_foodCategoryIds() throws Exception {
+        var resource = new ClassPathResource("test-data.json");
+        var testData = objectMapper.readValue(resource.getFile(), TestData.class);
+        var expectedFoods = testData.getExpectedFoods();
+
+        // Given
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        var expectedResponse = expectedFoods.stream()
+                .map(exampleFood -> new GetFoodResponse(
+                        exampleFood.foodId(),
+                        exampleFood.foodName(),
+                        exampleFood.foodDescription(),
+                        exampleFood.foodImage(),
+                        exampleFood.foodDietaryRestrictions(),
+                        new BigDecimal(exampleFood.foodPrice()),
+                        LocalDateTime.parse(exampleFood.foodPickupTime(), formatter),
+                        ProductType.FOOD,
+                        exampleFood.foodProductProviderName()
+                ))
+                .collect(Collectors.toList());
+
+        Set<Long> categoryIds = Set.of(1L, 3L);
+        Set<FoodEntity> foodEntities = foodFoodCategoryRepository.findFoodsByFoodCategoryIds(categoryIds);
+        expectedResponse.removeIf(exampleFood -> foodEntities.stream().noneMatch(foodEntity -> foodEntity.getId().equals(exampleFood.id())));
+
+        // When
+        var filter = new GetFoodsFilter(categoryIds, null, null, null, null, null, null, null, null);
+        MvcResult result = createMockRequestGetFoods(filter);
+
+        // Then
+        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
     }
 
     private MvcResult createMockRequestGetFoods(GetFoodsFilter filter) throws Exception {
