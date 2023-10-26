@@ -1,7 +1,6 @@
 package com.ffreaky.shoppingservice.product;
 
 import com.ffreaky.shoppingservice.product.entity.ProductEntity;
-import com.ffreaky.shoppingservice.product.entity.ProductId;
 import com.ffreaky.shoppingservice.product.model.request.CreateProductReqBody;
 import com.ffreaky.shoppingservice.product.model.request.UpdateProductReqBody;
 import com.ffreaky.shoppingservice.product.repository.ProductRepository;
