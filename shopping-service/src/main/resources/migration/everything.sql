@@ -357,28 +357,28 @@ VALUES ('Fashion Avenue', 'STORE', 'Trendy clothing store', '789 Fashion Street,
         'https://example.com/sportsgearstore.jpg');
 
 -- dummy data for product table (FOOD)
-INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time)
+INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
 VALUES ('FOOD', 1, 'Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
-        'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:00:00'),
+        'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:00:00', null),
        ('FOOD', 3, 'Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
-        'https://example.com/pizza.jpg', 12.99, '2023-09-22 13:30:00'),
+        'https://example.com/pizza.jpg', 12.99, '2023-09-22 13:30:00', null),
        ('FOOD', 2, 'Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.', 'https://example.com/pasta.jpg',
-        14.99, '2023-09-23 13:00:00'),
+        14.99, '2023-09-23 13:00:00', null),
        ('FOOD', 1, 'Ice cream', 'A bowl of cold, delicious ice cream.', 'https://example.com/icecream.jpg', 4.99,
-        '2023-09-23 13:30:00'),
+        '2023-09-23 13:30:00', null),
        ('FOOD', 1, 'Tiramisu',
         'A classic Italian dessert made with coffee-dipped ladyfingers and a creamy mascarpone filling.',
-        'https://example.com/tiramisu.jpg', 6.99, '2023-09-24 14:00:00'),
+        'https://example.com/tiramisu.jpg', 6.99, '2023-09-24 14:00:00', null),
        ('FOOD', 4, 'Fried rice', 'A dish of rice fried with vegetables and your choice of protein.',
-        'https://example.com/friedrice.jpg', 11.99, '2023-09-25 14:30:00'),
+        'https://example.com/friedrice.jpg', 11.99, '2023-09-25 14:30:00', null),
        ('FOOD', 2, 'Cheeseburger', 'A classic cheeseburger with lettuce, tomato, onion, and a juicy patty.',
-        'https://example.com/cheeseburger.jpg', 8.99, '2023-10-25 12:15:00'),
+        'https://example.com/cheeseburger.jpg', 8.99, '2023-10-25 12:15:00', null),
        ('FOOD', 3, 'Margherita Pizza', 'A traditional Margherita pizza with fresh mozzarella, basil, and tomato sauce.',
-        'https://example.com/margheritapizza.jpg', 11.99, '2024-10-25 12:45:00'),
+        'https://example.com/margheritapizza.jpg', 11.99, '2024-10-25 12:45:00', null),
        ('FOOD', 4, 'General Tso Chicken', 'Crispy chicken in a sweet and spicy General Tso sauce with steamed rice.',
-        'https://example.com/generaltsochicken.jpg', 13.99, '2024-11-25 13:15:00'),
+        'https://example.com/generaltsochicken.jpg', 13.99, '2024-11-25 13:15:00', null),
        ('FOOD', 5, 'Tacos', 'Delicious street-style tacos with your choice of fillings.',
-        'https://example.com/tacos.jpg', 9.99, '2025-01-01 13:45:00');
+        'https://example.com/tacos.jpg', 9.99, '2025-01-01 13:45:00', null);
 
 -- dummy data for product table (CLOTHES)
 INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time)
@@ -402,6 +402,22 @@ VALUES ('CLOTHES', 6, 'T-shirt', 'A classic black cotton t-shirt.', 'https://exa
         'https://example.com/sweatpants.jpg', 19.99, '2023-09-22 19:00:00'),
        ('CLOTHES', 10, 'Sandals', 'Casual sandals with a cushioned sole for walking.',
         'https://example.com/sandals.jpg', 39.99, '2023-09-22 19:30:00');
+
+-- dummy data for product table (FOOD, deleted)
+INSERT INTO product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 1, 'DELETED - Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
+        'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:00:00', '2023-09-22 12:00:00'),
+       ('FOOD', 3, 'DELETED - Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
+        'https://example.com/pizza.jpg', 12.99, '2023-09-22 13:30:00', '2023-09-22 12:00:00'),
+       ('FOOD', 2, 'DELETED - Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.',
+        'https://example.com/pasta.jpg',
+        14.99, '2023-09-23 13:00:00', '2023-09-22 12:00:00'),
+       ('FOOD', 1, 'DELETED - Ice cream', 'A bowl of cold, delicious ice cream.', 'https://example.com/icecream.jpg',
+        4.99,
+        '2023-09-23 13:30:00', '2023-09-22 12:00:00'),
+       ('FOOD', 1, 'DELETED - Tiramisu',
+        'A classic Italian dessert made with coffee-dipped ladyfingers and a creamy mascarpone filling.',
+        'https://example.com/tiramisu.jpg', 6.99, '2023-09-24 14:00:00', '2023-09-22 12:00:00');
 
 
 -- food_category table
@@ -433,10 +449,15 @@ SELECT id,
            WHEN name = 'Margherita Pizza' THEN 'None'
            WHEN name = 'General Tso Chicken' THEN 'Contains gluten.'
            WHEN name = 'Tacos' THEN 'None'
+           WHEN name = 'DELETED - Hamburger' THEN 'None'
+           WHEN name = 'DELETED - Pizza' THEN 'None'
+           WHEN name = 'DELETED - Pasta' THEN 'None'
+           WHEN name = 'DELETED - Ice cream' THEN 'Contains dairy.'
+           WHEN name = 'DELETED - Tiramisu' THEN 'Contains dairy and gluten.'
            END
 FROM product
 WHERE name IN ('Hamburger', 'Pizza', 'Pasta', 'Ice cream', 'Tiramisu', 'Fried rice', 'Cheeseburger', 'Margherita Pizza',
-               'General Tso Chicken', 'Tacos');
+               'General Tso Chicken', 'Tacos', 'DELETED - Hamburger', 'DELETED - Pizza', 'DELETED - Pasta', 'DELETED - Ice cream', 'DELETED - Tiramisu');
 
 
 INSERT INTO food_food_category (food_id, food_category_id)
@@ -461,7 +482,18 @@ VALUES (1, 1),  -- Hamburger is Fast Food
        (9, 1),  -- General Tso Chicken is Fast Food
        (9, 5),  -- General Tso Chicken is Chinese
        (10, 1), -- Tacos is Fast Food
-       (10, 6); -- Tacos is Mexican
+       (10, 6), -- Tacos is Mexican
+       (11, 1), -- DELETED - Hamburger is Fast Food
+       (11, 3), -- DELETED - Hamburger is American
+       (12, 1), -- DELETED - Pizza is Fast Food
+       (12, 3), -- DELETED - Pizza is American
+       (12, 4), -- DELETED - Pizza is Italian
+       (13, 4), -- DELETED - Pasta is Italian
+       (13, 5), -- DELETED - Pasta is Chinese
+       (14, 2), -- DELETED - Ice cream is Dessert
+       (14, 7), -- DELETED - Ice cream is Indian
+       (15, 2), -- DELETED - Tiramisu is Dessert
+       (15, 4); -- DELETED - Tiramisu is Italian
 
 
 INSERT INTO clothes_category (name)
@@ -499,17 +531,17 @@ VALUES (11, 'Medium', 'Black'),
        (20, '8', 'Brown');
 
 INSERT INTO clothes_clothes_category (clothes_id, clothes_category_id)
-VALUES (1, 1),  -- T-shirt is Tops
-       (2, 2),  -- Jeans is Bottoms
-       (3, 3),  -- Dress is Dresses
-       (4, 4),  -- Jacket is Outerwear
-       (5, 5),  -- Sneakers is Shoes
-       (5, 7),  -- Sneakers is Athletic wear
-       (6, 1),  -- Hoodie is Tops
-       (6, 4),  -- Hoodie is Outerwear
-       (7, 3),  -- Skirt is Dresses
-       (8, 1),  -- Blouse is Tops
-       (9, 2),  -- Sweatpants is Bottoms
+VALUES (1, 1), -- T-shirt is Tops
+       (2, 2), -- Jeans is Bottoms
+       (3, 3), -- Dress is Dresses
+       (4, 4), -- Jacket is Outerwear
+       (5, 5), -- Sneakers is Shoes
+       (5, 7), -- Sneakers is Athletic wear
+       (6, 1), -- Hoodie is Tops
+       (6, 4), -- Hoodie is Outerwear
+       (7, 3), -- Skirt is Dresses
+       (8, 1), -- Blouse is Tops
+       (9, 2), -- Sweatpants is Bottoms
        (10, 5); -- Sandals is Shoes
 
 

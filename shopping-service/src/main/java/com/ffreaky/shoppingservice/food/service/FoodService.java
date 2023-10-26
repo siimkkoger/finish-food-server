@@ -163,7 +163,7 @@ public class FoodService {
         QProductProviderEntity pp = QProductProviderEntity.productProviderEntity;
 
         BooleanExpression condition = Expressions.asBoolean(true).isTrue();
-        condition = condition.and(p.deletedAt.isNull()); // TODO - write test to check if not deleted
+        condition = condition.and(p.deletedAt.isNull());
 
         if (filter.foodCategoryIds() != null && !filter.foodCategoryIds().isEmpty()) {
             QFoodFoodCategoryEntity ffc = QFoodFoodCategoryEntity.foodFoodCategoryEntity;
