@@ -3,7 +3,7 @@ POST http://{{host}}:8080/food/get-foods
 Content-Type: application/json
 
 {
-    "foodCategoryIds": [2]
+    "foodCategoryIds": [1, 2]
 }
 
 ### test get foods querydsl
