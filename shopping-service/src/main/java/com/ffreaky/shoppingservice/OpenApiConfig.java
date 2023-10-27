@@ -9,14 +9,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
+    @Value("${springdoc.version}")
+    private String appVersion;
+
     @Value("${spring.application.name}")
     private String applicationName;
 
     @Bean
-    public OpenAPI finishFoodOpenAPI() {
+    public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("Finish Food Server (%s)".formatted(applicationName))
-                        .description("API for Finish Food Application")
-                        .version("1.0"));
+                .info(new Info()
+                        .title("Finish Food Server (%s)".formatted(applicationName))
+                        .version(appVersion)
+                        .description("API for Finish Food Application"));
     }
 }

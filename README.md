@@ -1,49 +1,71 @@
-## Goal is to build a functioning and robust website to buy food that restaurants waste.
+## The goal is to build a website to buy products (foods, clothes, etc...) that would be thrown away.
 
-____________________
+
 
 ~ *This project is part of personal journey to remind myself of the technologies 
 that I have either forgotten or yet not so good at.* ~
 ____________________
-### The platform should handle the following:
-- Restaurants can add food to the platform
-- Users can buy food from the platform
-- Users can give feedback to the restaurants
-- Loyalty system
-- Chat system between users and restaurants (maybe lol)
-
-### Backend should handle:
-- Logging
-- High throughput
-- High availability
-- High scalability
-- Security
-
-### Code should be
-- Tested (unit, integration, e2e)
-- Documented
-- Maintainable
+### Terms
+- **Platform**
+  - **Frontend**: https://github.com/siimkkoger/finish-food-client
+  - **Server**: https://github.com/siimkkoger/finish-food-server
+- **Product**
+  - **Food**
+  - **Clothes**
+- **Account**:
+  - **Producer**: sells products on the platform
+  - **User**: buys products from the platform
+  - **Admin**: manages the platform
 
 ____________________
-## Technologies
-- Spring Boot
-- Spring Security
-- Spring Data JPA
-- OpenAPI (Swagger)
-- Lombok (@Getter, @Setter, @NoArgsConstructor)
-- Testing (Gatling, JUnit, Mockito)
-- Postgresql
-- Redis
-- Flyway
-- Docker
-- Kubernetes
-- Kafka
-- Load Balancer (HAProxy)
+### Technologies used
+- Application
+  - Spring Boot
+  - Spring Security
+  - Spring Data JPA
+  - Lombok (@Getter, @Setter, @NoArgsConstructor)
+- Load Balancer
+  - HAProxy
+- Database 
+  - PostgreSQL
+  - Flyway OR Liquibase
+- Messaging
+  - RabbitMQ
+  - Kafka
+- Caching
+  - Redis
+- Deployment
+  - Docker
+  - Kubernetes
+- Testing
+  - JUnit
+  - AssertJ
+  - Mockito
+  - Gatling
+- Logging / documentation
+  - OpenAPI (Swagger)
+  - SpringDoc
+- Hosting
+  - AWS
+- CI/CD
+  - Jenkins
 - MAYBE (*probably for another project*):
   - Spring WebFlux + R2DBC (Reactive Relational Database Connectivity)
   - Virtual Threads (Project Loom)
   - Graphql
+____________________
+### The platform should handle the following
+- Providers can add/update/delete products on the platform
+- Users can buy products from the platform
+- Users can rate products and providers
+- Loyalty system
+____________________
 
+### Backend should have
+- High throughput
+- High availability
+- High scalability
+- High security
 ____________________
 ## Architecture
 ...
