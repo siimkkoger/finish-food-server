@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
 import com.ffreaky.shoppingservice.food.model.request.CreateFoodReqBody;
 import com.ffreaky.shoppingservice.food.model.request.GetFoodsFilter;
+import com.ffreaky.shoppingservice.food.model.request.UpdateFoodReqBody;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import com.ffreaky.shoppingservice.food.repository.FoodFoodCategoryRepository;
 import com.ffreaky.shoppingservice.food.repository.FoodRepository;
@@ -11,6 +12,7 @@ import com.ffreaky.shoppingservice.product.ProductOrderBy;
 import com.ffreaky.shoppingservice.product.ProductType;
 import com.ffreaky.shoppingservice.product.entity.ProductEntity;
 import com.ffreaky.shoppingservice.product.model.request.CreateProductReqBody;
+import com.ffreaky.shoppingservice.product.model.request.UpdateProductReqBody;
 import com.ffreaky.shoppingservice.product.repository.ProductRepository;
 import com.querydsl.core.types.Order;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -38,6 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "/application-test.properties")
 @AutoConfigureMockMvc
+@Sql(scripts = {"/migration/setup-test-schema.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = {"/migration/teardown-test-schema.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class FoodE2eTest {
 
     @Value("${spring.application.name}")
@@ -338,110 +343,107 @@ public class FoodE2eTest {
         assertThat(productRepository.findByFoodId(response.foodId())).isNull();
     }
 
-    /*
-
     @Test
-    void testCreateFood() {
+    void testUpdateFood() throws Exception {
         // Given
-        CreateFoodReqBody createFoodReqBody = new CreateFoodReqBody();
-        createFoodReqBody.setName("Hamburger");
-        createFoodReqBody.setDescription("A delicious hamburger with beef, cheese, lettuce, tomato, and onion.");
-        createFoodReqBody.setImage("https://example.com/hamburger.jpg");
-        createFoodReqBody.setPrice(BigDecimal.valueOf(10.99));
-        createFoodReqBody.setPickupTime(LocalDateTime.now().plusHours(1));
+        var createProductReqBody = new CreateProductReqBody(
+                ProductType.FOOD,
+                1L, // McDonalds
+                "New Created Food",
+                "New Created Food Description",
+                "https://example.com/new-created-food.jpg",
+                new BigDecimal("9.9900"),
+                LocalDateTime.now().plusHours(1).withNano(0)
+        );
+        var createFoodReqBody = new CreateFoodReqBody(createProductReqBody, "New Created Food Dietary Restrictions");
+        MvcResult createdResult = mockMvc.perform(MockMvcRequestBuilders
+                        .post(controllerPath + "/create-food")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createFoodReqBody))
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+        var createdFoodResponse = objectMapper.readValue(createdResult.getResponse().getContentAsString(), GetFoodResponse.class);
+        var foodId = createdFoodResponse.foodId();
+
+        UpdateProductReqBody updateProductReqBody = new UpdateProductReqBody(
+                "Updated - New Food",
+                "Updated - New Created Food Description",
+                "https://example.com/updated-new-food.jpg",
+                new BigDecimal("10.9900"),
+                LocalDateTime.now().plusHours(2).withNano(0)
+        );
+        UpdateFoodReqBody updateFoodReqBody = new UpdateFoodReqBody("Updated - New Created Food Dietary Restrictions", updateProductReqBody);
 
         // When
-        GetFoodResponse getFoodResponse = foodController.createFood(createFoodReqBody);
+        MvcResult updatedResult = mockMvc.perform(MockMvcRequestBuilders
+                        .post(controllerPath + "/update-food/%s".formatted(foodId))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateFoodReqBody))
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andReturn();
+        var updatedFoodResponse = objectMapper.readValue(updatedResult.getResponse().getContentAsString(), GetFoodResponse.class);
 
         // Then
-        assertThat(getFoodResponse).isNotNull();
-        assertThat(getFoodResponse.getName()).isEqualTo(createFoodReqBody.getName());
-        assertThat(getFoodResponse.getDescription()).isEqualTo(createFoodReqBody.getDescription());
-        assertThat(getFoodResponse.getImage()).isEqualTo(createFoodReqBody.getImage());
-        assertThat(getFoodResponse.getPrice()).isEqualTo(createFoodReqBody.getPrice());
-        assertThat(getFoodResponse.getPickupTime()).isEqualTo(createFoodReqBody.getPickupTime());
+        assertThat(updatedFoodResponse).isNotNull();
+        assertThat(updatedFoodResponse.name()).isEqualTo(updateProductReqBody.name());
+        assertThat(updatedFoodResponse.description()).isEqualTo(updateProductReqBody.description());
+        assertThat(updatedFoodResponse.image()).isEqualTo(updateProductReqBody.image());
+        assertThat(updatedFoodResponse.price()).isEqualTo(updateProductReqBody.price());
+        assertThat(updatedFoodResponse.pickupTime()).isEqualTo(updateProductReqBody.pickupTime());
+        assertThat(updatedFoodResponse.productProviderName()).isEqualTo("McDonalds");
+
+        ProductEntity p = productRepository.findByFoodId(updatedFoodResponse.foodId());
+        assertThat(p).isNotNull();
+        assertThat(p.getName()).isEqualTo(updateProductReqBody.name());
+        assertThat(p.getDescription()).isEqualTo(updateProductReqBody.description());
+        assertThat(p.getImage()).isEqualTo(updateProductReqBody.image());
+        assertThat(p.getPrice()).isEqualTo(updateProductReqBody.price());
+        assertThat(p.getPickupTime()).isEqualTo(updateProductReqBody.pickupTime());
+        assertThat(p.getProductType()).isEqualTo(createdFoodResponse.productType());
+        assertThat(p.getProductProviderId()).isEqualTo(createProductReqBody.productProviderId());
+
+        FoodEntity f = foodRepository.findById(updatedFoodResponse.foodId()).orElseThrow();
+        assertThat(f).isNotNull();
+        assertThat(f.getDietaryRestrictions()).isEqualTo(createFoodReqBody.dietaryRestrictions());
+        assertThat(f.getProductId()).isEqualTo(p.getId());
+
+        // Cleanup
+        foodRepository.deleteById(updatedFoodResponse.foodId());
+        productRepository.deleteById(p.getId());
+        assertThat(foodRepository.findById(updatedFoodResponse.foodId())).isEmpty();
+        assertThat(productRepository.findByFoodId(updatedFoodResponse.foodId())).isNull();
     }
 
     @Test
-    void testUpdateFood() {
-        // Given
-        Long foodId = 1L;
-        UpdateFoodReqBody updateFoodReqBody = new UpdateFoodReqBody();
-        updateFoodReqBody.setName("Cheeseburger");
-        updateFoodReqBody.setDescription("A delicious cheeseburger with beef, cheese, lettuce, tomato, onion, and ketchup.");
-
-        // When
-        GetFoodResponse getFoodResponse = foodController.updateFood(foodId, updateFoodReqBody);
-
-        // Then
-        assertThat(getFoodResponse).isNotNull();
-        assertThat(getFoodResponse.getName()).isEqualTo(updateFoodReqBody.getName());
-        assertThat(getFoodResponse.getDescription()).isEqualTo(updateFoodReqBody.getDescription());
+    void testUpdateFoodTransactionContext() {
+        // TODO implement
     }
 
     @Test
     void testDeleteFood() {
-        // Given
-        Long foodId = 1L;
-
-        // When
-        boolean success = foodController.deleteFood(foodId);
-
-        // Then
-        assertThat(success).isTrue();
+        // TODO implement
     }
 
     @Test
     void testUpdateFoodFoodCategories() {
-        // Given
-        Long foodId = 1L;
-        UpdateFoodFoodCategoriesReqBody updateFoodFoodCategoriesReqBody = new UpdateFoodFoodCategoriesReqBody();
-        updateFoodFoodCategoriesReqBody.setFoodCategories(List.of(1L, 2L));
-
-        // When
-        GetFoodCategoryResponse getFoodCategoryResponse = foodController.updateFoodFoodCategories(foodId, updateFoodFoodCategoriesReqBody);
-
-        // Then
-        assertThat(getFoodCategoryResponse).isNotNull();
-        assertThat(getFoodCategoryResponse.getFoodCategories().size()).isEqualTo(2);
+        // TODO implement
     }
 
     @Test
     void testGetAllFoodCategories() {
-        // Given
-
-        // When
-        GetFoodCategoryResponse getFoodCategoryResponse = foodController.getAllFoodCategories();
-
-        // Then
-        assertThat(getFoodCategoryResponse).isNotNull();
-        assertThat(getFoodCategoryResponse.getFoodCategories().size()).isGreaterThan(0);
+        // TODO implement
     }
 
     @Test
-    void testGetAllFoodCategories() {
-        // Given
-
-        // When
-        GetFoodCategoryResponse getFoodCategoryResponse = foodController.getAllFoodCategories();
-
-        // Then
-        assertThat(getFoodCategoryResponse).isNotNull();
-        assertThat(getFoodCategoryResponse.getFoodCategories().size()).isGreaterThan(0);
+    void testGetAllFoodCategoriesByIds() {
+        // TODO implement
     }
 
     @Test
     void testGetAllFoodCategoriesForFood() {
-        // Given
-        Long foodId = 1L;
-
-        // When
-        GetFoodCategoryResponse getFoodCategoryResponse = foodController.getAllFoodCategoriesForFood(foodId);
-
-        // Then
-        assertThat(getFoodCategoryResponse).isNotNull();
-        assertThat(getFoodCategoryResponse.getFoodCategories().size()).isGreaterThan(0);
+        // TODO implement
     }
-     */
 
 }
