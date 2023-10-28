@@ -7,7 +7,6 @@ import com.ffreaky.shoppingservice.food.model.request.CreateFoodReqBody;
 import com.ffreaky.shoppingservice.food.model.request.GetFoodsFilter;
 import com.ffreaky.shoppingservice.food.model.request.UpdateFoodFoodCategoriesReqBody;
 import com.ffreaky.shoppingservice.food.model.request.UpdateFoodReqBody;
-import com.ffreaky.shoppingservice.food.model.response.GetFoodCategoryResponse;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import com.ffreaky.shoppingservice.food.service.FoodService;
 import com.ffreaky.shoppingservice.product.ProductType;
@@ -283,9 +282,9 @@ class FoodControllerTest {
         // Arrange
         var foodId = 1L;
         var reqBody = new UpdateFoodFoodCategoriesReqBody(Set.of(1L, 2L));
-        var expectedResponse = new GetFoodCategoryResponse(Set.of(
+        var expectedResponse = Set.of(
                 new FoodCategoryDto(1L, "Category 1"),
-                new FoodCategoryDto(2L, "Category 2")));
+                new FoodCategoryDto(2L, "Category 2"));
 
         given(foodService.getAllFoodCategoriesForFood(foodId)).willReturn(expectedResponse);
 
@@ -305,9 +304,9 @@ class FoodControllerTest {
     @Test
     public void testGetAllFoodCategories() throws Exception {
         // Arrange
-        var expectedResponse = new GetFoodCategoryResponse(Set.of(
+        var expectedResponse = Set.of(
                 new FoodCategoryDto(1L, "Category 1"),
-                new FoodCategoryDto(2L, "Category 2")));
+                new FoodCategoryDto(2L, "Category 2"));
 
         given(foodService.getAllFoodCategories()).willReturn(expectedResponse);
 
@@ -326,9 +325,9 @@ class FoodControllerTest {
     public void testGetAllFoodCategoriesForFood() throws Exception {
         // Arrange
         var foodId = 1L;
-        var expectedResponse = new GetFoodCategoryResponse(Set.of(
+        var expectedResponse = Set.of(
                 new FoodCategoryDto(1L, "Category 1"),
-                new FoodCategoryDto(2L, "Category 2")));
+                new FoodCategoryDto(2L, "Category 2"));
 
         given(foodService.getAllFoodCategoriesForFood(foodId)).willReturn(expectedResponse);
 

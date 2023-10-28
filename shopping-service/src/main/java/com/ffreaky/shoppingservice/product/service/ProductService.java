@@ -2,11 +2,14 @@ package com.ffreaky.shoppingservice.product.service;
 
 import com.ffreaky.shoppingservice.product.entity.ProductEntity;
 import com.ffreaky.shoppingservice.product.model.request.CreateProductReqBody;
+import com.ffreaky.shoppingservice.product.model.request.ProviderResponse;
 import com.ffreaky.shoppingservice.product.model.request.UpdateProductReqBody;
+import com.ffreaky.shoppingservice.product.repository.ProductProviderRepository;
 import com.ffreaky.shoppingservice.product.repository.ProductRepository;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -14,8 +17,11 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    private final ProductProviderRepository productProviderRepository;
+
+    public ProductService(ProductRepository productRepository, ProductProviderRepository productProviderRepository) {
         this.productRepository = productRepository;
+        this.productProviderRepository = productProviderRepository;
     }
 
     public ProductEntity createProduct(CreateProductReqBody dto) {
@@ -63,5 +69,9 @@ public class ProductService {
             throw new FinishFoodException(FinishFoodException.Type.SERVER_ERROR, "Error saving product: " + e.getMessage());
         }
         return savedProductEntity;
+    }
+
+    public List<ProviderResponse> getProviders() {
+        return productProviderRepository.findAllNotDeleted();
     }
 }

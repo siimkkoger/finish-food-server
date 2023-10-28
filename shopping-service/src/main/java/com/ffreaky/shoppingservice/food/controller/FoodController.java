@@ -1,7 +1,7 @@
 package com.ffreaky.shoppingservice.food.controller;
 
+import com.ffreaky.shoppingservice.food.model.FoodCategoryDto;
 import com.ffreaky.shoppingservice.food.model.request.*;
-import com.ffreaky.shoppingservice.food.model.response.GetFoodCategoryResponse;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import com.ffreaky.shoppingservice.food.service.FoodService;
 import jakarta.validation.Valid;
@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -25,9 +26,14 @@ public class FoodController {
         this.foodService = foodService;
     }
 
-    @PostMapping("/get-food/{foodId}")
+    @GetMapping("/get-food/{foodId}")
     public GetFoodResponse getFoodById(@PathVariable @NotNull Long foodId) {
         return foodService.getFoodById(foodId);
+    }
+
+    @PostMapping("/add-food-to-cart/{foodId}")
+    public boolean addFoodToCart(@PathVariable @NotNull Long foodId) {
+        return foodService.foodExists(foodId);
     }
 
     @PostMapping("/get-foods")
@@ -58,7 +64,7 @@ public class FoodController {
      * If a food in database has a food category that is not in the request body, it will be deleted.
      */
     @PostMapping("/update-food-categories-for-food/{foodId}")
-    public GetFoodCategoryResponse updateFoodFoodCategories(
+    public Set<FoodCategoryDto> updateFoodFoodCategories(
             @PathVariable @NotNull Long foodId,
             @Valid @RequestBody UpdateFoodFoodCategoriesReqBody req) {
         foodService.createOrUpdateFoodFoodCategories(foodId, req);
@@ -66,12 +72,12 @@ public class FoodController {
     }
 
     @GetMapping("/get-food-categories")
-    public GetFoodCategoryResponse getAllFoodCategories() {
+    public Set<FoodCategoryDto> getAllFoodCategories() {
         return foodService.getAllFoodCategories();
     }
 
     @GetMapping("/get-food-categories-for-food/{foodId}")
-    public GetFoodCategoryResponse getAllFoodCategoriesForFood(@PathVariable @NotNull Long foodId) {
+    public Set<FoodCategoryDto> getAllFoodCategoriesForFood(@PathVariable @NotNull Long foodId) {
         return foodService.getAllFoodCategoriesForFood(foodId);
     }
 

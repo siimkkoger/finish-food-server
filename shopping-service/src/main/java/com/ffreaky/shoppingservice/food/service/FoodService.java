@@ -1,5 +1,6 @@
 package com.ffreaky.shoppingservice.food.service;
 
+import com.ffreaky.shoppingservice.food.model.FoodCategoryDto;
 import com.ffreaky.shoppingservice.product.ProductOrderBy;
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
 import com.ffreaky.shoppingservice.food.entity.FoodFoodCategoryEntity;
@@ -9,7 +10,6 @@ import com.ffreaky.shoppingservice.food.model.request.CreateFoodReqBody;
 import com.ffreaky.shoppingservice.food.model.request.GetFoodsFilter;
 import com.ffreaky.shoppingservice.food.model.request.UpdateFoodFoodCategoriesReqBody;
 import com.ffreaky.shoppingservice.food.model.request.UpdateFoodReqBody;
-import com.ffreaky.shoppingservice.food.model.response.GetFoodCategoryResponse;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import com.ffreaky.shoppingservice.food.repository.FoodCategoryRepository;
 import com.ffreaky.shoppingservice.food.repository.FoodFoodCategoryRepository;
@@ -260,12 +260,16 @@ public class FoodService {
         return true;
     }
 
-    public GetFoodCategoryResponse getAllFoodCategories() {
-        return new GetFoodCategoryResponse(foodCategoryRepository.findAllCategories());
+    public Set<FoodCategoryDto> getAllFoodCategories() {
+        return foodCategoryRepository.findAllCategories();
     }
 
-    public GetFoodCategoryResponse getAllFoodCategoriesForFood(Long foodId) {
-        return new GetFoodCategoryResponse(foodCategoryRepository.findCategoriesByFoodId(foodId));
+    public Set<FoodCategoryDto> getAllFoodCategoriesForFood(Long foodId) {
+        return foodCategoryRepository.findCategoriesByFoodId(foodId);
+    }
+
+    public boolean foodExists(Long foodId) {
+        return foodRepository.existsById(foodId);
     }
 
 }
