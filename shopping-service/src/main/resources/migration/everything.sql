@@ -333,15 +333,15 @@ VALUES ('RESTAURANT'),
 -- dummy data for product_provider table (RESTAURANT)
 INSERT INTO public.product_provider (name, product_provider_type, description, address, phone, email, website, image)
 VALUES ('McDonalds', 'RESTAURANT', 'Fast food restaurant chain', '456 Elm Street, Anytown, CA 91234', '+15555555556',
-        'info@mcdonalds.com', 'https://www.mcdonalds.com/', 'https://example.com/mcdonalds.jpg'),
+        'info@mcdonalds.com', 'https://www.mcdonalds.com/', 'https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?w=500'),
        ('Subway', 'RESTAURANT', 'Submarine sandwich chain', '123 Elm Street, Anytown, CA 91234', '+15555555588',
-        'info@subway.com', 'https://www.subway.com/', 'https://example.com/subway.jpg'),
+        'info@subway.com', 'https://www.subway.com/', 'https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?w=500'),
        ('Pizza Mc Hut', 'RESTAURANT', 'Pizza restaurant chain', '456 Oak Street, Anytown, CA 91234', '+15555555589',
-        'info@pizzahut.com', 'https://www.pizzahut.com/', 'https://example.com/pizzahut.jpg'),
+        'info@pizzahut.com', 'https://www.pizzahut.com/', 'https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?w=500'),
        ('Chipotle Mc', 'RESTAURANT', 'Fast food restaurant chain', '123 Main Street, Anytown, CA 91234', '+15555555555',
-        'info@chipotle.com', 'https://www.chipotle.com/', 'https://example.com/chipotle.jpg'),
+        'info@chipotle.com', 'https://www.chipotle.com/', 'https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?w=500'),
        ('Tiki Taco', 'RESTAURANT', 'Fast food restaurant chain', '123 Main Street, Anytown, CA 91234', '+15555555555',
-        'info@tikitaco.com', 'https://www.tikitaco.com/', 'https://example.com/tikitaco.jpg');
+        'info@tikitaco.com', 'https://www.tikitaco.com/', 'https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?w=500');
 
 -- dummy data for product_provider table (STORE)
 INSERT INTO public.product_provider (name, product_provider_type, description, address, phone, email, website, image)
@@ -361,26 +361,31 @@ VALUES ('Fashion Avenue', 'STORE', 'Trendy clothing store', '789 Fashion Street,
 INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
                             deleted_at)
 VALUES ('FOOD', 1, 'Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
-        'https://example.com/hamburger.jpg', 9.99, '2023-09-22 12:00:00', null),
+        'https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?w=500', 9.99, '2023-09-22 12:00:00', null),
        ('FOOD', 3, 'Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
-        'https://example.com/pizza.jpg', 12.99, '2023-09-22 13:30:00', null),
-       ('FOOD', 2, 'Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.', 'https://example.com/pasta.jpg',
+        'https://hips.hearstapps.com/hmg-prod/images/classic-cheese-pizza-recipe-2-64429a0cb408b.jpg?crop=0.6666666666666667xw:1xh;center,top&resize=1200:*', 12.99, '2023-09-22 13:30:00', null),
+       ('FOOD', 2, 'Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.',
+        'https://foodhub.scene7.com/is/image/woolworthsltdprod/Easy-chicken-and-bacon-pasta:Mobile-1300x1150',
         14.99, '2023-09-23 13:00:00', null),
-       ('FOOD', 1, 'Ice cream', 'A bowl of cold, delicious ice cream.', 'https://example.com/icecream.jpg', 4.99,
+       ('FOOD', 1, 'Ice cream', 'A bowl of cold, delicious ice cream.',
+        'https://sugarspunrun.com/wp-content/uploads/2023/03/ice-cream-cone-cupcakes-1-of-1-3.jpg', 4.99,
         '2023-09-23 13:30:00', null),
        ('FOOD', 1, 'Tiramisu',
         'A classic Italian dessert made with coffee-dipped ladyfingers and a creamy mascarpone filling.',
-        'https://example.com/tiramisu.jpg', 6.99, '2023-09-24 14:00:00', null),
+        'https://static01.nyt.com/images/2017/04/05/dining/05COOKING-TIRAMISU1/05COOKING-TIRAMISU1-threeByTwoMediumAt2X-v2.jpg', 6.99, '2023-09-24 14:00:00', null),
        ('FOOD', 4, 'Fried rice', 'A dish of rice fried with vegetables and your choice of protein.',
-        'https://example.com/friedrice.jpg', 11.99, '2023-09-25 14:30:00', null),
+        'https://www.australianeggs.org.au/assets/Uploads/Egg-fried-rice-2.jpg', 11.99, '2023-09-25 14:30:00', null),
        ('FOOD', 2, 'Cheeseburger', 'A classic cheeseburger with lettuce, tomato, onion, and a juicy patty.',
-        'https://example.com/cheeseburger.jpg', 8.99, '2023-10-25 12:15:00', null),
+        'https://people.com/thmb/7xiBWLcomIVvVYHWuHRDXVv97Vo=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(669x478:671x480)/mcdonalds-free-cheeseburger-day-091423-01-baca4b5e5fdf47feb4afac36b659c26e.jpg',
+        8.99, '2023-10-25 12:15:00', null),
        ('FOOD', 3, 'Margherita Pizza', 'A traditional Margherita pizza with fresh mozzarella, basil, and tomato sauce.',
-        'https://example.com/margheritapizza.jpg', 11.99, '2024-10-25 12:45:00', null),
+        'https://images.prismic.io/eataly-us/ed3fcec7-7994-426d-a5e4-a24be5a95afd_pizza-recipe-main.jpg?auto=compress,format',
+        11.99, '2024-10-25 12:45:00', null),
        ('FOOD', 4, 'General Tso Chicken', 'Crispy chicken in a sweet and spicy General Tso sauce with steamed rice.',
-        'https://example.com/generaltsochicken.jpg', 13.99, '2024-11-25 13:15:00', null),
+        'https://www.thecountrycook.net/wp-content/uploads/2021/08/thumbnail-General-Tsos-Chicken-scaled.jpg', 13.99, '2024-11-25 13:15:00', null),
        ('FOOD', 5, 'Tacos', 'Delicious street-style tacos with your choice of fillings.',
-        'https://example.com/tacos.jpg', 9.99, '2025-01-01 13:45:00', null);
+        'https://cdn.vox-cdn.com/thumbor/0-SMli6Ir1f6qG-bpDgeHIXAUU4=/1400x1400/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/10426267/Tiki_Taco_DC_food.png',
+        9.99, '2025-01-01 13:45:00', null);
 
 -- dummy data for product table (CLOTHES)
 INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time)

@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping(value = "/food")
+@RequestMapping(value = "api/food")
 public class FoodController {
 
     static Logger logger = LoggerFactory.getLogger(FoodController.class);
