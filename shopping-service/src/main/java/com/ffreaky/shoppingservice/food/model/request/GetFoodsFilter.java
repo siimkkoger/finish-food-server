@@ -11,7 +11,7 @@ import java.util.Set;
 
 public record GetFoodsFilter(
         Set<Long> foodCategoryIds,
-        String productProviderName, // TODO - change to foodId
+        Set<Long> productProviderIds,
         LocalDateTime pickupTimeFrom,
         LocalDateTime pickupTimeTo,
         @NotNull @Min(1) Integer page,   // Page number (1-based)
@@ -31,6 +31,12 @@ public record GetFoodsFilter(
         }
         if (orderBy == null) {
             orderBy = ProductOrderBy.CREATED_AT;
+        }
+        if (foodCategoryIds != null && foodCategoryIds.isEmpty()) {
+            foodCategoryIds = null;
+        }
+        if (productProviderIds != null && productProviderIds.isEmpty()) {
+            productProviderIds = null;
         }
     }
 }

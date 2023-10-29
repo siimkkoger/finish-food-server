@@ -63,7 +63,7 @@ public class FoodE2eTest {
     @Autowired
     private ProductRepository productRepository;
 
-    private final String controllerPath = "/food";
+    private final String controllerPath = "/api/food";
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Test
@@ -79,7 +79,7 @@ public class FoodE2eTest {
 
         // When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
-                        .post(controllerPath + "/get-food/%s".formatted(expectedFood_id1.foodId()))
+                        .get(controllerPath + "/get-food/%s".formatted(expectedFood_id1.foodId()))
                         .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -203,26 +203,6 @@ public class FoodE2eTest {
         assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
     }
 
-    /*
-    should ignore case
-     */
-    @Test
-    void testGetFoods_by_productProviderName() throws Exception {
-        // Given
-        var expectedResponse = getUnfilteredResponse();
-
-        String productProviderSearch = "mc";
-        expectedResponse.removeIf(exampleFood -> !exampleFood.productProviderName().toLowerCase().contains(productProviderSearch));
-
-        // When
-        var filter = new GetFoodsFilter(null, productProviderSearch, null, null, null, null, null, null);
-        MvcResult result = createMockRequestGetFoods(filter);
-
-        // Then
-        assertThat(result.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
-        assertThat(expectedResponse.size()).isEqualTo(7);
-    }
-
     @Test
     void testGetFoods_by_pickupTime() throws Exception {
         // Given
@@ -278,7 +258,12 @@ public class FoodE2eTest {
                         exampleFood.foodName(),
                         exampleFood.foodDescription(),
                         exampleFood.foodImage(),
-                        exampleFood.foodDietaryRestrictions(),
+                        exampleFood.foodVegetarian(),
+                        exampleFood.foodVegan(),
+                        exampleFood.foodGlutenFree(),
+                        exampleFood.foodNutFree(),
+                        exampleFood.foodDairyFree(),
+                        exampleFood.foodOrganic(),
                         new BigDecimal(exampleFood.foodPrice()),
                         LocalDateTime.parse(exampleFood.foodPickupTime(), formatter),
                         ProductType.FOOD,
@@ -299,7 +284,7 @@ public class FoodE2eTest {
                 new BigDecimal("9.9900"),
                 LocalDateTime.now().plusHours(1).withNano(0)
         );
-        var createFoodReqBody = new CreateFoodReqBody(createProductReqBody, "New Created Food Dietary Restrictions");
+        var createFoodReqBody = new CreateFoodReqBody(createProductReqBody, false, false, false, false, false, false);
 
         // When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
@@ -333,7 +318,12 @@ public class FoodE2eTest {
 
         FoodEntity f = foodRepository.findById(response.foodId()).orElseThrow();
         assertThat(f).isNotNull();
-        assertThat(f.getDietaryRestrictions()).isEqualTo(createFoodReqBody.dietaryRestrictions());
+        assertThat(f.getVegetarian()).isEqualTo(createFoodReqBody.vegetarian());
+        assertThat(f.getVegan()).isEqualTo(createFoodReqBody.vegan());
+        assertThat(f.getGlutenFree()).isEqualTo(createFoodReqBody.glutenFree());
+        assertThat(f.getNutFree()).isEqualTo(createFoodReqBody.nutFree());
+        assertThat(f.getDairyFree()).isEqualTo(createFoodReqBody.dairyFree());
+        assertThat(f.getOrganic()).isEqualTo(createFoodReqBody.organic());
         assertThat(f.getProductId()).isEqualTo(p.getId());
 
         // Cleanup
@@ -355,7 +345,7 @@ public class FoodE2eTest {
                 new BigDecimal("9.9900"),
                 LocalDateTime.now().plusHours(1).withNano(0)
         );
-        var createFoodReqBody = new CreateFoodReqBody(createProductReqBody, "New Created Food Dietary Restrictions");
+        var createFoodReqBody = new CreateFoodReqBody(createProductReqBody, false, false, false, false, false, false);
         MvcResult createdResult = mockMvc.perform(MockMvcRequestBuilders
                         .post(controllerPath + "/create-food")
                         .accept(MediaType.APPLICATION_JSON)
@@ -373,7 +363,7 @@ public class FoodE2eTest {
                 new BigDecimal("10.9900"),
                 LocalDateTime.now().plusHours(2).withNano(0)
         );
-        UpdateFoodReqBody updateFoodReqBody = new UpdateFoodReqBody("Updated - New Created Food Dietary Restrictions", updateProductReqBody);
+        UpdateFoodReqBody updateFoodReqBody = new UpdateFoodReqBody(false, false, false, false, false, false, updateProductReqBody);
 
         // When
         MvcResult updatedResult = mockMvc.perform(MockMvcRequestBuilders
@@ -406,7 +396,12 @@ public class FoodE2eTest {
 
         FoodEntity f = foodRepository.findById(updatedFoodResponse.foodId()).orElseThrow();
         assertThat(f).isNotNull();
-        assertThat(f.getDietaryRestrictions()).isEqualTo(createFoodReqBody.dietaryRestrictions());
+        assertThat(f.getVegetarian()).isEqualTo(createFoodReqBody.vegetarian());
+        assertThat(f.getVegan()).isEqualTo(createFoodReqBody.vegan());
+        assertThat(f.getGlutenFree()).isEqualTo(createFoodReqBody.glutenFree());
+        assertThat(f.getNutFree()).isEqualTo(createFoodReqBody.nutFree());
+        assertThat(f.getDairyFree()).isEqualTo(createFoodReqBody.dairyFree());
+        assertThat(f.getOrganic()).isEqualTo(createFoodReqBody.organic());
         assertThat(f.getProductId()).isEqualTo(p.getId());
 
         // Cleanup

@@ -174,8 +174,8 @@ public class FoodService {
             QFoodFoodCategoryEntity ffc = QFoodFoodCategoryEntity.foodFoodCategoryEntity;
             condition = condition.and(f.id.in(queryFactory.select(ffc.id.foodId).from(ffc).where(ffc.id.foodCategoryId.in(filter.foodCategoryIds()))));
         }
-        if (filter.productProviderName() != null && !filter.productProviderName().isEmpty()) {
-            condition = condition.and(pp.name.containsIgnoreCase(filter.productProviderName()));
+        if (filter.productProviderIds() != null && !filter.productProviderIds().isEmpty()) {
+            condition = condition.and(pp.id.in(filter.productProviderIds()));
         }
         if (filter.pickupTimeFrom() != null || filter.pickupTimeTo() != null) {
             condition = condition.and(p.pickupTime.between(filter.pickupTimeFrom(), filter.pickupTimeTo()));

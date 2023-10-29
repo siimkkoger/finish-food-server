@@ -220,20 +220,20 @@ CREATE TABLE public.food_category
 
 CREATE TABLE public.food
 (
-    id                   SERIAL PRIMARY KEY,
-    product_id           INT           NOT NULL REFERENCES public.product (id) UNIQUE,
-    product_type_name    VARCHAR(10)   NOT NULL REFERENCES public.product_type (name) DEFAULT 'FOOD',
+    id                SERIAL PRIMARY KEY,
+    product_id        INT         NOT NULL REFERENCES public.product (id) UNIQUE,
+    product_type_name VARCHAR(10) NOT NULL REFERENCES public.product_type (name) DEFAULT 'FOOD',
 
-    vegetarian           BOOLEAN       NOT NULL DEFAULT false,
-    vegan                BOOLEAN       NOT NULL DEFAULT false,
-    gluten_free          BOOLEAN       NOT NULL DEFAULT false,
-    nut_free             BOOLEAN       NOT NULL DEFAULT true,
-    dairy_free           BOOLEAN       NOT NULL DEFAULT false,
-    organic              BOOLEAN       NOT NULL DEFAULT false,
+    vegetarian        BOOLEAN     NOT NULL                                       DEFAULT false,
+    vegan             BOOLEAN     NOT NULL                                       DEFAULT false,
+    gluten_free       BOOLEAN     NOT NULL                                       DEFAULT false,
+    nut_free          BOOLEAN     NOT NULL                                       DEFAULT true,
+    dairy_free        BOOLEAN     NOT NULL                                       DEFAULT false,
+    organic           BOOLEAN     NOT NULL                                       DEFAULT false,
 
-    created_at           timestamp     NOT NULL                                       DEFAULT current_timestamp,
-    updated_at           timestamp     NOT NULL                                       DEFAULT current_timestamp,
-    deleted_at           timestamp     NULL,
+    created_at        timestamp   NOT NULL                                       DEFAULT current_timestamp,
+    updated_at        timestamp   NOT NULL                                       DEFAULT current_timestamp,
+    deleted_at        timestamp   NULL,
 
     CONSTRAINT check_product_type_is_food_value CHECK (product_type_name = 'FOOD'),
     CONSTRAINT fk_food_product FOREIGN KEY (product_id, product_type_name) REFERENCES public.product (id, product_type_name)
@@ -444,22 +444,22 @@ VALUES ('Fast food'),
        ('BBQ');
 
 -- food table
-INSERT INTO public.food (product_id, dietary_restrictions)
-VALUES (1, 'None'),
-       (2, 'None'),
-       (3, 'None'),
-       (4, 'Contains dairy.'),
-       (5, 'Contains dairy and gluten.'),
-       (6, 'None'),
-       (7, 'None'),
-       (8, 'None'),
-       (9, 'Contains gluten.'),
-       (10, 'None'),
-       (21, 'None'),
-       (22, 'None'),
-       (23, 'None'),
-       (24, 'Contains dairy.'),
-       (25, 'Contains dairy and gluten.');
+INSERT INTO public.food (product_id)
+VALUES (1),
+       (2),
+       (3),
+       (4),
+       (5),
+       (6),
+       (7),
+       (8),
+       (9),
+       (10),
+       (21),
+       (22),
+       (23),
+       (24),
+       (25);
 
 
 INSERT INTO public.food_food_category (food_id, food_category_id)

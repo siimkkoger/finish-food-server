@@ -69,14 +69,20 @@ public class FoodServiceTest {
         final String IMAGE = "image";
         final String DESCRIPTION = "description";
         final String FOOD_NAME = "name";
-        final String DIETARY_RESTRICTIONS = "dietaryRestrictions";
+        final boolean VEGETARIAN = false;
+        final boolean VEGAN = false;
+        final boolean GLUTEN_FREE = false;
+        final boolean NUT_FREE = false;
+        final boolean DAIRY_FREE = false;
+        final boolean ORGANIC = false;
+
 
         final GetFoodResponse foodResponse = new GetFoodResponse(
                 FOOD_ID,
                 FOOD_NAME,
                 DESCRIPTION,
                 IMAGE,
-                DIETARY_RESTRICTIONS,
+                VEGETARIAN, VEGAN, GLUTEN_FREE, NUT_FREE, DAIRY_FREE, ORGANIC,
                 FOOD_PRICE,
                 LocalDateTime.now(),
                 ProductType.FOOD,
@@ -116,7 +122,12 @@ public class FoodServiceTest {
         final String IMAGE = "image";
         final String DESCRIPTION = "description";
         final String FOOD_NAME = "name";
-        final String DIETARY_RESTRICTIONS = "dietaryRestrictions";
+        final boolean VEGETARIAN = false;
+        final boolean VEGAN = false;
+        final boolean GLUTEN_FREE = false;
+        final boolean NUT_FREE = false;
+        final boolean DAIRY_FREE = false;
+        final boolean ORGANIC = false;
 
         final CreateProductReqBody productReqBody = new CreateProductReqBody(
                 ProductType.FOOD,
@@ -127,7 +138,7 @@ public class FoodServiceTest {
                 FOOD_PRICE,
                 LocalDateTime.now()
         );
-        final CreateFoodReqBody reqBody = new CreateFoodReqBody(productReqBody, DIETARY_RESTRICTIONS);
+        final CreateFoodReqBody reqBody = new CreateFoodReqBody(productReqBody, VEGETARIAN, VEGAN, GLUTEN_FREE, NUT_FREE, DAIRY_FREE, ORGANIC);
 
         final var productId = 1L;
         final var p = new ProductEntity();
@@ -153,7 +164,12 @@ public class FoodServiceTest {
                 reqBody.product().name(),
                 reqBody.product().description(),
                 reqBody.product().image(),
-                reqBody.dietaryRestrictions(),
+                reqBody.vegetarian(),
+                reqBody.vegan(),
+                reqBody.glutenFree(),
+                reqBody.nutFree(),
+                reqBody.dairyFree(),
+                reqBody.organic(),
                 reqBody.product().price(),
                 reqBody.product().pickupTime(),
                 ProductType.FOOD,
@@ -171,7 +187,12 @@ public class FoodServiceTest {
         assertThat(response.name()).isEqualTo(reqBody.product().name());
         assertThat(response.description()).isEqualTo(reqBody.product().description());
         assertThat(response.image()).isEqualTo(reqBody.product().image());
-        assertThat(response.dietaryRestrictions()).isEqualTo(reqBody.dietaryRestrictions());
+        assertThat(response.vegetarian()).isEqualTo(reqBody.vegetarian());
+        assertThat(response.vegan()).isEqualTo(reqBody.vegan());
+        assertThat(response.glutenFree()).isEqualTo(reqBody.glutenFree());
+        assertThat(response.nutFree()).isEqualTo(reqBody.nutFree());
+        assertThat(response.dairyFree()).isEqualTo(reqBody.dairyFree());
+        assertThat(response.organic()).isEqualTo(reqBody.organic());
         assertThat(response.price()).isEqualTo(reqBody.product().price());
         assertThat(response.pickupTime()).isEqualTo(reqBody.product().pickupTime());
     }
@@ -184,7 +205,12 @@ public class FoodServiceTest {
         final String IMAGE = "image";
         final String DESCRIPTION = "description";
         final String FOOD_NAME = "name";
-        final String DIETARY_RESTRICTIONS = "dietaryRestrictions";
+        final boolean VEGETARIAN = false;
+        final boolean VEGAN = false;
+        final boolean GLUTEN_FREE = false;
+        final boolean NUT_FREE = false;
+        final boolean DAIRY_FREE = false;
+        final boolean ORGANIC = false;
 
         final CreateProductReqBody productReqBody = new CreateProductReqBody(
                 ProductType.FOOD,
@@ -195,7 +221,7 @@ public class FoodServiceTest {
                 FOOD_PRICE,
                 LocalDateTime.now()
         );
-        final CreateFoodReqBody reqBody = new CreateFoodReqBody(productReqBody, DIETARY_RESTRICTIONS);
+        final CreateFoodReqBody reqBody = new CreateFoodReqBody(productReqBody, VEGETARIAN, VEGAN, GLUTEN_FREE, NUT_FREE, DAIRY_FREE, ORGANIC);
 
         final var productId = 1L;
         final var p = new ProductEntity();
@@ -225,14 +251,25 @@ public class FoodServiceTest {
         return argThat(
                 fe -> fe.getProductId().equals(f.getProductId())
                         && fe.getProductType().equals(f.getProductType())
-                        && fe.getDietaryRestrictions().equals(f.getDietaryRestrictions()));
+                        && fe.getVegetarian().equals(f.getVegetarian())
+                        && fe.getVegan().equals(f.getVegan())
+                        && fe.getGlutenFree().equals(f.getGlutenFree())
+                        && fe.getNutFree().equals(f.getNutFree())
+                        && fe.getDairyFree().equals(f.getDairyFree())
+                        && fe.getOrganic().equals(f.getOrganic())
+        );
     }
 
     private FoodEntity toFoodEntity(CreateFoodReqBody reqBody, Long productId) {
         final FoodEntity fe = new FoodEntity();
         fe.setProductId(productId);
         fe.setProductType(ProductType.FOOD);
-        fe.setDietaryRestrictions(reqBody.dietaryRestrictions());
+        fe.setVegetarian(reqBody.vegetarian());
+        fe.setVegan(reqBody.vegan());
+        fe.setGlutenFree(reqBody.glutenFree());
+        fe.setNutFree(reqBody.nutFree());
+        fe.setDairyFree(reqBody.dairyFree());
+        fe.setOrganic(reqBody.organic());
         return fe;
     }
 
@@ -241,7 +278,12 @@ public class FoodServiceTest {
         fe.setId(foodId);
         fe.setProductId(productId);
         fe.setProductType(ProductType.FOOD);
-        fe.setDietaryRestrictions(reqBody.dietaryRestrictions());
+        fe.setVegetarian(reqBody.vegetarian());
+        fe.setVegan(reqBody.vegan());
+        fe.setGlutenFree(reqBody.glutenFree());
+        fe.setNutFree(reqBody.nutFree());
+        fe.setDairyFree(reqBody.dairyFree());
+        fe.setOrganic(reqBody.organic());
         return fe;
     }
 
@@ -255,10 +297,15 @@ public class FoodServiceTest {
         final String IMAGE = "image";
         final String DESCRIPTION = "description";
         final String FOOD_NAME = "name";
-        final String DIETARY_RESTRICTIONS = "dietaryRestrictions";
+        final boolean VEGETARIAN = false;
+        final boolean VEGAN = false;
+        final boolean GLUTEN_FREE = false;
+        final boolean NUT_FREE = false;
+        final boolean DAIRY_FREE = false;
+        final boolean ORGANIC = false;
 
         final var productReqBody = new UpdateProductReqBody(FOOD_NAME, DESCRIPTION, IMAGE, FOOD_PRICE, LocalDateTime.now());
-        final var foodReqBody = new UpdateFoodReqBody(DIETARY_RESTRICTIONS, productReqBody);
+        final var foodReqBody = new UpdateFoodReqBody(VEGETARIAN, VEGAN, GLUTEN_FREE, NUT_FREE, DAIRY_FREE, ORGANIC, productReqBody);
 
         var p = new ProductEntity();
         p.setId(PRODUCT_ID);
@@ -272,10 +319,15 @@ public class FoodServiceTest {
 
         given(productService.updateProduct(PRODUCT_ID, productReqBody)).willReturn(p);
 
-        final var reqBody = new UpdateFoodReqBody(DIETARY_RESTRICTIONS, productReqBody);
+        final var reqBody = new UpdateFoodReqBody(VEGETARIAN, VEGAN, GLUTEN_FREE, NUT_FREE, DAIRY_FREE, ORGANIC, productReqBody);
 
         final var oldFoodEntity = toFoodEntity(reqBody, FOOD_ID, PRODUCT_ID);
-        oldFoodEntity.setDietaryRestrictions(DIETARY_RESTRICTIONS + "_OLD");
+        oldFoodEntity.setVegetarian(true);
+        oldFoodEntity.setVegan(true);
+        oldFoodEntity.setGlutenFree(true);
+        oldFoodEntity.setNutFree(true);
+        oldFoodEntity.setDairyFree(true);
+        oldFoodEntity.setOrganic(true);
         final var savedFoodEntity = toFoodEntity(reqBody, FOOD_ID, PRODUCT_ID);
 
         given(foodRepository.findById(FOOD_ID)).willReturn(Optional.of(oldFoodEntity));
@@ -286,7 +338,12 @@ public class FoodServiceTest {
                 reqBody.product().name(),
                 reqBody.product().description(),
                 reqBody.product().image(),
-                reqBody.dietaryRestrictions(),
+                reqBody.vegetarian(),
+                reqBody.vegan(),
+                reqBody.glutenFree(),
+                reqBody.nutFree(),
+                reqBody.dairyFree(),
+                reqBody.organic(),
                 reqBody.product().price(),
                 reqBody.product().pickupTime(),
                 ProductType.FOOD,
@@ -304,7 +361,12 @@ public class FoodServiceTest {
         assertThat(response.name()).isEqualTo(reqBody.product().name());
         assertThat(response.description()).isEqualTo(reqBody.product().description());
         assertThat(response.image()).isEqualTo(reqBody.product().image());
-        assertThat(response.dietaryRestrictions()).isEqualTo(reqBody.dietaryRestrictions());
+        assertThat(response.vegetarian()).isEqualTo(reqBody.vegetarian());
+        assertThat(response.vegan()).isEqualTo(reqBody.vegan());
+        assertThat(response.glutenFree()).isEqualTo(reqBody.glutenFree());
+        assertThat(response.nutFree()).isEqualTo(reqBody.nutFree());
+        assertThat(response.dairyFree()).isEqualTo(reqBody.dairyFree());
+        assertThat(response.organic()).isEqualTo(reqBody.organic());
         assertThat(response.price()).isEqualTo(reqBody.product().price());
         assertThat(response.pickupTime()).isEqualTo(reqBody.product().pickupTime());
     }

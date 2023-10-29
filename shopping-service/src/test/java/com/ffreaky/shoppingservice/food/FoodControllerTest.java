@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = FoodController.class)
 class FoodControllerTest {
 
-    private final String controllerPath = "/food";
+    private final String controllerPath = "/api/food";
 
     @Autowired
     private MockMvc mockMvc;
@@ -67,14 +67,14 @@ class FoodControllerTest {
         // Arrange
         long foodId = 1L;
         final GetFoodResponse expectedResponse = new GetFoodResponse(
-                foodId, "Sample Food", "Description", "image.jpg", "Restrictions",
+                foodId, "Sample Food", "Description", "image.jpg", false, false, false, false, false, false,
                 BigDecimal.valueOf(10.99), LocalDateTime.now(), ProductType.FOOD, "Provider");
 
         given(foodService.getFoodById(foodId)).willReturn(expectedResponse);
 
         // Act
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders
-                        .post(controllerPath + "/get-food/%s".formatted(foodId))
+                        .get(controllerPath + "/get-food/%s".formatted(foodId))
                         .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -86,7 +86,7 @@ class FoodControllerTest {
     @Test
     public void testGetFoodById_invalidInput() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .post(controllerPath + "/get-food/tere")
+                        .get(controllerPath + "/get-food/tere")
                         .contentType("application/json"))
                 .andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentTypeMismatchException.class))
                 .andExpect(status().isBadRequest());
@@ -97,7 +97,7 @@ class FoodControllerTest {
         // Arrange
         final List<GetFoodResponse> expectedResponseList = List.of(
                 new GetFoodResponse(
-                        1L, "Sample Food", "Description", "image.jpg", "Restrictions",
+                        1L, "Sample Food", "Description", "image.jpg", false, false, false, false, false, false,
                         BigDecimal.valueOf(10.99), LocalDateTime.now(), ProductType.FOOD, "Provider")
         );
 
@@ -125,10 +125,10 @@ class FoodControllerTest {
                 ProductType.FOOD, 1L, "Sample Food",
                 "Description", "image.jpg", BigDecimal.valueOf(10.99), LocalDateTime.now());
 
-        var reqBody = new CreateFoodReqBody(createProductReqBody, "Restrictions");
+        var reqBody = new CreateFoodReqBody(createProductReqBody, false, false, false, false, false, false);
 
         var expectedResponse = new GetFoodResponse(
-                1L, "Sample Food", "Description", "image.jpg", "Restrictions",
+                1L, "Sample Food", "Description", "image.jpg", false, false, false, false, false, false,
                 BigDecimal.valueOf(10.99), LocalDateTime.now(), ProductType.FOOD, "Provider");
 
         given(foodService.createFood(reqBody)).willReturn(expectedResponse);
@@ -168,7 +168,7 @@ class FoodControllerTest {
                 mockMvc.perform(MockMvcRequestBuilders
                                 .post(controllerPath + "/create-food")
                                 .accept(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(new CreateFoodReqBody(invalidInput, "Restrictions")))
+                                .content(objectMapper.writeValueAsString(new CreateFoodReqBody(invalidInput, false, false, false, false, false, false)))
                                 .contentType("application/json"))
                         .andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentNotValidException.class))
                         .andExpect(status().isBadRequest());
@@ -184,10 +184,10 @@ class FoodControllerTest {
         var updateProductReqBody = new UpdateProductReqBody(
                 "Sample Food", "Description", "image", BigDecimal.valueOf(10.99), LocalDateTime.now());
 
-        var reqBody = new UpdateFoodReqBody("Restrictions", updateProductReqBody);
+        var reqBody = new UpdateFoodReqBody(false, false, false, false, false, false, updateProductReqBody);
 
         var expectedResponse = new GetFoodResponse(
-                1L, "Sample Food", "Description", "image.jpg", "Restrictions",
+                1L, "Sample Food", "Description", "image.jpg", false, false, false, false, false, false,
                 BigDecimal.valueOf(10.99), LocalDateTime.now(), ProductType.FOOD, "Provider");
 
         given(foodService.updateFood(1L, reqBody)).willReturn(expectedResponse);
@@ -220,20 +220,20 @@ class FoodControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .post(controllerPath + "/update-food/1")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new UpdateFoodReqBody("Restrictions", null)))
+                        .content(objectMapper.writeValueAsString(new UpdateFoodReqBody(false, false, false, false, false, false, null)))
                         .contentType("application/json"))
                 .andExpect(result -> assertThat(result.getResolvedException()).isInstanceOf(MethodArgumentNotValidException.class))
                 .andExpect(status().isBadRequest());
 
         // Test invalid UpdateProductReqBody
         final var invalidInputs = List.of(
-                new UpdateFoodReqBody("Restrictions",
+                new UpdateFoodReqBody(false, false, false, false, false, false,
                         new UpdateProductReqBody(null, "Description", "image", BigDecimal.ONE, LocalDateTime.now())),
-                new UpdateFoodReqBody("Restrictions",
+                new UpdateFoodReqBody(false, false, false, false, false, false,
                         new UpdateProductReqBody("Name", "Description", "image", null, LocalDateTime.now())),
-                new UpdateFoodReqBody("Restrictions",
+                new UpdateFoodReqBody(false, false, false, false, false, false,
                         new UpdateProductReqBody("Name", "Description", "image", BigDecimal.valueOf(-1L), LocalDateTime.now())),
-                new UpdateFoodReqBody("Restrictions",
+                new UpdateFoodReqBody(false, false, false, false, false, false,
                         new UpdateProductReqBody("Name", "Description", "image", BigDecimal.ONE, null))
         );
         invalidInputs.forEach(invalidInput -> {
