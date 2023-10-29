@@ -45,12 +45,16 @@ public class ProductService {
             return pe;
         }
 
-        pe.setName(dto.name());
-        pe.setDescription(dto.description());
-        pe.setImage(dto.image());
-        pe.setPrice(dto.price());
-        pe.setPickupTime(dto.pickupTime());
+        updateProductEntityFromDto(dto, pe);
         return saveProduct(pe);
+    }
+
+    private void updateProductEntityFromDto(UpdateProductReqBody dto, ProductEntity entity) {
+        if (!Objects.equals(dto.name(), entity.getName())) entity.setName(dto.name());
+        if (!Objects.equals(dto.description(), entity.getDescription())) entity.setDescription(dto.description());
+        if (!Objects.equals(dto.image(), entity.getImage())) entity.setImage(dto.image());
+        if (!Objects.equals(dto.price(), entity.getPrice())) entity.setPrice(dto.price());
+        if (!Objects.equals(dto.pickupTime(), entity.getPickupTime())) entity.setPickupTime(dto.pickupTime());
     }
 
     private boolean dtoFieldsEqualEntity(UpdateProductReqBody dto, ProductEntity entity) {

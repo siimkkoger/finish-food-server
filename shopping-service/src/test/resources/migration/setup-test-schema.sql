@@ -223,7 +223,13 @@ CREATE TABLE public.food
     id                   SERIAL PRIMARY KEY,
     product_id           INT           NOT NULL REFERENCES public.product (id) UNIQUE,
     product_type_name    VARCHAR(10)   NOT NULL REFERENCES public.product_type (name) DEFAULT 'FOOD',
-    dietary_restrictions VARCHAR(1000) NOT NULL,
+
+    vegetarian           BOOLEAN       NOT NULL DEFAULT false,
+    vegan                BOOLEAN       NOT NULL DEFAULT false,
+    gluten_free          BOOLEAN       NOT NULL DEFAULT false,
+    nut_free             BOOLEAN       NOT NULL DEFAULT true,
+    dairy_free           BOOLEAN       NOT NULL DEFAULT false,
+    organic              BOOLEAN       NOT NULL DEFAULT false,
 
     created_at           timestamp     NOT NULL                                       DEFAULT current_timestamp,
     updated_at           timestamp     NOT NULL                                       DEFAULT current_timestamp,

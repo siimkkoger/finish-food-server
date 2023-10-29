@@ -6,7 +6,12 @@ import jakarta.validation.constraints.NotNull;
 
 
 public record UpdateFoodReqBody(
-        String dietaryRestrictions,
+        @NotNull Boolean vegetarian,
+        @NotNull Boolean vegan,
+        @NotNull Boolean glutenFree,
+        @NotNull Boolean nutFree,
+        @NotNull Boolean dairyFree,
+        @NotNull Boolean organic,
         @Valid @NotNull UpdateProductReqBody product
 ) {
 }

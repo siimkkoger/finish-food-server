@@ -98,7 +98,12 @@ public class FoodService {
         final FoodEntity fe = new FoodEntity();
         fe.setProductId(savedProductEntity.getId());
         fe.setProductType(ProductType.FOOD);
-        fe.setDietaryRestrictions(reqBody.dietaryRestrictions());
+        fe.setVegetarian(reqBody.vegetarian());
+        fe.setVegan(reqBody.vegan());
+        fe.setGlutenFree(reqBody.glutenFree());
+        fe.setNutFree(reqBody.nutFree());
+        fe.setDairyFree(reqBody.dairyFree());
+        fe.setOrganic(reqBody.organic());
         final FoodEntity savedFoodEntity = saveFoodEntity(fe);
 
         // Return GetFoodResponse
@@ -185,7 +190,12 @@ public class FoodService {
                         p.name,
                         p.description,
                         p.image,
-                        f.dietaryRestrictions,
+                        f.vegetarian,
+                        f.vegan,
+                        f.glutenFree,
+                        f.nutFree,
+                        f.dairyFree,
+                        f.organic,
                         p.price,
                         p.pickupTime,
                         p.productType,
@@ -222,13 +232,29 @@ public class FoodService {
         // Save product entity
         productService.updateProduct(fe.getProductId(), req.product());
 
-        // Update food entity
-        if (req.dietaryRestrictions().equals(fe.getDietaryRestrictions())) {
-            fe.setDietaryRestrictions(req.dietaryRestrictions());
-            saveFoodEntity(fe);
+        if (!dtoFieldsEqualEntity(req, fe)) {
+            updateFoodEntityFromDto(fe, req);
         }
 
         return getFoodById(foodId);
+    }
+
+    private void updateFoodEntityFromDto(FoodEntity entity, UpdateFoodReqBody dto) {
+        if (!Objects.equals(dto.vegetarian(), entity.getVegetarian())) entity.setVegetarian(dto.vegetarian());
+        if (!Objects.equals(dto.vegan(), entity.getVegan())) entity.setVegan(dto.vegan());
+        if (!Objects.equals(dto.glutenFree(), entity.getGlutenFree())) entity.setGlutenFree(dto.glutenFree());
+        if (!Objects.equals(dto.nutFree(), entity.getNutFree())) entity.setNutFree(dto.nutFree());
+        if (!Objects.equals(dto.dairyFree(), entity.getDairyFree())) entity.setDairyFree(dto.dairyFree());
+        if (!Objects.equals(dto.organic(), entity.getOrganic())) entity.setOrganic(dto.organic());
+    }
+
+    private boolean dtoFieldsEqualEntity(UpdateFoodReqBody dto, FoodEntity entity) {
+        return Objects.equals(dto.vegetarian(), entity.getVegetarian()) &&
+                Objects.equals(dto.vegan(), entity.getVegan()) &&
+                Objects.equals(dto.glutenFree(), entity.getGlutenFree()) &&
+                Objects.equals(dto.nutFree(), entity.getNutFree()) &&
+                Objects.equals(dto.dairyFree(), entity.getDairyFree()) &&
+                Objects.equals(dto.organic(), entity.getOrganic());
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)

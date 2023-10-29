@@ -29,7 +29,22 @@ public class FoodEntity extends BaseEntity {
     @Column(name = "product_type_name", nullable = false, updatable = false)
     private ProductType productType;
 
-    @Column(name = "dietary_restrictions", nullable = false, length = 1000)
-    private String dietaryRestrictions;
+    @Column(name = "vegetarian", nullable = false)
+    private Boolean vegetarian;
+
+    @Column(name = "vegan", nullable = false)
+    private Boolean vegan;
+
+    @Column(name = "gluten_free", nullable = false)
+    private Boolean glutenFree;
+
+    @Column(name = "nut_free", nullable = false)
+    private Boolean nutFree;
+
+    @Column(name = "dairy_free", nullable = false)
+    private Boolean dairyFree;
+
+    @Column(name = "organic", nullable = false)
+    private Boolean organic;
 
 }
