@@ -9,8 +9,22 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+/**
+ * Filter for getting foods.
+ *
+ * @param foodCategoryIds
+ * @param foodCategoryIdsMatchAll // If true, only foods that have all of the specified food category IDs will be returned.
+ * @param productProviderIds // If specified, only foods whose product provider ID is in this set will be returned.
+ * @param pickupTimeFrom
+ * @param pickupTimeTo
+ * @param page
+ * @param pageSize
+ * @param orderBy
+ * @param direction
+ */
 public record GetFoodsFilter(
         Set<Long> foodCategoryIds,
+        Boolean foodCategoryIdsMatchAll,
         Set<Long> productProviderIds,
         LocalDateTime pickupTimeFrom,
         LocalDateTime pickupTimeTo,
@@ -37,6 +51,9 @@ public record GetFoodsFilter(
         }
         if (productProviderIds != null && productProviderIds.isEmpty()) {
             productProviderIds = null;
+        }
+        if (foodCategoryIdsMatchAll == null) {
+            foodCategoryIdsMatchAll = false;
         }
     }
 }

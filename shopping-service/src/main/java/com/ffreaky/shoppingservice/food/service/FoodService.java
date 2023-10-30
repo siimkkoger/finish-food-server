@@ -19,6 +19,7 @@ import com.ffreaky.shoppingservice.product.entity.ProductEntity;
 import com.ffreaky.shoppingservice.product.entity.QProductEntity;
 import com.ffreaky.shoppingservice.product.entity.QProductProviderEntity;
 import com.ffreaky.shoppingservice.product.service.ProductService;
+import com.ffreaky.utilities.SimpleIf;
 import com.ffreaky.utilities.exceptions.FinishFoodException;
 import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -30,6 +31,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +47,7 @@ public class FoodService {
 
     static Logger logger = LoggerFactory.getLogger(FoodService.class);
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final JPAQueryFactory queryFactory;
 
     private final DSLContext dsl;
 
@@ -56,11 +57,13 @@ public class FoodService {
     private final ProductService productService;
 
     public FoodService(
+            JPAQueryFactory queryFactory,
             DSLContext dsl,
             FoodRepository foodRepository,
             FoodCategoryRepository foodCategoryRepository,
             FoodFoodCategoryRepository foodFoodCategoryRepository,
             ProductService productService) {
+        this.queryFactory = queryFactory;
         this.dsl = dsl;
         this.foodRepository = foodRepository;
         this.foodCategoryRepository = foodCategoryRepository;
@@ -160,23 +163,37 @@ public class FoodService {
         return result.into(GetFoodResponse.class);
     }
 
-
+    // TODO - implement cache based on how often a filter is used
     public List<GetFoodResponse> getFoods(GetFoodsFilter filter) {
-        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-        QFoodEntity f = QFoodEntity.foodEntity;
-        QProductEntity p = QProductEntity.productEntity;
-        QProductProviderEntity pp = QProductProviderEntity.productProviderEntity;
+        var f = QFoodEntity.foodEntity;
+        var p = QProductEntity.productEntity;
+        var pp = QProductProviderEntity.productProviderEntity;
 
         BooleanExpression condition = Expressions.asBoolean(true).isTrue();
         condition = condition.and(p.deletedAt.isNull());
 
-        if (filter.foodCategoryIds() != null && !filter.foodCategoryIds().isEmpty()) {
-            QFoodFoodCategoryEntity ffc = QFoodFoodCategoryEntity.foodFoodCategoryEntity;
-            condition = condition.and(f.id.in(queryFactory.select(ffc.id.foodId).from(ffc).where(ffc.id.foodCategoryId.in(filter.foodCategoryIds()))));
-        }
-        if (filter.productProviderIds() != null && !filter.productProviderIds().isEmpty()) {
+        if (SimpleIf.isNotEmptyOrNull(filter.productProviderIds())) {
             condition = condition.and(pp.id.in(filter.productProviderIds()));
         }
+
+        if (SimpleIf.isNotEmptyOrNull(filter.foodCategoryIds())) {
+            var ffc = QFoodFoodCategoryEntity.foodFoodCategoryEntity;
+            var filterMatchAll = filter.foodCategoryIdsMatchAll() != null && filter.foodCategoryIdsMatchAll();
+            if (filterMatchAll) {
+                long countRequired = filter.foodCategoryIds().size();
+                condition = condition.and(f.id.in(
+                        queryFactory.select(ffc.id.foodId)
+                                .from(ffc)
+                                .where(ffc.id.foodCategoryId.in(filter.foodCategoryIds()))
+                                .groupBy(ffc.id.foodId)
+                                .having(ffc.id.foodCategoryId.countDistinct().eq(countRequired))
+                                .fetch()
+                ));
+            } else {
+                condition = condition.and(f.id.in(queryFactory.select(ffc.id.foodId).from(ffc).where(ffc.id.foodCategoryId.in(filter.foodCategoryIds()))));
+            }
+        }
+
         if (filter.pickupTimeFrom() != null || filter.pickupTimeTo() != null) {
             condition = condition.and(p.pickupTime.between(filter.pickupTimeFrom(), filter.pickupTimeTo()));
         }

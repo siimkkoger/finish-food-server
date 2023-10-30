@@ -101,7 +101,7 @@ class FoodControllerTest {
                         BigDecimal.valueOf(10.99), LocalDateTime.now(), ProductType.FOOD, "Provider")
         );
 
-        GetFoodsFilter filter = new GetFoodsFilter(null, null, null, null, null, null, null, null);
+        GetFoodsFilter filter = new GetFoodsFilter(null, false, null, null, null, null, null, null, null);
 
         given(foodService.getFoods(filter)).willReturn(expectedResponseList);
 

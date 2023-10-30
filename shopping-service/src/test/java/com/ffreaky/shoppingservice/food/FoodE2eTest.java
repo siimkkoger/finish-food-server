@@ -92,7 +92,7 @@ public class FoodE2eTest {
     void testGetFoods() throws Exception {
         // Given
         var expectedResponse = getUnfilteredResponse();
-        var filter = new GetFoodsFilter(null, null, null, null, null, null, null, null);
+        var filter = new GetFoodsFilter(null, false, null, null, null, null, null, null, null);
 
         // When
         MvcResult result = createMockRequestGetFoods(filter);
@@ -108,21 +108,21 @@ public class FoodE2eTest {
 
         // When
         // page = 1 and pageSize = 10
-        var filter = new GetFoodsFilter(null, null, null, null, 1, 10, ProductOrderBy.ID, Order.ASC);
+        var filter = new GetFoodsFilter(null, false, null, null, null, 1, 10, ProductOrderBy.ID, Order.ASC);
         MvcResult result_10 = createMockRequestGetFoods(filter);
         // Then page 1 should return 10 items
         assertThat(result_10.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
 
         // When
         // page = 1 and pageSize = 1
-        filter = new GetFoodsFilter(null, null, null, null, 1, 5, ProductOrderBy.ID, Order.ASC);
+        filter = new GetFoodsFilter(null, false, null, null, null, 1, 5, ProductOrderBy.ID, Order.ASC);
         MvcResult result_5 = createMockRequestGetFoods(filter);
         // Then page 1 should return 5 items
         assertThat(result_5.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse.subList(0, 5)));
 
         // When
         // page = 2 and pageSize = 5
-        filter = new GetFoodsFilter(null, null, null, null, 2, 5, ProductOrderBy.ID, Order.ASC);
+        filter = new GetFoodsFilter(null, false, null, null, null, 2, 5, ProductOrderBy.ID, Order.ASC);
         MvcResult result_10_page_2 = createMockRequestGetFoods(filter);
         // Then page 2 should return foods 5 - 10
         var expectedResponseFromFifthToTenth = expectedResponse.subList(5, 10);
@@ -140,14 +140,14 @@ public class FoodE2eTest {
 
         // When
         // order ASC
-        var filter = new GetFoodsFilter(null, null, null, null, page, pageSize, ProductOrderBy.ID, order);
+        var filter = new GetFoodsFilter(null, false, null, null, null, page, pageSize, ProductOrderBy.ID, order);
         MvcResult result_price_asc = createMockRequestGetFoods(filter);
         // Then
         assertThat(result_price_asc.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
 
         // When
         // OrderBy = NAME
-        filter = new GetFoodsFilter(null, null, null, null, page, pageSize, ProductOrderBy.NAME, order);
+        filter = new GetFoodsFilter(null, false, null, null, null, page, pageSize, ProductOrderBy.NAME, order);
         MvcResult result_name_asc = createMockRequestGetFoods(filter);
         // Then
         var expectedResponseSortedByName = expectedResponse.stream().sorted(Comparator.comparing(GetFoodResponse::name)).toList();
@@ -155,7 +155,7 @@ public class FoodE2eTest {
 
         // When
         // OrderBy = PRICE
-        filter = new GetFoodsFilter(null, null, null, null, page, pageSize, ProductOrderBy.PRICE, order);
+        filter = new GetFoodsFilter(null, false, null, null, null, page, pageSize, ProductOrderBy.PRICE, order);
         MvcResult result_price_asc_2 = createMockRequestGetFoods(filter);
         // Then
         var expectedResponseSortedByPrice = expectedResponse.stream().sorted(Comparator.comparing(GetFoodResponse::price)).toList();
@@ -163,7 +163,7 @@ public class FoodE2eTest {
 
         // When
         // OrderBy = PICKUP_TIME
-        filter = new GetFoodsFilter(null, null, null, null, page, pageSize, ProductOrderBy.PICKUP_TIME, order);
+        filter = new GetFoodsFilter(null, false, null, null, null, page, pageSize, ProductOrderBy.PICKUP_TIME, order);
         MvcResult result_pickup_time_asc = createMockRequestGetFoods(filter);
         // Then
         var expectedResponseSortedByPickupTime = expectedResponse.stream().sorted(Comparator.comparing(GetFoodResponse::pickupTime)).toList();
@@ -171,7 +171,7 @@ public class FoodE2eTest {
 
         // When
         // OrderBy = CREATED_AT
-        filter = new GetFoodsFilter(null, null, null, null, page, pageSize, ProductOrderBy.CREATED_AT, order);
+        filter = new GetFoodsFilter(null, false, null, null, null, page, pageSize, ProductOrderBy.CREATED_AT, order);
         MvcResult result_created_at_asc = createMockRequestGetFoods(filter);
         // Then (foodId and createdAt order are the same in db test data script)
         assertThat(result_created_at_asc.getResponse().getContentAsString()).isEqualTo(objectMapper.writeValueAsString(expectedResponse));
@@ -179,7 +179,7 @@ public class FoodE2eTest {
         // When
         // OrderBy DESC
         order = Order.DESC;
-        filter = new GetFoodsFilter(null, null, null, null, page, pageSize, ProductOrderBy.ID, order);
+        filter = new GetFoodsFilter(null, false, null, null, null, page, pageSize, ProductOrderBy.ID, order);
         MvcResult result_price_desc = createMockRequestGetFoods(filter);
         // Then
         var expectedResponseReversed = expectedResponse.stream().sorted((f1, f2) -> f2.foodId().compareTo(f1.foodId())).toList();
@@ -196,7 +196,7 @@ public class FoodE2eTest {
         expectedResponse.removeIf(exampleFood -> foodEntities.stream().noneMatch(foodEntity -> foodEntity.getId().equals(exampleFood.foodId())));
 
         // When
-        var filter = new GetFoodsFilter(categoryIds, null, null, null, null, null, null, null);
+        var filter = new GetFoodsFilter(categoryIds, false, null, null, null, null, null, null, null);
         MvcResult result = createMockRequestGetFoods(filter);
 
         // Then
@@ -214,7 +214,7 @@ public class FoodE2eTest {
         expectedResponse.removeIf(exampleFood -> exampleFood.pickupTime().isAfter(pickupTimeTo));
 
         // When
-        var filter = new GetFoodsFilter(null, null, pickupTimeFrom, pickupTimeTo, null, null, null, null);
+        var filter = new GetFoodsFilter(null, false, null, pickupTimeFrom, pickupTimeTo, null, null, null, null);
         MvcResult result = createMockRequestGetFoods(filter);
 
         // Then
@@ -230,7 +230,7 @@ public class FoodE2eTest {
         expectedResponse.removeIf(exampleFood -> exampleFood.pickupTime().isAfter(pickupTimeTo2));
 
         // When
-        filter = new GetFoodsFilter(null, null, pickupTimeFrom2, pickupTimeTo2, null, null, null, null);
+        filter = new GetFoodsFilter(null, false, null, pickupTimeFrom2, pickupTimeTo2, null, null, null, null);
         result = createMockRequestGetFoods(filter);
 
         // Then
