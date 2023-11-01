@@ -84,37 +84,65 @@ VALUES ('Pasta'), -- 49
        ('Vegan'); -- 73
 
 -- dummy data for product table (FOOD 1-10, PRODUCTS 1-10)
-INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
-                            deleted_at)
+-- Row 1
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
 VALUES ('FOOD', 1, 'Hamburger', 'A classic American hamburger with lettuce, tomato, onion, and cheese.',
-        'https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?w=500', 9.99, '2023-09-22 12:00:00', null),
-       ('FOOD', 3, 'Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
+        'https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?w=500', 9.99, '2023-09-22 12:00:00', null);
+
+-- Row 2
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 3, 'Pizza', 'A delicious pepperoni pizza with a crispy crust and melted cheese.',
         'https://hips.hearstapps.com/hmg-prod/images/classic-cheese-pizza-recipe-2-64429a0cb408b.jpg?crop=0.6666666666666667xw:1xh;center,top&resize=1200:*',
-        12.99, '2023-09-22 13:30:00', null),
-       ('FOOD', 2, 'Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.',
+        12.99, '2023-09-22 13:30:00', null);
+
+-- Row 3
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 2, 'Pasta', 'A hearty spaghetti dish with tomato sauce and meatballs.',
         'https://foodhub.scene7.com/is/image/woolworthsltdprod/Easy-chicken-and-bacon-pasta:Mobile-1300x1150',
-        14.99, '2023-09-23 13:00:00', null),
-       ('FOOD', 7, 'Ice cream', 'A bowl of cold, delicious ice cream.',
+        14.99, '2023-09-23 13:00:00', null);
+
+-- Row 4
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 7, 'Ice cream', 'A bowl of cold, delicious ice cream.',
         'https://sugarspunrun.com/wp-content/uploads/2023/03/ice-cream-cone-cupcakes-1-of-1-3.jpg', 4.99,
-        '2023-09-23 13:30:00', null),
-       ('FOOD', 10, 'Tiramisu',
+        '2023-09-23 13:30:00', null);
+
+-- Row 5
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 10, 'Tiramisu',
         'A classic Italian dessert made with coffee-dipped ladyfingers and a creamy mascarpone filling.',
         'https://static01.nyt.com/images/2017/04/05/dining/05COOKING-TIRAMISU1/05COOKING-TIRAMISU1-threeByTwoMediumAt2X-v2.jpg',
-        6.99, '2023-09-24 14:00:00', null),
-       ('FOOD', 4, 'Fried rice', 'A dish of rice fried with vegetables and your choice of protein.',
-        'https://www.australianeggs.org.au/assets/Uploads/Egg-fried-rice-2.jpg', 11.99, '2023-09-25 14:30:00', null),
-       ('FOOD', 2, 'Cheeseburger', 'A classic cheeseburger with lettuce, tomato, onion, and a juicy patty.',
+        6.99, '2023-09-24 14:00:00', null);
+
+-- Row 6
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 4, 'Fried rice', 'A dish of rice fried with vegetables and your choice of protein.',
+        'https://www.australianeggs.org.au/assets/Uploads/Egg-fried-rice-2.jpg', 11.99, '2023-09-25 14:30:00', null);
+
+-- Row 7
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 2, 'Cheeseburger', 'A classic cheeseburger with lettuce, tomato, onion, and a juicy patty.',
         'https://people.com/thmb/7xiBWLcomIVvVYHWuHRDXVv97Vo=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(669x478:671x480)/mcdonalds-free-cheeseburger-day-091423-01-baca4b5e5fdf47feb4afac36b659c26e.jpg',
-        8.99, '2023-10-25 12:15:00', null),
-       ('FOOD', 3, 'Margherita Pizza', 'A traditional Margherita pizza with fresh mozzarella, basil, and tomato sauce.',
+        8.99, '2023-10-25 12:15:00', null);
+
+-- Row 8
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 3, 'Margherita Pizza', 'A traditional Margherita pizza with fresh mozzarella, basil, and tomato sauce.',
         'https://images.prismic.io/eataly-us/ed3fcec7-7994-426d-a5e4-a24be5a95afd_pizza-recipe-main.jpg?auto=compress,format',
-        11.99, '2024-10-25 12:45:00', null),
-       ('FOOD', 4, 'General Tso Chicken', 'Crispy chicken in a sweet and spicy General Tso sauce with steamed rice.',
+        11.99, '2024-10-25 12:45:00', null);
+
+-- Row 9
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 4, 'General Tso Chicken', 'Crispy chicken in a sweet and spicy General Tso sauce with steamed rice.',
         'https://www.thecountrycook.net/wp-content/uploads/2021/08/thumbnail-General-Tsos-Chicken-scaled.jpg', 13.99,
-        '2024-11-25 13:15:00', null),
-       ('FOOD', 5, 'Tacos', 'Delicious street-style tacos with your choice of fillings.',
+        '2024-11-25 13:15:00', null);
+
+-- Row 10
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 5, 'Tacos', 'Delicious street-style tacos with your choice of fillings.',
         'https://cdn.vox-cdn.com/thumbor/0-SMli6Ir1f6qG-bpDgeHIXAUU4=/1400x1400/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/10426267/Tiki_Taco_DC_food.png',
         9.99, '2025-01-01 13:45:00', null);
+
 
 INSERT INTO public.food (product_id, vegetarian, vegan, gluten_free, dairy_free, nut_free, organic)
 VALUES
@@ -170,19 +198,32 @@ VALUES (1, 15),  -- Hamburger is Fast Food
 
 
 -- Adding 5 more rows with product_provider_type 1
-INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
-                            deleted_at)
+-- Row 1
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
 VALUES ('FOOD', 1, 'Chicken Sandwich', 'A delicious chicken sandwich with lettuce, tomato, and special sauce.',
-        'https://example.com/chickensandwich.jpg', 8.99, '2023-09-22 14:00:00', null),
-       ('FOOD', 1, 'Double Cheeseburger',
+        'https://example.com/chickensandwich.jpg', 8.99, '2023-09-22 14:00:00', null);
+
+-- Row 2
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 1, 'Double Cheeseburger',
         'A mouthwatering double cheeseburger with two juicy patties and all the fixings.',
-        'https://example.com/doublecheeseburger.jpg', 10.99, '2023-09-23 14:30:00', null),
-       ('FOOD', 1, 'Fish Fillet Sandwich', 'A crispy fish fillet sandwich with tartar sauce and a soft bun.',
-        'https://example.com/fishfilletsandwich.jpg', 7.99, '2023-09-24 15:00:00', null),
-       ('FOOD', 1, 'Salad with nuts and olives', 'A fresh garden salad with mixed greens, tomatoes, and your choice of dressing.',
-        'https://example.com/salad.jpg', 6.99, '2023-09-25 15:30:00', null),
-       ('FOOD', 1, 'Milkshake', 'A creamy and indulgent milkshake available in various flavors.',
+        'https://example.com/doublecheeseburger.jpg', 10.99, '2023-09-23 14:30:00', null);
+
+-- Row 3
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 1, 'Fish Fillet Sandwich', 'A crispy fish fillet sandwich with tartar sauce and a soft bun.',
+        'https://example.com/fishfilletsandwich.jpg', 7.99, '2023-09-24 15:00:00', null);
+
+-- Row 4
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 1, 'Salad with nuts and olives', 'A fresh garden salad with mixed greens, tomatoes, and your choice of dressing.',
+        'https://example.com/salad.jpg', 6.99, '2023-09-25 15:30:00', null);
+
+-- Row 5
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 1, 'Milkshake', 'A creamy and indulgent milkshake available in various flavors.',
         'https://example.com/milkshake.jpg', 4.99, '2023-09-26 16:00:00', null);
+
 
 INSERT INTO public.food (product_id, vegetarian, vegan, gluten_free, dairy_free, nut_free, organic)
 VALUES
@@ -216,18 +257,31 @@ VALUES (11, 17), -- Chicken Sandwich is Burger
        (15, 1);  -- Milkshake is American
 
 -- Adding 5 more rows with product_provider_type 2
-INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
-                            deleted_at)
+-- Row 1
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
 VALUES ('FOOD', 2, 'Vegan Lasagna', 'A hearty lasagna dish with layers of pasta, cheese, and meat sauce.',
-        'https://example.com/lasagna.jpg', 15.99, '2023-10-02 14:30:00', null),
-       ('FOOD', 2, 'Meatball Sub', 'A meatball sub sandwich loaded with meatballs, marinara sauce, and melted cheese.',
-        'https://example.com/meatballsub.jpg', 9.99, '2023-10-03 15:00:00', null),
-       ('FOOD', 2, 'Chicken Alfredo', 'Creamy chicken Alfredo pasta with a rich and savory sauce.',
-        'https://example.com/chickenalfredo.jpg', 13.99, '2023-10-04 15:30:00', null),
-       ('FOOD', 2, 'Caprese Salad', 'A classic Caprese salad with fresh mozzarella, tomatoes, and basil.',
-        'https://example.com/capresesalad.jpg', 7.99, '2023-10-05 16:00:00', null),
-       ('FOOD', 2, 'Espresso', 'A strong and aromatic espresso shot for coffee lovers.',
+        'https://example.com/lasagna.jpg', 15.99, '2023-10-02 14:30:00', null);
+
+-- Row 2
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 2, 'Meatball Sub', 'A meatball sub sandwich loaded with meatballs, marinara sauce, and melted cheese.',
+        'https://example.com/meatballsub.jpg', 9.99, '2023-10-03 15:00:00', null);
+
+-- Row 3
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 2, 'Chicken Alfredo', 'Creamy chicken Alfredo pasta with a rich and savory sauce.',
+        'https://example.com/chickenalfredo.jpg', 13.99, '2023-10-04 15:30:00', null);
+
+-- Row 4
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 2, 'Caprese Salad', 'A classic Caprese salad with fresh mozzarella, tomatoes, and basil.',
+        'https://example.com/capresesalad.jpg', 7.99, '2023-10-05 16:00:00', null);
+
+-- Row 5
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 2, 'Espresso', 'A strong and aromatic espresso shot for coffee lovers.',
         'https://example.com/espresso.jpg', 2.99, '2023-10-06 16:30:00', null);
+
 
 INSERT INTO public.food (product_id, vegetarian, vegan, gluten_free, dairy_free, nut_free, organic)
 VALUES
@@ -268,19 +322,27 @@ VALUES (16, 49), -- Vegan Lasagna is Pasta
        (20, 73); -- Espresso is Vegan
 
 -- Adding 5 more rows with product_provider_type 3
-INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
-                            deleted_at)
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
 VALUES ('FOOD', 3, 'Vegetarian Pizza', 'A vegetarian pizza with fresh vegetables and a cheesy blend.',
-        'https://example.com/vegetarianpizza.jpg', 11.99, '2023-09-27 12:00:00', null),
-       ('FOOD', 3, 'Supreme Pizza',
+        'https://example.com/vegetarianpizza.jpg', 11.99, '2023-09-27 12:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 3, 'Supreme Pizza',
         'A supreme pizza loaded with all the toppings including pepperoni, sausage, and more.',
-        'https://example.com/supremepizza.jpg', 13.99, '2023-09-28 12:30:00', null),
-       ('FOOD', 3, 'Hawaiian Pizza', 'A Hawaiian pizza with pineapple, ham, and a delicious tomato sauce.',
-        'https://example.com/hawaiianpizza.jpg', 12.99, '2023-09-29 13:00:00', null),
-       ('FOOD', 3, 'BBQ Chicken Pizza', 'A BBQ chicken pizza with tender chicken, BBQ sauce, and red onions.',
-        'https://example.com/bbqchickenpizza.jpg', 14.99, '2023-09-30 13:30:00', null),
-       ('FOOD', 3, 'Veggie Pizza', 'A veggie-packed pizza with bell peppers, mushrooms, and olives.',
+        'https://example.com/supremepizza.jpg', 13.99, '2023-09-28 12:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 3, 'Hawaiian Pizza', 'A Hawaiian pizza with pineapple, ham, and a delicious tomato sauce.',
+        'https://example.com/hawaiianpizza.jpg', 12.99, '2023-09-29 13:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 3, 'BBQ Chicken Pizza', 'A BBQ chicken pizza with tender chicken, BBQ sauce, and red onions.',
+        'https://example.com/bbqchickenpizza.jpg', 14.99, '2023-09-30 13:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 3, 'Veggie Pizza', 'A veggie-packed pizza with bell peppers, mushrooms, and olives.',
         'https://example.com/veggiepizza.jpg', 12.99, '2023-10-01 14:00:00', null);
+
 
 INSERT INTO public.food (product_id, vegetarian, vegan, gluten_free, dairy_free, nut_free, organic)
 VALUES
@@ -318,18 +380,31 @@ VALUES (21, 18), -- Vegetarian Pizza is Pizza
        (25, 73); -- Veggie Pizza is Vegan
 
 -- Adding 5 more rows with product_provider_type 4
-INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
-                            deleted_at)
+-- Row 1
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
 VALUES ('FOOD', 4, 'Orange Chicken', 'Tender orange chicken with a sweet and tangy sauce, served with steamed rice.',
-        'https://example.com/orangechicken.jpg', 11.99, '2023-10-07 17:00:00', null),
-       ('FOOD', 4, 'Kung Pao Shrimp', 'Spicy Kung Pao shrimp with peanuts and vegetables, served over noodles.',
-        'https://example.com/kungpaoshrimp.jpg', 12.99, '2023-10-08 17:30:00', null),
-       ('FOOD', 4, 'Beef and Broccoli', 'Beef and broccoli stir-fry with a savory brown sauce, served with rice.',
-        'https://example.com/beefandbroccoli.jpg', 10.99, '2023-10-09 18:00:00', null),
-       ('FOOD', 4, 'Egg Drop Soup', 'A comforting bowl of egg drop soup with silky egg ribbons in a flavorful broth.',
-        'https://example.com/eggdropsoup.jpg', 4.99, '2023-10-10 18:30:00', null),
-       ('FOOD', 4, 'Spring Rolls', 'Crispy spring rolls filled with vegetables and served with dipping sauce.',
+        'https://example.com/orangechicken.jpg', 11.99, '2023-10-07 17:00:00', null);
+
+-- Row 2
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 4, 'Kung Pao Shrimp', 'Spicy Kung Pao shrimp with peanuts and vegetables, served over noodles.',
+        'https://example.com/kungpaoshrimp.jpg', 12.99, '2023-10-08 17:30:00', null);
+
+-- Row 3
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 4, 'Beef and Broccoli', 'Beef and broccoli stir-fry with a savory brown sauce, served with rice.',
+        'https://example.com/beefandbroccoli.jpg', 10.99, '2023-10-09 18:00:00', null);
+
+-- Row 4
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 4, 'Egg Drop Soup', 'A comforting bowl of egg drop soup with silky egg ribbons in a flavorful broth.',
+        'https://example.com/eggdropsoup.jpg', 4.99, '2023-10-10 18:30:00', null);
+
+-- Row 5
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 4, 'Spring Rolls', 'Crispy spring rolls filled with vegetables and served with dipping sauce.',
         'https://example.com/springrolls.jpg', 6.99, '2023-10-11 19:00:00', null);
+
 
 INSERT INTO public.food (product_id, vegetarian, vegan, gluten_free, dairy_free, nut_free, organic)
 VALUES
@@ -364,18 +439,26 @@ VALUES (26, 4),  -- Orange Chicken is Chinese
        (30, 73); -- Spring Rolls is Vegan
 
 -- Adding 5 more rows with product_provider_type 5
-INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
-                            deleted_at)
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
 VALUES ('FOOD', 5, 'Beef Tacos', 'Savory beef tacos with your choice of toppings and salsa.',
-        'https://example.com/beeftacos.jpg', 8.99, '2023-10-12 12:00:00', null),
-       ('FOOD', 5, 'Chicken Quesadilla', 'A cheesy chicken quesadilla with peppers and onions.',
-        'https://example.com/chickenquesadilla.jpg', 7.99, '2023-10-13 12:30:00', null),
-       ('FOOD', 5, 'Guacamole', 'Freshly made guacamole with ripe avocados, tomatoes, and spices.',
-        'https://example.com/guacamole.jpg', 4.99, '2023-10-14 13:00:00', null),
-       ('FOOD', 5, 'Churros', 'Delicious churros with cinnamon sugar, perfect for dessert.',
-        'https://example.com/churros.jpg', 5.99, '2023-10-15 13:30:00', null),
-       ('FOOD', 5, 'Salsa Verde', 'A tangy and spicy salsa verde made with tomatillos and chili peppers.',
+        'https://example.com/beeftacos.jpg', 8.99, '2023-10-12 12:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 5, 'Chicken Quesadilla', 'A cheesy chicken quesadilla with peppers and onions.',
+        'https://example.com/chickenquesadilla.jpg', 7.99, '2023-10-13 12:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 5, 'Guacamole', 'Freshly made guacamole with ripe avocados, tomatoes, and spices.',
+        'https://example.com/guacamole.jpg', 4.99, '2023-10-14 13:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 5, 'Churros', 'Delicious churros with cinnamon sugar, perfect for dessert.',
+        'https://example.com/churros.jpg', 5.99, '2023-10-15 13:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 5, 'Salsa Verde', 'A tangy and spicy salsa verde made with tomatillos and chili peppers.',
         'https://example.com/salsaverde.jpg', 3.99, '2023-10-16 14:00:00', null);
+
 
 INSERT INTO public.food (product_id, vegetarian, vegan, gluten_free, dairy_free, nut_free, organic)
 VALUES
@@ -413,18 +496,26 @@ VALUES (31, 10), -- Beef Tacos is Mexican
        (35, 73); -- Salsa Verde is Vegan
 
 -- Adding 5 more rows with product_provider_type 6
-INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
-                            deleted_at)
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
 VALUES ('FOOD', 6, 'Croissant', 'A flaky and buttery croissant, perfect for breakfast.',
-        'https://example.com/croissant.jpg', 2.99, '2023-10-17 14:30:00', null),
-       ('FOOD', 6, 'Cappuccino', 'A frothy and rich cappuccino made with espresso and steamed milk.',
-        'https://example.com/cappuccino.jpg', 4.99, '2023-10-18 15:00:00', null),
-       ('FOOD', 6, 'Chocolate Eclair', 'A decadent chocolate eclair filled with cream.',
-        'https://example.com/chocolateeclair.jpg', 3.99, '2023-10-19 15:30:00', null),
-       ('FOOD', 6, 'Ham and Cheese Croissant', 'A savory ham and cheese croissant with a flaky crust.',
-        'https://example.com/hamandcheesecroissant.jpg', 3.99, '2023-10-20 16:00:00', null),
-       ('FOOD', 6, 'Macaron Assortment', 'A delightful assortment of colorful macarons in various flavors.',
+        'https://example.com/croissant.jpg', 2.99, '2023-10-17 14:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 6, 'Cappuccino', 'A frothy and rich cappuccino made with espresso and steamed milk.',
+        'https://example.com/cappuccino.jpg', 4.99, '2023-10-18 15:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 6, 'Chocolate Eclair', 'A decadent chocolate eclair filled with cream.',
+        'https://example.com/chocolateeclair.jpg', 3.99, '2023-10-19 15:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 6, 'Ham and Cheese Croissant', 'A savory ham and cheese croissant with a flaky crust.',
+        'https://example.com/hamandcheesecroissant.jpg', 3.99, '2023-10-20 16:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 6, 'Macaron Assortment', 'A delightful assortment of colorful macarons in various flavors.',
         'https://example.com/macarons.jpg', 6.99, '2023-10-21 16:30:00', null);
+
 
 INSERT INTO public.food (product_id, vegetarian, vegan, gluten_free, dairy_free, nut_free, organic)
 VALUES
@@ -452,20 +543,28 @@ VALUES (36, 31), -- Croissant is Dessert
        (40, 38); -- Macaron Assortment is Bread
 
 -- Adding 5 new rows for product_provider_id 7 (Cafeteria-style)
-INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
-                            deleted_at)
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
 VALUES ('FOOD', 7, 'Blueberry Muffin', 'A freshly baked blueberry muffin, a perfect morning treat in the cafeteria.',
-        'https://example.com/blueberrymuffin.jpg', 2.49, '2023-10-27 19:00:00', null),
-       ('FOOD', 7, 'Cinnamon Roll', 'A warm and gooey cinnamon roll, a delightful choice for a cafeteria breakfast.',
-        'https://example.com/cinnamonroll.jpg', 3.99, '2023-10-27 19:30:00', null),
-       ('FOOD', 7, 'Chocolate Cake',
+        'https://example.com/blueberrymuffin.jpg', 2.49, '2023-10-27 19:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 7, 'Cinnamon Roll', 'A warm and gooey cinnamon roll, a delightful choice for a cafeteria breakfast.',
+        'https://example.com/cinnamonroll.jpg', 3.99, '2023-10-27 19:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 7, 'Chocolate Cake',
         'A rich and decadent chocolate cake, perfect for satisfying your sweet tooth in the cafeteria.',
-        'https://example.com/chocolatecake.jpg', 4.99, '2023-10-27 20:00:00', null),
-       ('FOOD', 7, 'Fruit Salad',
+        'https://example.com/chocolatecake.jpg', 4.99, '2023-10-27 20:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 7, 'Fruit Salad',
         'A refreshing fruit salad with a mix of seasonal fruits, a healthy option in the cafeteria.',
-        'https://example.com/fruitsalad.jpg', 3.49, '2023-10-27 20:30:00', null),
-       ('FOOD', 7, 'Croissant', 'A buttery and flaky croissant, a classic choice for a quick bite in the cafeteria.',
+        'https://example.com/fruitsalad.jpg', 3.49, '2023-10-27 20:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 7, 'Croissant', 'A buttery and flaky croissant, a classic choice for a quick bite in the cafeteria.',
         'https://example.com/croissant.jpg', 1.99, '2023-10-27 21:00:00', null);
+
 
 INSERT INTO public.food (product_id, vegetarian, vegan, gluten_free, dairy_free, nut_free, organic)
 VALUES
@@ -500,18 +599,26 @@ VALUES (41, 16), -- Blueberry Muffin is Bakery
        (45, 1);  -- Croissant is American
 
 -- Adding 5 more rows with product_provider_type 8
-INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
-                            deleted_at)
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
 VALUES ('FOOD', 8, 'Spaghetti Carbonara', 'Creamy spaghetti carbonara with bacon and Parmesan cheese.',
-        'https://example.com/spaghetticarbonara.jpg', 12.99, '2023-10-27 19:30:00', null),
-       ('FOOD', 8, 'Margherita Pizza', 'A classic Margherita pizza with fresh tomatoes, mozzarella, and basil.',
-        'https://example.com/margheritapizza.jpg', 11.99, '2023-10-28 20:00:00', null),
-       ('FOOD', 8, 'Tiramisu', 'A delightful tiramisu dessert with layers of coffee-soaked ladyfingers and mascarpone.',
-        'https://example.com/tiramisu.jpg', 7.99, '2023-10-29 20:30:00', null),
-       ('FOOD', 8, 'Minestrone Soup', 'A hearty minestrone soup with vegetables, beans, and pasta.',
-        'https://example.com/minestronesoup.jpg', 6.99, '2023-10-30 21:00:00', null),
-       ('FOOD', 8, 'Chicken Alfredo', 'Creamy chicken Alfredo pasta with a rich Parmesan sauce.',
+        'https://example.com/spaghetticarbonara.jpg', 12.99, '2023-10-27 19:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 8, 'Margherita Pizza', 'A classic Margherita pizza with fresh tomatoes, mozzarella, and basil.',
+        'https://example.com/margheritapizza.jpg', 11.99, '2023-10-28 20:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 8, 'Tiramisu', 'A delightful tiramisu dessert with layers of coffee-soaked ladyfingers and mascarpone.',
+        'https://example.com/tiramisu.jpg', 7.99, '2023-10-29 20:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 8, 'Minestrone Soup', 'A hearty minestrone soup with vegetables, beans, and pasta.',
+        'https://example.com/minestronesoup.jpg', 6.99, '2023-10-30 21:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 8, 'Chicken Alfredo', 'Creamy chicken Alfredo pasta with a rich Parmesan sauce.',
         'https://example.com/chickenalfredo.jpg', 9.99, '2023-10-31 21:30:00', null);
+
 
 INSERT INTO public.food (product_id, vegetarian, vegan, gluten_free, dairy_free, nut_free, organic)
 VALUES
@@ -549,18 +656,26 @@ VALUES (46, 49), -- Spaghetti Carbonara is Pasta
        (50, 6);  -- Chicken Alfredo is Chicken
 
 -- Adding 5 more rows with product_provider_type 9
-INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
-                            deleted_at)
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
 VALUES ('FOOD', 9, 'Sushi Roll Combo', 'An assortment of delicious sushi rolls, perfect for sushi lovers.',
-        'https://example.com/sushi.jpg', 14.99, '2023-11-01 22:00:00', null),
-       ('FOOD', 9, 'Sashimi Platter', 'A fresh sashimi platter with a variety of raw fish slices.',
-        'https://example.com/sashimi.jpg', 16.99, '2023-11-02 22:30:00', null),
-       ('FOOD', 9, 'Tempura Shrimp', 'Crispy tempura shrimp served with dipping sauce.',
-        'https://example.com/tempurashrimp.jpg', 10.99, '2023-11-03 23:00:00', null),
-       ('FOOD', 9, 'Miso Soup', 'Traditional miso soup with tofu, seaweed, and green onions.',
-        'https://example.com/misosoup.jpg', 4.99, '2023-11-04 23:30:00', null),
-       ('FOOD', 9, 'Dragon Roll', 'A specialty dragon roll sushi with eel and avocado.',
+        'https://example.com/sushi.jpg', 14.99, '2023-11-01 22:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 9, 'Sashimi Platter', 'A fresh sashimi platter with a variety of raw fish slices.',
+        'https://example.com/sashimi.jpg', 16.99, '2023-11-02 22:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 9, 'Tempura Shrimp', 'Crispy tempura shrimp served with dipping sauce.',
+        'https://example.com/tempurashrimp.jpg', 10.99, '2023-11-03 23:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 9, 'Miso Soup', 'Traditional miso soup with tofu, seaweed, and green onions.',
+        'https://example.com/misosoup.jpg', 4.99, '2023-11-04 23:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 9, 'Dragon Roll', 'A specialty dragon roll sushi with eel and avocado.',
         'https://example.com/dragonroll.jpg', 12.99, '2023-11-05 00:00:00', null);
+
 
 INSERT INTO public.food (product_id, vegetarian, vegan, gluten_free, dairy_free, nut_free, organic)
 VALUES
@@ -598,21 +713,29 @@ VALUES (51, 5),  -- Sushi Roll Combo is Japanese
        (55, 73); -- Dragon Roll is Vegan
 
 -- Adding 5 new rows for product_provider_id 10 (Cafeteria-style)
-INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time,
-                            deleted_at)
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
 VALUES ('FOOD', 10, 'Baguette', 'A fresh and crusty baguette, perfect for sandwiches and snacks in the cafeteria.',
-        'https://example.com/baguette.jpg', 2.99, '2023-11-01 22:00:00', null),
-       ('FOOD', 10, 'Fruit Tart',
+        'https://example.com/baguette.jpg', 2.99, '2023-11-01 22:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 10, 'Fruit Tart',
         'A delightful fruit tart with a buttery pastry crust and a mix of fresh fruits, a cafeteria favorite.',
-        'https://example.com/fruittart.jpg', 4.49, '2023-11-01 22:30:00', null),
-       ('FOOD', 10, 'Lemonade', 'A refreshing glass of homemade lemonade, a perfect beverage choice in the cafeteria.',
-        'https://example.com/lemonade.jpg', 1.99, '2023-11-01 23:00:00', null),
-       ('FOOD', 10, 'Club Sandwich',
+        'https://example.com/fruittart.jpg', 4.49, '2023-11-01 22:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 10, 'Lemonade', 'A refreshing glass of homemade lemonade, a perfect beverage choice in the cafeteria.',
+        'https://example.com/lemonade.jpg', 1.99, '2023-11-01 23:00:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 10, 'Club Sandwich',
         'A classic club sandwich with turkey, bacon, lettuce, and tomato, a popular cafeteria option.',
-        'https://example.com/clubsandwich.jpg', 7.99, '2023-11-01 23:30:00', null),
-       ('FOOD', 10, 'Chocolate Eclair',
+        'https://example.com/clubsandwich.jpg', 7.99, '2023-11-01 23:30:00', null);
+
+INSERT INTO public.product (product_type_name, product_provider_id, name, description, image, price, pickup_time, deleted_at)
+VALUES ('FOOD', 10, 'Chocolate Eclair',
         'A delicious chocolate eclair filled with cream, a sweet treat in the cafeteria.',
         'https://example.com/chocolateeclair.jpg', 3.99, '2023-11-02 00:00:00', null);
+
 
 INSERT INTO public.food (product_id, vegetarian, vegan, gluten_free, dairy_free, nut_free, organic)
 VALUES

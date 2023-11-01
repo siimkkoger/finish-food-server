@@ -222,8 +222,8 @@ public class FoodService {
                 .join(pp).on(p.productProviderId.eq(pp.id))
                 .where(condition)
                 .offset(offset)
-                .limit(filter.pageSize())
                 .orderBy(orderSpecifier)
+                .limit(filter.pageSize())
                 .fetch();
     }
 
