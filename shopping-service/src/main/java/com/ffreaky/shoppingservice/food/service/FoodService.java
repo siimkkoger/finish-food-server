@@ -1,6 +1,7 @@
 package com.ffreaky.shoppingservice.food.service;
 
 import com.ffreaky.shoppingservice.food.model.FoodCategoryDto;
+import com.ffreaky.shoppingservice.food.model.response.GetFoodListResult;
 import com.ffreaky.shoppingservice.product.ProductOrderBy;
 import com.ffreaky.shoppingservice.food.entity.FoodEntity;
 import com.ffreaky.shoppingservice.food.entity.FoodFoodCategoryEntity;
@@ -32,6 +33,9 @@ import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +52,7 @@ public class FoodService {
     static Logger logger = LoggerFactory.getLogger(FoodService.class);
 
     private final JPAQueryFactory queryFactory;
+    private final FoodCacheService foodCacheService;
 
     private final DSLContext dsl;
 
@@ -58,12 +63,14 @@ public class FoodService {
 
     public FoodService(
             JPAQueryFactory queryFactory,
+            FoodCacheService foodCacheService,
             DSLContext dsl,
             FoodRepository foodRepository,
             FoodCategoryRepository foodCategoryRepository,
             FoodFoodCategoryRepository foodFoodCategoryRepository,
             ProductService productService) {
         this.queryFactory = queryFactory;
+        this.foodCacheService = foodCacheService;
         this.dsl = dsl;
         this.foodRepository = foodRepository;
         this.foodCategoryRepository = foodCategoryRepository;
@@ -72,21 +79,10 @@ public class FoodService {
     }
 
     public GetFoodResponse getFoodById(Long id) {
-        // TODO - write test to check if not deleted
         return foodRepository.findDtoById(id)
                 .orElseThrow(() -> new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food with foodId " + id + " not found"));
     }
 
-    /**
-     * Add a new food row to the database.
-     * The method also adds everything else that is needed for the food to be complete:
-     * 1. ProductEntity
-     * 2. FoodEntity
-     * 3. FoodFoodCategoryEntity
-     *
-     * @param reqBody
-     * @return GetFoodResponse
-     */
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.SERIALIZABLE)
     public GetFoodResponse createFood(CreateFoodReqBody reqBody) {
         // Check that product category is FOOD
@@ -109,6 +105,8 @@ public class FoodService {
         fe.setOrganic(reqBody.organic());
         final FoodEntity savedFoodEntity = saveFoodEntity(fe);
 
+        foodCacheService.evictCacheTotalFoods();
+
         // Return GetFoodResponse
         return getFoodById(savedFoodEntity.getId());
     }
@@ -123,7 +121,7 @@ public class FoodService {
         return savedFoodEntity;
     }
 
-    @Deprecated // Use getFoods instead (uses querydsl)
+    @Deprecated // Use getFoods instead (uses querydsl). Just keeping it here for future reference.
     public List<GetFoodResponse> getFoodsJooq(GetFoodsFilter filter) {
         // Apply filters based on user input
         Condition condition = DSL.noCondition();
@@ -164,7 +162,7 @@ public class FoodService {
     }
 
     // TODO - implement cache based on how often a filter is used
-    public List<GetFoodResponse> getFoods(GetFoodsFilter filter) {
+    public GetFoodListResult getFoods(GetFoodsFilter filter) {
         var f = QFoodEntity.foodEntity;
         var p = QProductEntity.productEntity;
         var pp = QProductProviderEntity.productProviderEntity;
@@ -198,10 +196,22 @@ public class FoodService {
             condition = condition.and(p.pickupTime.between(filter.pickupTimeFrom(), filter.pickupTimeTo()));
         }
 
+        // Get total items && total pages
+        var cacheKey = filter.foodCategoryIds().stream().sorted().distinct().map(Object::toString).collect(Collectors.joining(",")) +
+                filter.foodCategoryIdsMatchAll() +
+                filter.productProviderIds().stream().sorted().distinct().map(Object::toString).collect(Collectors.joining(",")) +
+                filter.pickupTimeFrom() +
+                filter.pickupTimeTo();
+        long totalItems = foodCacheService.findTotalFoods(condition, cacheKey);
+        int totalPages = (int) Math.ceil((double) totalItems / filter.pageSize());
+        if (totalItems == 0) {
+            return new GetFoodListResult(new ArrayList<>(), filter.page(), filter.pageSize(), totalItems, totalPages);
+        }
+
+        // Fetch the data
         var offset = (filter.page() - 1) * filter.pageSize();
         var orderSpecifier = orderSpecifier(filter.orderBy(), filter.direction());
-
-        return queryFactory
+        var foodsList = queryFactory
                 .select(Projections.constructor(GetFoodResponse.class,
                         f.id,
                         p.name,
@@ -225,6 +235,8 @@ public class FoodService {
                 .orderBy(orderSpecifier)
                 .limit(filter.pageSize())
                 .fetch();
+
+        return new GetFoodListResult(foodsList, filter.page(), filter.pageSize(), totalItems, totalPages);
     }
 
     private OrderSpecifier<?> orderSpecifier(ProductOrderBy orderBy, Order direction) {
@@ -252,6 +264,8 @@ public class FoodService {
         if (!dtoFieldsEqualEntity(req, fe)) {
             updateFoodEntityFromDto(fe, req);
         }
+
+        foodCacheService.evictCacheTotalFoods();
 
         return getFoodById(foodId);
     }
@@ -289,17 +303,22 @@ public class FoodService {
                                 ffc.getId().setFoodCategoryId(id);
                                 return ffc;
                             }).collect(Collectors.toList()));
+
+            foodCacheService.evictCacheTotalFoods();
         } catch (Exception e) {
             throw new FinishFoodException(FinishFoodException.Type.BAD_REQUEST, "Error saving food categories: " + e.getMessage());
         }
     }
 
+    @CacheEvict(value = "totalItemsCache", allEntries = true)
     public boolean deleteFood(Long id) {
         if (!foodRepository.existsById(id)) {
             throw new FinishFoodException(FinishFoodException.Type.ENTITY_NOT_FOUND, "Food not found with ID: " + id);
         }
 
         foodRepository.deleteById(id);
+
+        foodCacheService.evictCacheTotalFoods();
         return true;
     }
 

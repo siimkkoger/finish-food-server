@@ -46,11 +46,11 @@ public record GetFoodsFilter(
         if (orderBy == null) {
             orderBy = ProductOrderBy.CREATED_AT;
         }
-        if (foodCategoryIds != null && foodCategoryIds.isEmpty()) {
-            foodCategoryIds = null;
+        if (foodCategoryIds == null) {
+            foodCategoryIds = Set.of();
         }
-        if (productProviderIds != null && productProviderIds.isEmpty()) {
-            productProviderIds = null;
+        if (productProviderIds == null) {
+            productProviderIds = Set.of();
         }
         if (foodCategoryIdsMatchAll == null) {
             foodCategoryIdsMatchAll = false;

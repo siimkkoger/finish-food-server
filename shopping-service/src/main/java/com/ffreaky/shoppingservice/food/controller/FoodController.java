@@ -2,6 +2,7 @@ package com.ffreaky.shoppingservice.food.controller;
 
 import com.ffreaky.shoppingservice.food.model.FoodCategoryDto;
 import com.ffreaky.shoppingservice.food.model.request.*;
+import com.ffreaky.shoppingservice.food.model.response.GetFoodListResult;
 import com.ffreaky.shoppingservice.food.model.response.GetFoodResponse;
 import com.ffreaky.shoppingservice.food.service.FoodService;
 import jakarta.validation.Valid;
@@ -37,7 +38,12 @@ public class FoodController {
     }
 
     @PostMapping("/get-foods")
-    public List<GetFoodResponse> getFoods(@Valid @RequestBody GetFoodsFilter filter) {
+    public GetFoodListResult getFoods(@Valid @RequestBody GetFoodsFilter filter) {
+        try {
+            Thread.sleep(1 * 1000);
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+        }
         return foodService.getFoods(filter);
     }
 

@@ -1,9 +1,17 @@
 ### test get foods
-POST http://{{host}}:8080/food/get-foods
+POST http://{{host}}:8080/api/food/get-foods
 Content-Type: application/json
 
 {
-    "foodCategoryIds": [1, 2]
+  "foodCategoryIds": [1],
+  "foodCategoryIdsMatchAll": true,
+  "productProviderIds": [],
+  "pickupTimeFrom": null,
+  "pickupTimeTo": null,
+  "page": 1,
+  "pageSize": 20,
+  "orderBy": "CREATED_AT",
+  "direction": "ASC"
 }
 
 ### test get foods querydsl

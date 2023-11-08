@@ -72,5 +72,30 @@ ____________________
 
 ____________________
 
-## Setup
-...
+## Setup (localhost windows)
+### Redis
+Redis is not supported on Windows but can be installed on WSL2.
+```bash
+curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+sudo apt-get update
+sudo apt-get install redis
+```
+To start Redis server:
+```bash
+sudo service redis-server start
+```
+To stop Redis server:
+```bash
+sudo service redis-server stop
+```
+To check Redis server status:
+```bash
+sudo service redis-server status
+```
+Determine WSL2 IP address:
+```bash
+ip addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'
+--- or ---
+hostname -I
+```

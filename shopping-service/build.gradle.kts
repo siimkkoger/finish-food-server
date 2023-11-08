@@ -33,6 +33,8 @@ dependencies {
     // Database connectivity
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-data-jpa", version = "3.0.4")
     implementation(group = "org.jooq", name = "jooq", version = "3.18.0")
+    implementation(group = "org.springframework.boot", name = "spring-boot-starter-data-redis")
+    implementation(group = "org.springframework.boot", name = "spring-boot-starter-cache")
 
     // Querydsl
     implementation(group = "com.querydsl", name = "querydsl-core", version = queryDslVersion)
